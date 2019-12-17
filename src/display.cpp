@@ -44,14 +44,6 @@ void c_window::finalize_SDL() {
 	return;
 }
 
-size_t c_window::position(const unsigned _x, const unsigned _y) const {
-	size_t _pos = _x + _y * width;
-	
-	if((_x >= width) || (_y >= height)) _pos = 0;
-	
-	return _pos;
-}
-
 c_window::c_window(const std::string &_title, float _w, float _h) {
 	initialize_SDL();
 	
@@ -119,7 +111,7 @@ void c_window::main_loop() {
 		
 		(*currentScreen) -> render_image(elapsed_time());
 		
-		(*currentScreen) -> draw_to_buffer(windowSurface -> pixels);
+		(*currentScreen) -> draw_to_surface(windowSurface);
 		SDL_UpdateWindowSurface(window);
 		
 		if((*currentScreen) -> should_screen_change()) {
@@ -163,7 +155,7 @@ void c_window::event_handler() {
 void c_window::window_event_handler(const SDL_WindowEvent &_event) {
 	switch(_event.event) {
 		case SDL_WINDOWEVENT_RESIZED:
-			resize(_event.data1, _event.data2);
+			resize_handler(_event.data1, _event.data2);
 			break;
 		
 	}
@@ -171,14 +163,20 @@ void c_window::window_event_handler(const SDL_WindowEvent &_event) {
 	return;
 }
 
-void c_window::resize(const int _width, const int _height) {
-	SDL_SetWindowSize(window, _width, _height);
+void c_window::resize_handler(const int &_width, const int &_height) {
 	width = _width;
 	height = _height;
 	SDL_FreeSurface(windowSurface);
 	windowSurface = SDL_GetWindowSurface(window);
 	if(windowSurface == nullptr) throw bad_surfaceCreate();
 	for(auto &i: screens) i -> resize(width, height);
+	
+	return;
+}
+
+void c_window::resize(const int &_width, const int &_height) {
+	SDL_SetWindowSize(window, _width, _height);
+	resize_handler(_width, _height);
 	
 	return;
 }

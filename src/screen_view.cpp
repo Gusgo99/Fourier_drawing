@@ -21,8 +21,8 @@ void c_view::resize(int _width, int _height) {
 	return;
 }
 
-void c_view::draw_to_buffer(void *_buffer) {
-	screen.draw_to_buffer(_buffer);
+void c_view::draw_to_surface(SDL_Surface *_surface) {
+	screen.draw_to_surface(_surface);
 	
 	return;
 }

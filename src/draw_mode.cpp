@@ -60,7 +60,7 @@ void c_drawMode::operator()(const SDL_Event &_event) {
 void c_drawMode::render_image(const double &_time) {
 	screen = auxScreen;
 	
-	auto _s = draw_series_truncation(_time, 1.0f);
+	auto _s = draw_series_truncation(_time);
 	auxScreen.draw_dot(_s.a, _s.b, TRACECOLOR);
 	
 	if(drawPoints) {
@@ -89,7 +89,7 @@ void c_drawMode::resize(int _width, int _height) {
 	
 }
 
-c_complex c_drawMode::draw_series_truncation(float _time, float _speed) {
+c_complex c_drawMode::draw_series_truncation(float _time) {
 	c_complex _center = 0.0;
 	
 	if(drawCircles) {
@@ -99,7 +99,7 @@ c_complex c_drawMode::draw_series_truncation(float _time, float _speed) {
 	}
 	
 	for(size_t i = 0; i != fourier.pCoeficients.size(); i++) {
-		double _angSpeed = PI * i * _speed / fourier.pCoeficients.size();
+		double _angSpeed = PI * i * speed / fourier.pCoeficients.size();
 		
 		auto _newCenter = _center + fourier.pCoeficients[i] * c_complex::expi(_angSpeed * _time);
 		if(drawCircles) {
@@ -112,8 +112,10 @@ c_complex c_drawMode::draw_series_truncation(float _time, float _speed) {
 		_newCenter = _center + fourier.nCoeficients[i] * c_complex::expi(-_angSpeed * _time);
 		
 		if(i < fourier.nCoeficients.size()) {
-			screen.draw_line(_center.a, _center.b, _newCenter.a, _newCenter.b, CIRCLECOLOR);
-			screen.draw_circle(_center.a, _center.b, (_newCenter - _center).modulus(), CIRCLECOLOR);
+			if(drawCircles) {
+				screen.draw_line(_center.a, _center.b, _newCenter.a, _newCenter.b, CIRCLECOLOR);
+				screen.draw_circle(_center.a, _center.b, (_newCenter - _center).modulus(), CIRCLECOLOR);
+			}
 			
 		}
 		_center = _newCenter;

@@ -37,7 +37,7 @@ class c_drawMode : public c_view {
 		c_image auxScreen;
 		std::vector<c_complex> points;
 	
-		c_complex draw_series_truncation(float _time, float _speed);
+		c_complex draw_series_truncation(float _time);
 		
 		void key_handler_p(const SDL_KeyboardEvent &_event);
 		void key_handler_s(const SDL_KeyboardEvent &_event);

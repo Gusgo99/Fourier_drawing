@@ -19,7 +19,7 @@ class c_view {
 		c_view(int _width, int _heights);
 		virtual ~c_view();
 		const c_image& get_image() const;
-		void draw_to_buffer(void* _buffer);
+		void draw_to_surface(SDL_Surface *_surface);
 		virtual void resize(int _width, int _height);
 		bool should_screen_change();
 		

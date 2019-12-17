@@ -19,7 +19,7 @@ class c_window {
 	public:
 		c_window(const std::string &_title, float _w, float _h);
 		~c_window();
-		size_t position(const unsigned _x, const unsigned _y) const;
+		
 		void main_loop();
 	
 	private:
@@ -31,23 +31,23 @@ class c_window {
 		void init_screens();
 		void event_handler();
 		void window_event_handler(const SDL_WindowEvent &_event);
+		void resize_handler(const int &_width, const int &_height);
+		void resize(const int &_width, const int &_height);
+		
 		void fps_limiter(unsigned _max);
 		void fps_counter();
-		void resize(const int _width, const int _height);
-		float elapsed_time() const;
-		c_complex draw_series_truncation(std::vector<uint32_t> &_frame, float _speed) const;
 		
-		const size_t FBSIZE = 3;
-		bool isOpen;
-		float speed;
-		unsigned width;
-		unsigned height;
-		std::string windowTitle;
-		std::vector<std::unique_ptr<c_view>> screens;
-		std::vector<std::unique_ptr<c_view>>::iterator currentScreen;
+		float elapsed_time() const;
 		
 		SDL_Window *window;
 		SDL_Surface *windowSurface;
+		bool isOpen;
+		int width;
+		int height;
+		std::string windowTitle;
+		
+		std::vector<std::unique_ptr<c_view>> screens;
+		std::vector<std::unique_ptr<c_view>>::iterator currentScreen;
 		
 		std::chrono::high_resolution_clock::time_point tStart;
 		std::chrono::high_resolution_clock::time_point tRefresh;

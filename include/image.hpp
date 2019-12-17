@@ -6,36 +6,10 @@
 
 #include <SDL2/SDL.h>
 
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-union u_color {
-	struct {
-		unsigned char alpha;
-		unsigned char red;
-		unsigned char green;
-		unsigned char blue;
-	} channels;
-	uint32_t colors;
-	
-};
-#else
-union u_color {
-	struct {
-		unsigned char blue;
-		unsigned char green;
-		unsigned char red;
-		unsigned char alpha;
-	} channels;
-	uint32_t colors;
-	
-};
-#endif
-
 struct s_color {
 	float red;
 	float green;
 	float blue;
-	u_color to_24_bit_RGBA() const;
-	
 	
 };
 
@@ -63,7 +37,7 @@ class c_image {
 		void set_height(int _height);
 		void resize(int _width, int _height);
 		
-		void draw_to_buffer(void *_pixels);
+		void draw_to_surface(SDL_Surface *_surface);
 		
 		void clear_image(const s_color &_color);
 		

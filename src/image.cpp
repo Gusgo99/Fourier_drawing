@@ -1,24 +1,6 @@
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
-#pragma GCC diagnostic ignored "-Wtype-limits"
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb/stb_image.h>
-#pragma GCC diagnostic pop
-
-#include <iostream>
 #include <cmath>
 
 #include "image.hpp"
-
-u_color s_color::to_24_bit_RGBA() const {
-	u_color _c;
-	_c.channels.alpha = 0xFF;
-	_c.channels.red = 0xFF * red;
-	_c.channels.green = 0xFF * green;
-	_c.channels.blue = 0xFF * blue;
-	
-	return _c;
-}
 
 c_image::c_image() {
 	
@@ -26,19 +8,7 @@ c_image::c_image() {
 }
 
 c_image::c_image(int _width, int _height) {
-	width = _width;
-	height = _height;
-	screenRatio = _width / float(_height);
-	
-	colors.resize(width * height);
-	
-	clear_image(WHITE);
-	
-	return;
-}
-
-c_image::c_image(const std::string &_filename) {
-	load_file(_filename);
+	resize(_width, _height);
 	
 	return;
 }
@@ -49,28 +19,6 @@ s_color& c_image::operator[](const size_t &_i) {
 
 const s_color& c_image::get_color(const size_t &i) const {
 	return colors[i];
-}
-
-void c_image::load_file(const std::string &_filename) {
-	int _channels;
-	
-	stbi_uc *_pixels = stbi_load(_filename.c_str(), &width, &height, &_channels, STBI_rgb_alpha);
-	
-	colors.resize(width * height);
-	screenRatio = width / float(height);
-	
-	for(size_t i = 0; i != colors.size(); i++) {
-		s_color _color;
-		_color.red = _pixels[_channels * i + 0] / float(255);
-		_color.green = _pixels[_channels * i + 1] / float(255);
-		_color.blue = _pixels[_channels * i + 2] / float(255);
-		colors[i] = _color;
-		
-	}
-	
-	stbi_image_free(_pixels);
-	
-	return;
 }
 
 int c_image::get_width() const {
@@ -100,16 +48,16 @@ void c_image::resize(int _width, int _height) {
 	colors.resize(_width * _height);
 	screenRatio = _width / float(_height);
 	
-	clear_image({1.0f, 1.0f, 1.0f});
+	clear_image(WHITE);
 	
 	return;
 }
 
-void c_image::draw_to_buffer(void *_buffer) {
-	int *_pixels = reinterpret_cast<int*>(_buffer);
+void c_image::draw_to_surface(SDL_Surface *_surface) {
+	int *_pixels = reinterpret_cast<int*>(_surface -> pixels);
 	
-	for(size_t i = 0; i != colors.size(); i++) {
-		_pixels[i] = colors[i].to_24_bit_RGBA().colors;
+	for(size_t i = 0; i < size_t(_surface -> w * _surface -> h); i++) {
+		_pixels[i] = SDL_MapRGB(_surface -> format, colors[i].red * 0xFF, colors[i].green * 0xFF, colors[i].blue * 0xFF);
 		
 	}
 	
@@ -207,14 +155,14 @@ void c_image::draw_dot(const float &_x, const float &_y, const s_color &_color) 
 	auto _pos = to_lin_coord(_x, _y);
 	
 	colors[_pos] = _color;
-	colors[_pos + 1] = _color;
-	colors[_pos - 1] = _color;
-	colors[_pos + width] = _color;
-	colors[_pos + width + 1] = _color;
-	colors[_pos + width - 1] = _color;
-	colors[_pos - width] = _color;
-	colors[_pos - width + 1] = _color;
-	colors[_pos - width - 1] = _color;
+	if((_pos + 1) < colors.size()) colors[_pos + 1] = _color;
+	if((_pos - 1) < colors.size()) colors[_pos - 1] = _color;
+	if((_pos + width) < colors.size()) colors[_pos + width] = _color;
+	if((_pos - width) < colors.size()) colors[_pos - width] = _color;
+	if((_pos + width + 1) < colors.size()) colors[_pos + width + 1] = _color;
+	if((_pos + width - 1) < colors.size()) colors[_pos + width - 1] = _color;
+	if((_pos - width + 1) < colors.size()) colors[_pos - width + 1] = _color;
+	if((_pos + width - 1) < colors.size()) colors[_pos + width - 1] = _color;
 	
 	return;
 }
