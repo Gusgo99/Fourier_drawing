@@ -225,7 +225,7 @@ void c_editMode::key_handler_m(const SDL_KeyboardEvent &_event) {
 
 void c_editMode::key_handler_F1(const SDL_KeyboardEvent &_event) {
 	if(_event.type == SDL_KEYDOWN) {
-		std::thread(SDL_ShowSimpleMessageBox, SDL_MESSAGEBOX_INFORMATION, "Help", HELPMESSAGE.c_str(), nullptr).detach();
+		std::thread(SDL_ShowSimpleMessageBox, SDL_MESSAGEBOX_INFORMATION, "Help - Edit mode", HELPMESSAGE.c_str(), nullptr).detach();
 		
 	}
 	
