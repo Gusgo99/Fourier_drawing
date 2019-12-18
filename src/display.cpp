@@ -1,4 +1,5 @@
 #include "display.hpp"
+#include "resize_request.hpp"
 #include "request.hpp"
 
 void c_window::initialize_SDL() {
@@ -145,6 +146,15 @@ void c_window::request_handler() {
 			
 		}
 	}
+	// Checks if the request is a resize request
+	else if(dynamic_cast<c_resizeRequest*>(_request.get()) != nullptr) {
+		auto _resizer = dynamic_cast<c_resizeRequest*>(_request.get());
+		
+		resize(_resizer -> get_width(), _resizer -> get_height());
+		
+	}
+	
+	_request = nullptr;
 	
 	return;
 }

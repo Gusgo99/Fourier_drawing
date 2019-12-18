@@ -6,7 +6,7 @@ NOMEPROJ	:=	fourier_drawing
 # Arquivos usados
 HEADERS		:= 	complex.hpp fourier.hpp \
 				display.hpp image.hpp screen_view.hpp \
-				request.hpp screen_change_request.hpp \
+				request.hpp screen_change_request.hpp resize_request.hpp \
 				edit_mode.hpp draw_mode.hpp
 SOURCES		:= main.cpp $(patsubst %.hpp, %.cpp, $(HEADERS))
 
