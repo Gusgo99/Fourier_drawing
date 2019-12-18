@@ -17,7 +17,7 @@ const std::map<uint8_t, t_drawModeMouseButtonHandler> c_drawMode::MOUSEBUTTONHAN
 c_drawMode::c_drawMode(int _width, int _height) : c_view(_width, _height) {
 	drawCircles = true;
 	drawPoints = true;
-	speed = 1.5f;
+	speed = 1.0f;
 	
 	auxScreen.resize(_width, _height);
 	auxScreen.clear_image(BACKGROUNDCOLOR);
@@ -73,9 +73,10 @@ void c_drawMode::render_image(const double &_time) {
 	return;
 }
 
-void c_drawMode::get_active() {
-	if(tempPoints != nullptr) {
-		points = *tempPoints;
+void c_drawMode::activate(const c_screenChangeRequest *_request) {
+	auto _changeRequest = dynamic_cast<const c_screenChangeRequestPKG<std::vector<c_complex>>*>(_request);
+	if((_changeRequest != nullptr) && (_changeRequest -> get_new_id() == get_id())) {
+		points = *(_changeRequest -> get_package());
 		fourier.dft(points);
 		
 	}
@@ -116,9 +117,9 @@ c_complex c_drawMode::draw_series_truncation(float _time) {
 				screen.draw_line(_center.a, _center.b, _newCenter.a, _newCenter.b, CIRCLECOLOR);
 				screen.draw_circle(_center.a, _center.b, (_newCenter - _center).modulus(), CIRCLECOLOR);
 			}
+			_center = _newCenter;
 			
 		}
-		_center = _newCenter;
 	}
 	
 	return _center;
@@ -144,7 +145,8 @@ void c_drawMode::key_handler_c(const SDL_KeyboardEvent &_event) {
 
 void c_drawMode::key_handler_m(const SDL_KeyboardEvent &_event) {
 	if(_event.type == SDL_KEYDOWN) {
-		screenChange = true;
+		auto _request = dynamic_cast<c_request*>(new c_screenChangeRequestNPKG(1));
+		requests.push(std::shared_ptr<c_request>(_request));
 		
 	}
 	

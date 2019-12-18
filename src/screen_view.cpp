@@ -27,12 +27,14 @@ void c_view::draw_to_surface(SDL_Surface *_surface) {
 	return;
 }
 
-bool c_view::should_screen_change() {
-	if(screenChange) {
-		screenChange = false;
-		return true;
+std::shared_ptr<c_request> c_view::get_requests() {
+	std::shared_ptr<c_request> _request;
+	
+	if(!requests.empty()) {
+		_request = requests.front();
+		requests.pop();
 		
 	}
 	
-	return false;
+	return _request;
 }

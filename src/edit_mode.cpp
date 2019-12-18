@@ -14,13 +14,9 @@ const std::map<uint8_t, t_editModeMouseButtonHandler> c_editMode::MOUSEBUTTONHAN
 	{SDL_BUTTON_MIDDLE, mouse_button_handler_middle}
 };
 
-std::vector<c_complex>* c_view::tempPoints = nullptr;
-
 c_editMode::c_editMode(int _width, int _height) : c_view(_width, _height){
 	read_points(STANDARDPOINTSFILENAME);
 	drawPoints = true;
-	
-	tempPoints = &points;
 	
 	return;
 }
@@ -82,7 +78,11 @@ void c_editMode::render_image(const double &_time) {
 	return;
 }
 
-void c_editMode::get_active() {
+void c_editMode::activate(const c_screenChangeRequest *_request) {
+	auto _changeRequest = dynamic_cast<const c_screenChangeRequestPKG<std::vector<c_complex>>*>(_request);
+	if((_changeRequest != nullptr) && (_changeRequest -> get_new_id() == get_id())) {
+		
+	}
 	
 	return;
 }
@@ -202,7 +202,8 @@ void c_editMode::key_handler_p(const SDL_KeyboardEvent &_event) {
 
 void c_editMode::key_handler_m(const SDL_KeyboardEvent &_event) {
 	if(_event.type == SDL_KEYDOWN) {
-		screenChange = true;
+		auto _request = dynamic_cast<c_request*>(new c_screenChangeRequestPKG<std::vector<c_complex>>(2, &points));
+		requests.push(std::shared_ptr<c_request>(_request));
 		
 	}
 	

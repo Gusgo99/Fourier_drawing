@@ -71,15 +71,15 @@ void c_image::clear_image(const s_color &_color) {
 }
 
 float& c_image::red(const size_t &_i) {
-	return colors[_i].red;
+	return colors[_i % colors.size()].red;
 }
 
 float& c_image::green(const size_t &_i) {
-	return colors[_i].green;
+	return colors[_i % colors.size()].green;
 }
 
 float& c_image::blue(const size_t &_i) {
-	return colors[_i].blue;
+	return colors[_i % colors.size()].blue;
 }
 
 size_t c_image::to_lin_coord(float _x, float _y) const {

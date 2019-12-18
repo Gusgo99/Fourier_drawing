@@ -1,33 +1,5 @@
-#include <algorithm>
-#include <exception>
-#include <iostream>
-#include <cmath>
-#include <chrono>
-#include <fstream>
-
-#include <SDL2/SDL.h>
-
 #include "display.hpp"
-
-class bad_initialization : std::runtime_error {
-	public:
-		bad_initialization(const char* _str = "Failed to initialize module\n") : runtime_error(_str) {};
-};
-
-class bad_SDLInit : bad_initialization {
-	public:
-		bad_SDLInit() : bad_initialization("Failed to initialize SDL\n") {};
-};
-
-class bad_windowCreate : bad_initialization {
-	public:
-		bad_windowCreate() : bad_initialization("Failed to create SDL window\n") {};
-};
-
-class bad_surfaceCreate : bad_initialization {
-	public:
-		bad_surfaceCreate() : bad_initialization("Failed to create SDL surface") {};
-};
+#include "request.hpp"
 
 void c_window::initialize_SDL() {
 	if(SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -110,16 +82,10 @@ void c_window::main_loop() {
 		event_handler();
 		
 		(*currentScreen) -> render_image(elapsed_time());
-		
 		(*currentScreen) -> draw_to_surface(windowSurface);
 		SDL_UpdateWindowSurface(window);
 		
-		if((*currentScreen) -> should_screen_change()) {
-			currentScreen++;
-			if(currentScreen == screens.end()) currentScreen = screens.begin();
-			(*currentScreen) -> get_active();
-			
-		}
+		request_handler();
 		
 		fps_limiter((*currentScreen) -> get_max_framerate());
 		
@@ -158,6 +124,26 @@ void c_window::window_event_handler(const SDL_WindowEvent &_event) {
 			resize_handler(_event.data1, _event.data2);
 			break;
 		
+	}
+	
+	return;
+}
+
+void c_window::request_handler() {
+	std::shared_ptr<c_request> _request = (*currentScreen) -> get_requests();
+	
+	// Checks if the request is a screen change request
+	if(dynamic_cast<c_screenChangeRequest*>(_request.get()) != nullptr) {
+		auto _screenChanger = dynamic_cast<c_screenChangeRequest*>(_request.get());
+		// Looks for the correct screen
+		auto _newScreen = screens.begin();
+		while((_screenChanger -> get_new_id() != (*_newScreen) -> get_id()) && (_newScreen != screens.end())) _newScreen++;
+		// If the correct screen is found, activate it and change the current screen
+		if(_newScreen != screens.end()) {
+			(*_newScreen) -> activate(_screenChanger);
+			currentScreen = _newScreen;
+			
+		}
 	}
 	
 	return;

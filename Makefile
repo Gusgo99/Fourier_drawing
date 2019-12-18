@@ -4,7 +4,10 @@ MAKEFLAGS	:=	-j12
 NOMEPROJ	:=	fourier_drawing
 
 # Arquivos usados
-HEADERS		:= complex.hpp display.hpp fourier.hpp image.hpp screen_view.hpp edit_mode.hpp draw_mode.hpp
+HEADERS		:= 	complex.hpp fourier.hpp \
+				display.hpp image.hpp screen_view.hpp \
+				request.hpp screen_change_request.hpp \
+				edit_mode.hpp draw_mode.hpp
 SOURCES		:= main.cpp $(patsubst %.hpp, %.cpp, $(HEADERS))
 
 # Compilador e padrao da linguagem

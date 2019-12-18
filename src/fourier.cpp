@@ -1,10 +1,10 @@
 #include "fourier.hpp"
-#include <iostream>
 
 c_fourier::c_fourier() {
 	return;
 }
 
+// Not really a dft, but at least a multiple of
 void c_fourier::dft(const std::vector<c_complex> &_points) {
 	if(_points.size() != 0) {
 		pCoeficients.resize((_points.size() / 2) + 1);

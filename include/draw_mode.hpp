@@ -1,9 +1,12 @@
 #ifndef DRAW_MODE_HPP
 #define DRAW_MODE_HPP
 
+#include <functional>
+#include <map>
+
 #include "complex.hpp"
-#include "edit_mode.hpp"
 #include "fourier.hpp"
+#include "screen_change_request.hpp"
 #include "screen_view.hpp"
 
 class c_drawMode;
@@ -16,13 +19,14 @@ class c_drawMode : public c_view {
 		c_drawMode(int _width, int _height);
 		~c_drawMode();
 		
-		void operator()(const SDL_Event &_event);
-		void render_image(const double &_time);
-		unsigned get_max_framerate() {return 60;}
-		uint32_t get_id() {return 2;}
-		void get_active();
-		
 		void resize(int _width, int _height);
+		
+		void render_image(const double &_time);
+		void operator()(const SDL_Event &_event);
+		void activate(const c_screenChangeRequest *_request);
+		
+		unsigned get_max_framerate() {return 60;}
+		unsigned get_id() {return 2;}
 	
 	private:
 		const s_color BACKGROUNDCOLOR = WHITE;

@@ -1,7 +1,11 @@
 #ifndef EDIT_MODE_HPP
 #define EDIT_MODE_HPP
 
+#include <functional>
+#include <map>
+
 #include "complex.hpp"
+#include "screen_change_request.hpp"
 #include "screen_view.hpp"
 
 class c_editMode;
@@ -14,11 +18,12 @@ class c_editMode : public c_view {
 		c_editMode(int _width, int _height);
 		~c_editMode();
 		
-		void operator()(const SDL_Event &_event);
 		void render_image(const double &_time);
+		void operator()(const SDL_Event &_event);
+		void activate(const c_screenChangeRequest *_request);
+		
 		unsigned get_max_framerate() {return 30;}
 		uint32_t get_id() {return 1;}
-		void get_active();
 		
 	private:
 		const std::string STANDARDPOINTSFILENAME = "resources/points.dat";
@@ -49,7 +54,5 @@ class c_editMode : public c_view {
 		static const std::map<uint8_t, t_editModeMouseButtonHandler> MOUSEBUTTONHANDLERS;
 	
 };
-
-
 
 #endif
