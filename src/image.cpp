@@ -1,3 +1,10 @@
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wtype-limits"
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb/stb_image.h>
+#pragma GCC diagnostic pop
+
 #include <cmath>
 
 #include "image.hpp"
@@ -13,12 +20,40 @@ c_image::c_image(int _width, int _height) {
 	return;
 }
 
+c_image::c_image(const std::string &_filename) {
+	load_file(_filename);
+	
+	return;
+}
+
 s_color& c_image::operator[](const size_t &_i) {
 	return colors[_i % colors.size()];
 }
 
 const s_color& c_image::get_color(const size_t &i) const {
 	return colors[i];
+}
+
+void c_image::load_file(const std::string &_filename) {
+	int _channels;
+	
+	stbi_uc *_pixels = stbi_load(_filename.c_str(), &width, &height, &_channels, STBI_rgb_alpha);
+	
+	resize(width, height);
+	
+	if(_pixels != nullptr) {
+		for(size_t i = 0; i != colors.size(); i++) {
+			colors[i].red = _pixels[_channels * i + 0] / float(0xFF);
+			colors[i].green = _pixels[_channels * i + 1] / float(0xFF);
+			colors[i].blue = _pixels[_channels * i + 2] / float(0xFF);
+			
+		}
+		
+	}
+	
+	stbi_image_free(_pixels);
+	
+	return;
 }
 
 int c_image::get_width() const {
