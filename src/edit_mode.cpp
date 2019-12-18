@@ -1,11 +1,24 @@
 #include <fstream>
+#include <thread>
 
 #include "edit_mode.hpp"
+
+const std::string HELPMESSAGE = "You are in edit mode.\n\n\
+In this mode, you can draw a curve by left clicking on the screen.\n\
+The lines drawn between points are not meant to represent the final curve and\nare only useful to show the order the curve will be drawn.\n\
+The following list presents the possible commands in this mode:\n\
+ - Press the left mouse button to add a points\n\
+ - Press the right mouse button to delete a point\n\
+ - Press the middle mouse button to select a point\n\
+ - Press the C key to clear all points\n\
+ - Press the P key to touggle the circles around points\n\
+ - Press the M key to go to draw mode and see the drawn curve\n";
 
 const std::map<SDL_Keycode, t_editModeKeyHandler> c_editMode::KEYHANDLERS = {
 	{SDLK_c, key_handler_c},
 	{SDLK_p, key_handler_p},
-	{SDLK_m, key_handler_m}
+	{SDLK_m, key_handler_m},
+	{SDLK_F1, key_handler_F1}
 };
 
 const std::map<uint8_t, t_editModeMouseButtonHandler> c_editMode::MOUSEBUTTONHANDLERS = {
@@ -204,6 +217,15 @@ void c_editMode::key_handler_m(const SDL_KeyboardEvent &_event) {
 	if(_event.type == SDL_KEYDOWN) {
 		auto _request = dynamic_cast<c_request*>(new c_screenChangeRequestPKG<std::vector<c_complex>>(2, &points));
 		requests.push(std::shared_ptr<c_request>(_request));
+		
+	}
+	
+	return;
+}
+
+void c_editMode::key_handler_F1(const SDL_KeyboardEvent &_event) {
+	if(_event.type == SDL_KEYDOWN) {
+		std::thread(SDL_ShowSimpleMessageBox, SDL_MESSAGEBOX_INFORMATION, "Help", HELPMESSAGE.c_str(), nullptr).detach();
 		
 	}
 	

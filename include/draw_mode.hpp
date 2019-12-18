@@ -47,6 +47,7 @@ class c_drawMode : public c_view {
 		void key_handler_s(const SDL_KeyboardEvent &_event);
 		void key_handler_c(const SDL_KeyboardEvent &_event);
 		void key_handler_m(const SDL_KeyboardEvent &_event);
+		void key_handler_F1(const SDL_KeyboardEvent &_event);
 		void key_handler_arrow_up(const SDL_KeyboardEvent &_event);
 		void key_handler_arrow_down(const SDL_KeyboardEvent &_event);
 	

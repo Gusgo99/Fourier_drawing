@@ -1,10 +1,23 @@
+#include <thread>
+
 #include "draw_mode.hpp"
+
+const std::string HELPMESSAGE = "You are in draw mode.\n\n\
+In this mode, you can see the curve drawn in edit mode\n\
+The following list presents the possible commands in this mode:\n\
+ - Press the C key to clear the image\n\
+ - Press the P key to touggle the circles around points\n\
+ - Press the S key to touggle the spinning circles\n\
+ - Press the arrow up key to increase the angular speed\n\
+ - Press the arrow down key to decrease the angular speed\n\
+ - Press the M key to go to edit mode\n";
 
 const std::map<SDL_Keycode, t_drawModeKeyHandler> c_drawMode::KEYHANDLERS = {
 	{SDLK_p, key_handler_p},
 	{SDLK_s, key_handler_s},
 	{SDLK_c, key_handler_c},
 	{SDLK_m, key_handler_m},
+	{SDLK_F1, key_handler_F1},
 	{SDLK_UP, key_handler_arrow_up},
 	{SDLK_DOWN, key_handler_arrow_down}
 };
@@ -147,6 +160,15 @@ void c_drawMode::key_handler_m(const SDL_KeyboardEvent &_event) {
 	if(_event.type == SDL_KEYDOWN) {
 		auto _request = dynamic_cast<c_request*>(new c_screenChangeRequestNPKG(1));
 		requests.push(std::shared_ptr<c_request>(_request));
+		
+	}
+	
+	return;
+}
+
+void c_drawMode::key_handler_F1(const SDL_KeyboardEvent &_event) {
+	if(_event.type == SDL_KEYDOWN) {
+		std::thread(SDL_ShowSimpleMessageBox, SDL_MESSAGEBOX_INFORMATION, "Help", HELPMESSAGE.c_str(), nullptr).detach();
 		
 	}
 	

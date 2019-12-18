@@ -14,7 +14,7 @@ c_image::c_image(int _width, int _height) {
 }
 
 s_color& c_image::operator[](const size_t &_i) {
-	return colors[_i];
+	return colors[_i % colors.size()];
 }
 
 const s_color& c_image::get_color(const size_t &i) const {
