@@ -5,7 +5,6 @@
 #include <map>
 
 #include "complex.hpp"
-#include "screen_change_request.hpp"
 #include "screen_view.hpp"
 
 class c_editMode;
@@ -49,6 +48,7 @@ class c_editMode : public c_view {
 		void key_handler_c(const SDL_KeyboardEvent &_event);
 		void key_handler_p(const SDL_KeyboardEvent &_event);
 		void key_handler_m(const SDL_KeyboardEvent &_event);
+		void key_handler_i(const SDL_KeyboardEvent &_event);
 		void key_handler_F1(const SDL_KeyboardEvent &_event);
 		
 		static const std::map<SDL_Keycode, t_editModeKeyHandler> KEYHANDLERS;

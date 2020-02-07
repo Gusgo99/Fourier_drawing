@@ -2,6 +2,7 @@
 #include <thread>
 
 #include "edit_mode.hpp"
+#include "screen_change_request.hpp"
 
 const std::string HELPMESSAGE = "You are in edit mode.\n\n\
 In this mode, you can draw a curve by left clicking on the screen.\n\
@@ -12,12 +13,14 @@ The following list presents the possible commands in this mode:\n\
  - Press the middle mouse button to select a point\n\
  - Press the C key to clear all points\n\
  - Press the P key to touggle the circles around points\n\
- - Press the M key to go to draw mode and see the drawn curve\n";
+ - Press the M key to go to draw mode and see the drawn curve\n\
+ - Press the I key to go to image processing mode and use an image as source\n";
 
 const std::map<SDL_Keycode, t_editModeKeyHandler> c_editMode::KEYHANDLERS = {
 	{SDLK_c, key_handler_c},
 	{SDLK_p, key_handler_p},
 	{SDLK_m, key_handler_m},
+	{SDLK_i, key_handler_i},
 	{SDLK_F1, key_handler_F1}
 };
 
@@ -27,7 +30,7 @@ const std::map<uint8_t, t_editModeMouseButtonHandler> c_editMode::MOUSEBUTTONHAN
 	{SDL_BUTTON_MIDDLE, mouse_button_handler_middle}
 };
 
-c_editMode::c_editMode(int _width, int _height) : c_view(_width, _height){
+c_editMode::c_editMode(int _width, int _height) : c_view(_width, _height) {
 	read_points(STANDARDPOINTSFILENAME);
 	drawPoints = true;
 	
@@ -50,8 +53,8 @@ void c_editMode::operator()(const SDL_Event &_event) {
 				if(_keyHandler -> second != nullptr) _keyHandler -> second(this, _event.key);
 				
 			}
-		}
 			break;
+		}
 		
 		case SDL_MOUSEBUTTONDOWN: [[fallthrough]]
 		case SDL_MOUSEBUTTONUP:
@@ -61,8 +64,8 @@ void c_editMode::operator()(const SDL_Event &_event) {
 				if(_mouseButtonHandler -> second != nullptr) _mouseButtonHandler -> second(this, _event.button);
 				
 			}
-		}
 			break;
+		}
 		
 	}
 	
@@ -216,6 +219,16 @@ void c_editMode::key_handler_p(const SDL_KeyboardEvent &_event) {
 void c_editMode::key_handler_m(const SDL_KeyboardEvent &_event) {
 	if(_event.type == SDL_KEYDOWN) {
 		auto _request = dynamic_cast<c_request*>(new c_screenChangeRequestPKG<std::vector<c_complex>>(2, &points));
+		requests.push(std::shared_ptr<c_request>(_request));
+		
+	}
+	
+	return;
+}
+
+void c_editMode::key_handler_i(const SDL_KeyboardEvent &_event) {
+	if(_event.type == SDL_KEYDOWN) {
+		auto _request = dynamic_cast<c_request*>(new c_screenChangeRequestNPKG(3));
 		requests.push(std::shared_ptr<c_request>(_request));
 		
 	}

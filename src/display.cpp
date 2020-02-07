@@ -2,6 +2,10 @@
 #include "resize_request.hpp"
 #include "request.hpp"
 
+#include "DIP_mode.hpp"
+#include "draw_mode.hpp"
+#include "edit_mode.hpp"
+
 void c_window::initialize_SDL() {
 	if(SDL_Init(SDL_INIT_VIDEO) != 0) {
 		throw bad_SDLInit();
@@ -72,6 +76,7 @@ void c_window::init_timers() {
 void c_window::init_screens() {
 	screens.push_back(std::unique_ptr<c_view>(new c_editMode(width, height)));
 	screens.push_back(std::unique_ptr<c_view>(new c_drawMode(width, height)));
+	screens.push_back(std::unique_ptr<c_view>(new c_DIPMode(width, height)));
 	
 	currentScreen = screens.begin();
 	

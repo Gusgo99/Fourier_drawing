@@ -10,10 +10,9 @@
 #include <thread>
 #include <vector>
 
-#include "draw_mode.hpp"
-#include "edit_mode.hpp"
 #include "image.hpp"
 #include "request.hpp"
+#include "screen_view.hpp"
 
 class c_window {
 	public:

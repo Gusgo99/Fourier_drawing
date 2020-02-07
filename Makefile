@@ -7,7 +7,8 @@ NOMEPROJ	:=	fourier_drawing
 HEADERS		:= 	complex.hpp fourier.hpp \
 				display.hpp image.hpp screen_view.hpp \
 				request.hpp screen_change_request.hpp resize_request.hpp \
-				edit_mode.hpp draw_mode.hpp
+				edit_mode.hpp draw_mode.hpp DIP_mode.hpp \
+				image_processing_tool.hpp modifying_image_processing_tool.hpp
 SOURCES		:= main.cpp $(patsubst %.hpp, %.cpp, $(HEADERS))
 
 # Compilador e padrao da linguagem

@@ -10,6 +10,8 @@
 #include "image.hpp"
 
 c_image::c_image() {
+	width = 0;
+	height = 0;
 	
 	return;
 }
@@ -48,7 +50,6 @@ void c_image::load_file(const std::string &_filename) {
 			colors[i].blue = _pixels[_channels * i + 2] / float(0xFF);
 			
 		}
-		
 	}
 	
 	stbi_image_free(_pixels);

@@ -1,9 +1,10 @@
 #include <thread>
 
 #include "draw_mode.hpp"
+#include "screen_change_request.hpp"
 
 const std::string HELPMESSAGE = "You are in draw mode.\n\n\
-In this mode, you can see the curve drawn in edit mode\n\
+In this mode, you can see the curve drawn in edit mode.\n\
 The following list presents the possible commands in this mode:\n\
  - Press the C key to clear the image\n\
  - Press the P key to touggle the circles around points\n\
@@ -20,11 +21,6 @@ const std::map<SDL_Keycode, t_drawModeKeyHandler> c_drawMode::KEYHANDLERS = {
 	{SDLK_F1, key_handler_F1},
 	{SDLK_UP, key_handler_arrow_up},
 	{SDLK_DOWN, key_handler_arrow_down}
-};
-
-const std::map<uint8_t, t_drawModeMouseButtonHandler> c_drawMode::MOUSEBUTTONHANDLERS = {
-	
-	
 };
 
 c_drawMode::c_drawMode(int _width, int _height) : c_view(_width, _height) {
@@ -52,18 +48,8 @@ void c_drawMode::operator()(const SDL_Event &_event) {
 				if(_keyHandler -> second != nullptr) _keyHandler -> second(this, _event.key);
 				
 			}
-		}
 			break;
-		
-		case SDL_MOUSEBUTTONDOWN: [[fallthrough]]
-		case SDL_MOUSEBUTTONUP: {
-			auto _mouseButtonHandler = MOUSEBUTTONHANDLERS.find(_event.button.button);
-			if(_mouseButtonHandler != MOUSEBUTTONHANDLERS.end()) {
-				if(_mouseButtonHandler -> second != nullptr) _mouseButtonHandler -> second(this, _event.button);
-				
-			}
 		}
-			break;
 		
 	}
 	

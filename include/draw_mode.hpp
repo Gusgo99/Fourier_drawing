@@ -6,13 +6,11 @@
 
 #include "complex.hpp"
 #include "fourier.hpp"
-#include "screen_change_request.hpp"
 #include "screen_view.hpp"
 
 class c_drawMode;
 
 typedef std::function<void(c_drawMode*, const SDL_KeyboardEvent&)> t_drawModeKeyHandler;
-typedef std::function<void(c_drawMode*, const SDL_MouseButtonEvent&)> t_drawModeMouseButtonHandler;
 
 class c_drawMode : public c_view {
 	public:
@@ -52,7 +50,6 @@ class c_drawMode : public c_view {
 		void key_handler_arrow_down(const SDL_KeyboardEvent &_event);
 	
 		static const std::map<SDL_Keycode, t_drawModeKeyHandler> KEYHANDLERS;
-		static const std::map<uint8_t, t_drawModeMouseButtonHandler> MOUSEBUTTONHANDLERS;
 	
 };
 
