@@ -12,9 +12,7 @@ c_thresholdTool::~c_thresholdTool() {
 }
 
 void c_thresholdTool::apply() {
-	size_t _imageSize = image.get_width() * image.get_height();
-	
-	for(size_t i = 0; i != _imageSize; i++) {
+	for(size_t i = 0; i != image.get_size(); i++) {
 		auto &_pixel = image[i];
 		if((_pixel.red + _pixel.green + _pixel.blue) < threshold) _pixel = BLACK;
 		else _pixel = WHITE;
