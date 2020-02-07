@@ -3,9 +3,8 @@
 #include "DIP_mode.hpp"
 #include "modifying_image_processing_tool.hpp"
 #include "resize_request.hpp"
+#include "selection_tool.hpp"
 #include "threshold_tool.hpp"
-
-#include <iostream>
 
 const std::string HELPMESSAGE = "You are in digital image processing mode.\n\n\
 In this mode, you can use an image to generate a curve that will be used in the other modes.\n\
@@ -15,6 +14,8 @@ The following list presents the possible commands in this mode:\n\
  - Press the S key to touggle the spinning circles\n\
  - Press the arrow up key to increase the tool effect\n\
  - Press the arrow down key to decrease tool effect\n\
+ - Press the left arrow to go to the previous effect\n\
+ - Press the right arrow to go to the next effect\n\
  - Left click on a pixel to apply the effect starting from that pixel\n\
  - Drop a file on the window to open the image\n";
 
@@ -39,6 +40,7 @@ const std::map<uint32_t, t_DIPModeDropEventHandler> c_DIPMode::DROPHANDLERS = {
 c_DIPMode::c_DIPMode(int _width, int _height) : c_view(_width, _height) {
 	processingTools.push_back(nullptr);
 	processingTools.push_back(std::unique_ptr<c_imageProcessingTool>(new c_thresholdTool(screen)));
+	processingTools.push_back(std::unique_ptr<c_imageProcessingTool>(new c_selectionTool(screen)));
 	
 	currentTool = processingTools.begin();
 	
