@@ -23,7 +23,7 @@ class c_DIPMode : public c_view {
 		void operator()(const SDL_Event &_event);
 		void activate(const c_screenChangeRequest *_request);
 		
-		unsigned get_max_framerate() {return 30;};
+		unsigned get_max_framerate() {return 0;};
 		uint32_t get_id() {return 3;};
 	
 	private:

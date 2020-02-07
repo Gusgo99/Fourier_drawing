@@ -33,6 +33,7 @@ class c_image {
 		void load_file(const std::string &_filename);
 		int get_width() const;
 		int get_height() const;
+		size_t get_size() const;
 		void set_width(int _width);
 		void set_height(int _height);
 		void resize(int _width, int _height);

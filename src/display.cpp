@@ -85,15 +85,22 @@ void c_window::init_screens() {
 
 void c_window::main_loop() {
 	while(isOpen) {
-		event_handler();
+		request_handler();
 		
 		(*currentScreen) -> render_image(elapsed_time());
 		(*currentScreen) -> draw_to_surface(windowSurface);
 		SDL_UpdateWindowSurface(window);
 		
-		request_handler();
+		if((*currentScreen) -> get_max_framerate() != 0) {
+			fps_limiter((*currentScreen) -> get_max_framerate());
+			
+		}
+		else {
+			SDL_WaitEvent(nullptr);
+			
+		}
 		
-		fps_limiter((*currentScreen) -> get_max_framerate());
+		event_handler();
 		
 		fps_counter();
 		

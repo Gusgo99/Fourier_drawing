@@ -65,6 +65,10 @@ int c_image::get_height() const {
 	return height;
 }
 
+size_t c_image::get_size() const {
+	return colors.size();
+}
+
 void c_image::set_width(int _width) {
 	resize(_width, height);
 	
@@ -92,7 +96,9 @@ void c_image::resize(int _width, int _height) {
 void c_image::draw_to_surface(SDL_Surface *_surface) {
 	int *_pixels = reinterpret_cast<int*>(_surface -> pixels);
 	
-	for(size_t i = 0; i < size_t(_surface -> w * _surface -> h); i++) {
+	size_t _numPixels = std::min(size_t(_surface -> w * _surface -> h), colors.size());
+	
+	for(size_t i = 0; i < _numPixels; i++) {
 		_pixels[i] = SDL_MapRGB(_surface -> format, colors[i].red * 0xFF, colors[i].green * 0xFF, colors[i].blue * 0xFF);
 		
 	}
