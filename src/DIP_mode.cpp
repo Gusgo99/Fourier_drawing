@@ -3,6 +3,7 @@
 #include "DIP_mode.hpp"
 #include "modifying_image_processing_tool.hpp"
 #include "resize_request.hpp"
+#include "threshold_tool.hpp"
 
 #include <iostream>
 
@@ -37,6 +38,7 @@ const std::map<uint32_t, t_DIPModeDropEventHandler> c_DIPMode::DROPHANDLERS = {
 
 c_DIPMode::c_DIPMode(int _width, int _height) : c_view(_width, _height) {
 	processingTools.push_back(nullptr);
+	processingTools.push_back(std::unique_ptr<c_imageProcessingTool>(new c_thresholdTool(screen)));
 	
 	currentTool = processingTools.begin();
 	
