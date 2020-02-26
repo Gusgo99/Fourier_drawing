@@ -13,6 +13,9 @@ struct s_color {
 	
 };
 
+bool operator==(const s_color &_a, const s_color &_b);
+bool operator!=(const s_color &_a, const s_color &_b);
+
 const s_color RED = {1.0f, 0.0f, 0.0f};
 const s_color GREEN = {0.0f, 1.0f, 0.0f};
 const s_color BLUE = {0.0f, 0.0f, 1.0f};

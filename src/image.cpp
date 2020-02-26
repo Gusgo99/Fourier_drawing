@@ -9,6 +9,14 @@
 
 #include "image.hpp"
 
+bool operator==(const s_color &_a, const s_color &_b) {
+	return (_a.red == _b.red) && (_a.green == _b.green) && (_a.blue == _b.blue);
+}
+
+bool operator!=(const s_color &_a, const s_color &_b) {
+	return (_a.red != _b.red) || (_a.green != _b.green) || (_a.blue != _b.blue);
+}
+
 c_image::c_image() {
 	width = 0;
 	height = 0;

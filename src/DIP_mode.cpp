@@ -4,6 +4,7 @@
 #include "modifying_image_processing_tool.hpp"
 #include "resize_request.hpp"
 #include "selection_tool.hpp"
+#include "skeletonization_tool.hpp"
 #include "threshold_tool.hpp"
 
 const std::string HELPMESSAGE = "You are in digital image processing mode.\n\n\
@@ -41,6 +42,7 @@ c_DIPMode::c_DIPMode(int _width, int _height) : c_view(_width, _height) {
 	processingTools.push_back(nullptr);
 	processingTools.push_back(std::unique_ptr<c_imageProcessingTool>(new c_thresholdTool(screen)));
 	processingTools.push_back(std::unique_ptr<c_imageProcessingTool>(new c_selectionTool(screen)));
+	processingTools.push_back(std::unique_ptr<c_imageProcessingTool>(new c_skeletonizationTool(screen)));
 	
 	currentTool = processingTools.begin();
 	

@@ -4,10 +4,6 @@
 
 #include "selection_tool.hpp"
 
-bool operator==(const s_color &_a, const s_color &_b) {
-	return (_a.red == _b.red) && (_a.green == _b.green) && (_a.blue == _b.blue);
-}
-
 c_selectionTool::c_selectionTool(c_image &_image) : c_modifyingImageProcessingTool(_image) {
 	x = -1;
 	y = -1;
