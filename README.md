@@ -9,7 +9,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 These instructions are supposed to be followed on windows. If you wish to use another OS, use the instructions from SDL2 and modify the makefile accordingly.
 
-This project uses the SDL2 library for the GUI. In order to get it to compile, download the [SDL2 developmento library](http://www.libsdl.org/download-2.0.php). The file downloaded should match your target compiler.
+This project uses the SDL2 library for the GUI. In order to get it to compile, download the [SDL2 development library](http://www.libsdl.org/download-2.0.php). The file downloaded should match your target compiler.
 
 The downloaded compressed file has a INSTALL.txt file which should have instructions about which directory has the version for the system you're running. After selecting the correct directory, copy the lib and include directories to C:\libraries\. Other directories can also be used, but the makefile has to be altered.
 
