@@ -21,17 +21,67 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#include "main.hpp"
+#ifndef IDS_HPP
+#define IDS_HPP
+#pragma once
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
-#include <wx/xrc/xmlres.h>
-
-IMPLEMENT_APP(mainClass)
-#pragma GCC diagnostic pop
-
-bool mainClass::OnInit() {
-	editWindow = new editFrame(nullptr, wxSize(800, 600));
+namespace ID {
+	// Prefix for windows IDs
+	enum {EDITWINDOW, DRAWWINDOW, DIPWINDOW};
 	
-	return true;
+	// Edit Window
+	namespace EW {
+		enum {
+			FRAME = EDITWINDOW << 10,
+			PANEL,
+			CLOSE,
+			// MB = Menu bar
+			MB_OPEN,
+			MB_OPENIMAGE,
+			MB_SAVE,
+			MB_SAVEAS,
+			
+			MB_CLEAR,
+			MB_DRAW,
+			MB_TOGGLE_POINTS
+			
+		};
+	}
+	
+	// Draw window
+	namespace DW {
+		enum {
+			FRAME = DRAWWINDOW << 10,
+			PANEL,
+			// TMR = Timer
+			TMR_REFRESH,
+			// TB = Tool bar
+			TB_CLEAR,
+			TB_HIDECIRCLES,
+			TB_SHOWPOINTS
+			
+		};
+	}
+	
+	// Image processing window
+	namespace DIPW {
+		enum {
+			FRAME = DIPWINDOW << 10,
+			PANEL,
+			// TB = Tool bar
+			TB_CLEAR,
+			TB_REMOVE,	
+			TB_THRESHOLD,
+			TB_SELECTION,
+			TB_SKELETONIZATION,
+			TB_SHOWPOINTS,
+			TB_GETPOINTS,
+			// List box
+			LISTBOX,
+			// SB = Status bar
+			SB_SLIDER
+		};
+	}
 }
+
+#endif

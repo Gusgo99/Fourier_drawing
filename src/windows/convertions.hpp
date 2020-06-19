@@ -21,17 +21,48 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#include "main.hpp"
+#ifndef CONVERTIONS_HPP
+#define CONVERTIONS_HPP
+#pragma once
+
+#include <algorithm>
+#include <complex>
+#include <cmath>
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
-#include <wx/xrc/xmlres.h>
-
-IMPLEMENT_APP(mainClass)
+#include <wx/wx.h>
+#include <wx/dcbuffer.h>
 #pragma GCC diagnostic pop
 
-bool mainClass::OnInit() {
-	editWindow = new editFrame(nullptr, wxSize(800, 600));
-	
-	return true;
+inline int norm(const wxPoint &_point) {
+	return std::sqrt(_point.x * _point.x + _point.y * _point.y);
 }
+
+inline int get_pixel_coefficient(const wxPoint &_center) {
+	return std::min(_center.x, _center.y);
+}
+
+inline wxPoint to_screen_coord(const std::complex<float> &_position, const wxPoint &_center) {
+	const auto _pixelCoef = get_pixel_coefficient(_center);
+	
+	return _center + wxPoint(_pixelCoef * _position.real(), _pixelCoef *  _position.imag());
+}
+
+inline wxPoint to_screen_coord(const std::complex<float> &_position, const wxSize &_screenSize) {
+	return to_screen_coord(_position, wxPoint(_screenSize.GetWidth() / 2, _screenSize.GetHeight() / 2));
+}
+
+inline std::complex<float> to_complex_number(wxPoint _position, const wxPoint &_center) {
+	const auto _pixelCoef = get_pixel_coefficient(_center); 
+	
+	_position -= _center;
+	
+	return std::complex(float(_position.x) / _pixelCoef, float(_position.y) / _pixelCoef);
+}
+
+inline std::complex<float> to_complex_number(wxPoint _position, const wxSize &_screenSize) {
+	return to_complex_number(_position, wxPoint(_screenSize.GetWidth() / 2, _screenSize.GetHeight() / 2));
+}
+
+#endif

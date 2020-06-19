@@ -1,8 +1,41 @@
-
-*.exe
+# Prerequisites
 *.d
+
+# Compiled Object files
+*.slo
+*.lo
 *.o
-*.dat
-*.png
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
 *.dll
-*.bat
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Program generated files
+*.dat
+*.bin
+
+# Build directories
+build/
+debug/
+release/

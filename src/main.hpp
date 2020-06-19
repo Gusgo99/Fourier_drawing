@@ -1,3 +1,4 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 MIT License
 
 Copyright (c) 2020 Gustavo Pacola Gonçalves
@@ -19,3 +20,25 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+#ifndef MAIN_HPP
+#define MAIN_HPP
+#pragma once
+#include "debug.hpp"
+
+#include "windows/edit_window.hpp"
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#include <wx/wx.h>
+#pragma GCC diagnostic pop
+
+class mainClass : public wxApp {
+	private:
+		bool OnInit();
+		
+		editFrame *editWindow;
+	
+};
+
+#endif

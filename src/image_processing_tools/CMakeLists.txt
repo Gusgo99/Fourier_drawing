@@ -1,0 +1,4 @@
+add_library(DIP_tool OBJECT "DIP_tool.cpp")
+set(OBJECT_FILES "${OBJECT_FILES};DIP_tool")
+
+set(OBJECT_FILES "${OBJECT_FILES}" PARENT_SCOPE)
