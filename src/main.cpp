@@ -25,8 +25,6 @@ SOFTWARE.
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
-#include <wx/xrc/xmlres.h>
-
 IMPLEMENT_APP(mainClass)
 #pragma GCC diagnostic pop
 

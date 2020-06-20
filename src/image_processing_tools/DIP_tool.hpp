@@ -38,7 +38,7 @@ SOFTWARE.
 
 class DIPTool {
 	public:
-		enum type {threshold, selection, skeletonization};
+		enum type {THRESHOLD, SELECTION, SKELETONIZATION};
 		
 		DIPTool(const type _toolType);
 		virtual ~DIPTool() = default;
@@ -75,15 +75,18 @@ class DIPTool {
 		
 		// Functions to help threating bitmaps
 		void for_each_pixel(wxBitmap &_bitmap, forEachCallback _callback) const;
-		bool is_inside_screen(const wxPoint &_point, const wxSize &_size) const;
+		bool is_inside_screen(const wxPoint &_POINT, const wxSize &_SIZE) const;
 		
 		// Functions to treat binary images
 		virtual wxColour get_background_colour() const;
 		virtual wxColour get_foreground_colour() const;
 		void find_foreground(wxBitmap &_bitmap);
 		std::vector<bool> expand_source_pixel(wxBitmap &_bitmap, int _directions, expandCallback _callback);
-		std::pair<uint8_t, uint8_t> get_neighbour_pixels(const wxNativePixelData &_pixels, const wxPoint _point, int _directions) const;
-		bool causes_connection(const std::pair<uint8_t, uint8_t> _neighbourhood) const;
+		std::pair<uint8_t, uint8_t> get_neighbour_pixels(
+			const wxNativePixelData &_PIXELS,
+			const wxPoint _POINT,
+			int _directions) const;
+		bool causes_connection(const std::pair<uint8_t, uint8_t> _NEIGHBOURHOOD) const;
 		
 		static const std::array<wxPoint, 8> DIRECTIONS;
 };

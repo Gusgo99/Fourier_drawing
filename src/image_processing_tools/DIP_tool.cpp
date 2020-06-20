@@ -56,13 +56,15 @@ DIPTool::DIPTool(const type _toolType) {
 
 void DIPTool::apply(wxBitmap &_bitmap) {
 	switch(toolType) {
-		case threshold:
+		case THRESHOLD:
 			apply_threshold(_bitmap);
 			break;
-		case selection:
+			
+		case SELECTION:
 			apply_selection(_bitmap);
 			break;
-		case skeletonization:
+			
+		case SKELETONIZATION:
 			apply_skeletonization(_bitmap);
 			break;
 		
@@ -76,13 +78,15 @@ void DIPTool::apply(wxBitmap &_bitmap) {
 bool DIPTool::uses_intensity() {
 	bool usesIntensity = false;
 	switch(toolType) {
-		case threshold:
+		case THRESHOLD:
 			usesIntensity = true;
 			break;
-		case selection:
+			
+		case SELECTION:
 			usesIntensity = false;
 			break;
-		case skeletonization:
+			
+		case SKELETONIZATION:
 			usesIntensity = false;
 			break;
 		
@@ -98,13 +102,15 @@ bool DIPTool::uses_intensity() {
 bool DIPTool::uses_source() {
 	bool usesSource = false;
 	switch(toolType) {
-		case threshold:
+		case THRESHOLD:
 			usesSource = false;
 			break;
-		case selection:
+			
+		case SELECTION:
 			usesSource = true;
 			break;
-		case skeletonization:
+			
+		case SKELETONIZATION:
 			usesSource = false;
 			break;
 		
@@ -268,8 +274,12 @@ std::vector<bool> DIPTool::expand_source_pixel(wxBitmap &_bitmap, int _direction
 	return _visited;
 }
 
-bool DIPTool::is_inside_screen(const wxPoint &_point, const wxSize &_size) const {
-	return (_point.x >= 0) && (_point.y >= 0) && (_point.x < _size.GetWidth()) && (_point.y < _size.GetHeight());
+bool DIPTool::is_inside_screen(const wxPoint &_POINT, const wxSize &_SIZE) const {
+	return
+		(_POINT.x >= 0) &&
+		(_POINT.y >= 0) &&
+		(_POINT.x < _SIZE.GetWidth()) &&
+		(_POINT.y < _SIZE.GetHeight());
 }
 
 wxColour DIPTool::get_background_colour() const {
@@ -280,18 +290,20 @@ wxColour DIPTool::get_foreground_colour() const {
 	return wxColour(0, 0, 0);
 }
 
-std::pair<uint8_t, uint8_t> DIPTool::get_neighbour_pixels(const wxNativePixelData &_pixels,
-	const wxPoint _point, int _directions) const {
+std::pair<uint8_t, uint8_t> DIPTool::get_neighbour_pixels(
+	const wxNativePixelData &_PIXELS,
+	const wxPoint _POINT,
+	int _directions) const {
 	const wxColour _backgroundColour = get_background_colour();
 	std::pair<uint8_t, uint8_t> _neighbourhood(0, 0);
-	wxNativePixelData::Iterator _neighbour = _pixels.GetPixels();
+	wxNativePixelData::Iterator _neighbour = _PIXELS.GetPixels();
 	
 	for(int i = 0; i < 8; i++) {
 		if(_directions & 0x01) {
 			_neighbourhood.first <<= 1;
-			wxPoint _currentPoint = _point + DIRECTIONS[7 - i];
-			if(is_inside_screen(_currentPoint, _pixels.GetSize())) {
-				_neighbour.MoveTo(_pixels, _currentPoint.x, _currentPoint.y);
+			wxPoint _currentPoint = _POINT + DIRECTIONS[7 - i];
+			if(is_inside_screen(_currentPoint, _PIXELS.GetSize())) {
+				_neighbour.MoveTo(_PIXELS, _currentPoint.x, _currentPoint.y);
 				if(_neighbour != _backgroundColour) {
 					_neighbourhood.second <<= 1;
 					_neighbourhood.second |= 1;
@@ -312,9 +324,9 @@ std::pair<uint8_t, uint8_t> DIPTool::get_neighbour_pixels(const wxNativePixelDat
 	return _neighbourhood;
 }
 
-bool DIPTool::causes_connection(const std::pair<uint8_t, uint8_t> _neighbourhood) const {
+bool DIPTool::causes_connection(const std::pair<uint8_t, uint8_t> _NEIGHBOURHOOD) const {
 	bool _causesConnection = true;
-	int _modified = _neighbourhood.first;
+	int _modified = _NEIGHBOURHOOD.first;
 	
 	if(_modified != 0) {
 		if(_modified & 0x01) {
@@ -325,17 +337,20 @@ bool DIPTool::causes_connection(const std::pair<uint8_t, uint8_t> _neighbourhood
 		while(!(_modified & 0x01)) _modified >>= 1;
 		_modified &= 0xFF;
 		
-		if((_modified == _neighbourhood.second) && (_modified > 1)) _causesConnection = false;
+		if((_modified == _NEIGHBOURHOOD.second) && (_modified > 1)) _causesConnection = false;
 		
 	}
 	
 	return _causesConnection;
 }
 
-bool operator==(wxNativePixelData::Iterator _pixel, const wxColour &_colour) {
-	return (_pixel.Red() == _colour.Red()) && (_pixel.Green() == _colour.Green()) && (_pixel.Blue() == _colour.Blue());
+bool operator==(wxNativePixelData::Iterator _pixel, const wxColour &_COLOUR) {
+	return
+		(_pixel.Red() == _COLOUR.Red()) &&
+		(_pixel.Green() == _COLOUR.Green()) &&
+		(_pixel.Blue() == _COLOUR.Blue());
 }
 
-bool operator!=(wxNativePixelData::Iterator _pixel, const wxColour &_colour) {
-	return !operator==(_pixel, _colour);
+bool operator!=(wxNativePixelData::Iterator _pixel, const wxColour &_COLOUR) {
+	return !operator==(_pixel, _COLOUR);
 }

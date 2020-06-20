@@ -40,7 +40,7 @@ SOFTWARE.
 
 class editPanel : public wxPanel {
 	public:
-		editPanel(wxWindow *_parent = nullptr, const wxSize &_size = wxDefaultSize);
+		editPanel(wxWindow *_parent = nullptr, const wxSize &_SIZE = wxDefaultSize);
 		
 		void clear_points();
 		
@@ -58,16 +58,16 @@ class editPanel : public wxPanel {
 		
 		const std::vector<std::complex<float>>& get_points() const;
 		
-		void show_points(const bool _show);
+		void show_points(const bool _SHOW);
 		
-		bool read_points(const std::string &_fileName);
-		bool save_points(const std::string &_fileName);
+		bool read_points(const std::string &_FILENAME);
+		bool save_points(const std::string &_FILENAME);
 		bool verify_wip();
 		
 	private:
-		const wxColour POINTSCOLOR = wxColour(0, 0, 255);
-		const wxColour TRACECOLOR = wxColour(0, 255, 0);
-		const wxColour SELECTEDCOLOR = wxColour(255, 0, 0);
+		const wxColour POINTSCOLOUR = wxColour(0, 0, 255);
+		const wxColour TRACECOLOUR = wxColour(0, 255, 0);
+		const wxColour SELECTEDCOLOUR = wxColour(255, 0, 0);
 		
 		std::vector<std::complex<float>> points;
 		std::vector<std::complex<float>> savedPoints;
@@ -84,7 +84,7 @@ class editPanel : public wxPanel {
 
 class editFrame : public wxFrame {
 	public:
-		editFrame(wxWindow *_parent = nullptr, const wxSize &_size = wxDefaultSize);
+		editFrame(wxWindow *_parent = nullptr, const wxSize &_SIZE = wxDefaultSize);
 		
 		// File menu
 		void on_open_file(wxCommandEvent &_event);

@@ -41,9 +41,9 @@ wxBEGIN_EVENT_TABLE(DIPPanel, wxPanel)
 	
 wxEND_EVENT_TABLE()
 
-DIPPanel::DIPPanel(const wxImage &_image, wxWindow *_parent):
+DIPPanel::DIPPanel(const wxImage &_IMAGE, wxWindow *_parent):
 wxPanel(_parent, ID::DIPW::PANEL),
-origBitmap(_image) {
+origBitmap(_IMAGE) {
 	tools.reserve(3);
 	SetSize(origBitmap.GetSize());
 	
@@ -96,14 +96,14 @@ void DIPPanel::render(wxDC &_dc) {
 	}
 }
 
-void DIPPanel::add_tool(const DIPTool::type _toolType) {
+void DIPPanel::add_tool(const DIPTool::type _TOOLTYPE) {
 	if(selectedTool >= 0) {
-		tools.insert(tools.begin() + selectedTool + 1, DIPTool(_toolType));
+		tools.insert(tools.begin() + selectedTool + 1, DIPTool(_TOOLTYPE));
 		selectedTool++;
 		
 	}
 	else {
-		tools.push_back(DIPTool(_toolType));
+		tools.push_back(DIPTool(_TOOLTYPE));
 		selectedTool = 0;
 		
 	}
@@ -125,16 +125,16 @@ void DIPPanel::clear_tools() {
 	
 }
 
-void DIPPanel::select_tool(const int _selectedTool) {
-	if(tools.size() != 0) selectedTool = _selectedTool % tools.size();
+void DIPPanel::select_tool(const int _SELECTEDTOOL) {
+	if(tools.size() != 0) selectedTool = _SELECTEDTOOL % tools.size();
 	else selectedTool = -1;
 	Refresh();
 	
 }
 
-void DIPPanel::set_tool_intensity(const double _intensity) {
+void DIPPanel::set_tool_intensity(const double _INTENSITY) {
 	if(selectedTool >= 0) {
-		tools[selectedTool].intensity = std::max(0.0, std::min(1.0, _intensity));
+		tools[selectedTool].intensity = std::max(0.0, std::min(1.0, _INTENSITY));
 		Refresh();
 		
 	}
@@ -148,8 +148,8 @@ double DIPPanel::get_tool_intensity() {
 	return _intensity;
 }
 
-void DIPPanel::set_points_state(const bool _showPoints) {
-	showPoints = _showPoints;
+void DIPPanel::set_points_state(const bool _SHOWPOINTS) {
+	showPoints = _SHOWPOINTS;
 	Refresh();
 	
 }
@@ -181,10 +181,10 @@ wxBEGIN_EVENT_TABLE(DIPFrame, wxFrame)
 	
 wxEND_EVENT_TABLE()
 
-DIPFrame::DIPFrame(const wxImage &_image, wxWindow *_parent):
+DIPFrame::DIPFrame(const wxImage &_IMAGE, wxWindow *_parent):
 wxFrame(_parent, ID::DIPW::FRAME, _("Image processing"), wxDefaultPosition, wxDefaultSize,
 	wxMINIMIZE_BOX | wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxCLIP_CHILDREN),
-panel(new DIPPanel(_image, this)) {
+panel(new DIPPanel(_IMAGE, this)) {
 	wxSize _size;
 	
 	// Toolbar
@@ -196,7 +196,8 @@ panel(new DIPPanel(_image, this)) {
 	GetToolBar() -> AddControl(new wxButton(GetToolBar(), ID::DIPW::TB_REMOVE, "Remove"));
 	GetToolBar() -> AddControl(new wxButton(GetToolBar(), ID::DIPW::TB_THRESHOLD, "Add threshold"));
 	GetToolBar() -> AddControl(new wxButton(GetToolBar(), ID::DIPW::TB_SELECTION, "Add selection"));
-	GetToolBar() -> AddControl(new wxButton(GetToolBar(),
+	GetToolBar() -> AddControl(
+		new wxButton(GetToolBar(),
 		ID::DIPW::TB_SKELETONIZATION,
 		"Add skeletonization"));
 	GetToolBar() -> AddControl(new wxToggleButton(GetToolBar(), ID::DIPW::TB_SHOWPOINTS, "Show points"));
@@ -207,7 +208,7 @@ panel(new DIPPanel(_image, this)) {
 	// Increase the size of the toolbar to fit buttons
 	GetToolBar() -> SetSize(GetToolBar() -> GetSize() + wxSize(0, _button -> GetPosition().y));
 	
-	_size = _image.GetSize();
+	_size = _IMAGE.GetSize();
 	
 	_size.SetWidth(std::max(100, GetToolBar() -> GetSize().GetWidth() - _size.GetWidth()));
 	
@@ -233,7 +234,7 @@ panel(new DIPPanel(_image, this)) {
 	GetSizer() -> Add(list, 1, wxEXPAND | wxALL);
 	GetSizer() -> Add(panel, 1, wxEXPAND | wxALL);
 	
-	_size = _image.GetSize();
+	_size = _IMAGE.GetSize();
 	_size += wxSize(list -> GetSize().GetWidth(), 0);
 	
 	GetSizer() -> SetMinSize(_size);
@@ -263,17 +264,17 @@ void DIPFrame::on_remove([[maybe_unused]]wxCommandEvent &_event) {
 }
 
 void DIPFrame::on_add_threshold([[maybe_unused]]wxCommandEvent &_event) {
-	add_tool("Threshold", DIPTool::threshold);
+	add_tool("Threshold", DIPTool::THRESHOLD);
 	
 }
 
 void DIPFrame::on_add_selection([[maybe_unused]]wxCommandEvent &_event) {
-	add_tool("Selection", DIPTool::selection);
+	add_tool("Selection", DIPTool::SELECTION);
 	
 }
 
 void DIPFrame::on_add_skeletonization([[maybe_unused]]wxCommandEvent &_event) {
-	add_tool("Skeletonization", DIPTool::skeletonization);
+	add_tool("Skeletonization", DIPTool::SKELETONIZATION);
 	
 }
 
@@ -300,16 +301,16 @@ void DIPFrame::on_slider_scroll(wxCommandEvent &_event) {
 	
 }
 
-void DIPFrame::add_tool(const std::string _toolname, const DIPTool::type _toolType) {
+void DIPFrame::add_tool(const std::string _TOOLNAME, const DIPTool::type _TOOLTYPE) {
 	if(list -> GetSelection() != wxNOT_FOUND) {
-		list -> Insert(_(_toolname), list -> GetSelection() + 1);
-		panel -> add_tool(_toolType);
+		list -> Insert(_(_TOOLNAME), list -> GetSelection() + 1);
+		panel -> add_tool(_TOOLTYPE);
 		list -> SetSelection(list -> GetSelection() + 1);
 		
 	}
 	else {
-		list -> Append(_(_toolname));
-		panel -> add_tool(_toolType);
+		list -> Append(_(_TOOLNAME));
+		panel -> add_tool(_TOOLTYPE);
 		list -> SetSelection(list -> GetCount() - 1);
 		
 	}

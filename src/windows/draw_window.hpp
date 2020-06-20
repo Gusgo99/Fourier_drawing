@@ -39,16 +39,16 @@ SOFTWARE.
 
 class drawPanel : public wxPanel {
 	public:
-		drawPanel(const std::vector<std::complex<float>> &_points,
+		drawPanel(const std::vector<std::complex<float>> &_POINTS,
 			wxWindow *_parent = nullptr,
-			const wxSize &_size = wxDefaultSize);
+			const wxSize &_SIZE = wxDefaultSize);
 		
 		void on_paint(wxPaintEvent &_event);
 		void on_refresh_timer(wxTimerEvent &_event);
 		
 		void clear_image();
-		void set_circle_state(const bool _drawCircles);
-		void set_point_state(const bool _drawPoints);
+		void set_circle_state(const bool _DRAWCIRCLES);
+		void set_point_state(const bool _DRAWPOINTS);
 	
 	private:
 		const wxColour POINTSCOLOUR = wxColour(0, 0, 0);
@@ -56,7 +56,7 @@ class drawPanel : public wxPanel {
 		const wxColour TRACECOLOUR = wxColour(0, 255, 0);
 		
 		void render(wxDC &_temporary, wxDC &_permanent);
-		void generate_coefficients(const std::vector<std::complex<float>> &_points);
+		void generate_coefficients(const std::vector<std::complex<float>> &_POINTS);
 		
 		std::vector<std::complex<float>> points;
 		std::vector<std::complex<float>> coefficients;
@@ -75,9 +75,9 @@ class drawPanel : public wxPanel {
 
 class drawFrame : public wxFrame {
 	public:
-		drawFrame(const std::vector<std::complex<float>> &_points,
+		drawFrame(const std::vector<std::complex<float>> &_POINTS,
 			wxWindow *_parent = nullptr,
-			const wxSize &_size = wxDefaultSize);
+			const wxSize &_SIZE = wxDefaultSize);
 		
 		void on_clear(wxCommandEvent &_event);
 		void on_hide_circles(wxCommandEvent &_event);
@@ -89,57 +89,5 @@ class drawFrame : public wxFrame {
 		wxDECLARE_EVENT_TABLE();
 	
 };
-
-/*#include <functional>
-#include <map>
-
-#include "complex.hpp"
-#include "fourier.hpp"
-#include "screen_view.hpp"
-
-class c_drawMode;
-
-typedef std::function<void(c_drawMode*, const SDL_KeyboardEvent&)> t_drawModeKeyHandler;
-
-class c_drawMode : public c_view {
-	public:
-		c_drawMode(int _width, int _height);
-		~c_drawMode();
-		
-		void resize(int _width, int _height);
-		
-		void render_image(const double &_time);
-		void operator()(const SDL_Event &_event);
-		void activate(const c_screenChangeRequest *_request);
-		
-		unsigned get_max_framerate() {return 60;}
-		unsigned get_id() {return 2;}
-	
-	private:
-		const s_color BACKGROUNDCOLOR = WHITE;
-		const s_color CIRCLECOLOR = BLUE;
-		const s_color TRACECOLOR = GREEN;
-		const s_color POINTCOLOR = BLACK;
-		
-		bool drawCircles;
-		bool drawPoints;
-		float speed;
-		c_fourier fourier;
-		c_image auxScreen;
-		std::vector<c_complex> points;
-	
-		c_complex draw_series_truncation(float _time);
-		
-		void key_handler_p(const SDL_KeyboardEvent &_event);
-		void key_handler_s(const SDL_KeyboardEvent &_event);
-		void key_handler_c(const SDL_KeyboardEvent &_event);
-		void key_handler_m(const SDL_KeyboardEvent &_event);
-		void key_handler_F1(const SDL_KeyboardEvent &_event);
-		void key_handler_arrow_up(const SDL_KeyboardEvent &_event);
-		void key_handler_arrow_down(const SDL_KeyboardEvent &_event);
-	
-		static const std::map<SDL_Keycode, t_drawModeKeyHandler> KEYHANDLERS;
-	
-};*/
 
 #endif

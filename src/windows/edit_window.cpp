@@ -50,9 +50,9 @@ wxBEGIN_EVENT_TABLE(editPanel, wxPanel)
 
 wxEND_EVENT_TABLE()
 
-editPanel::editPanel(wxWindow *_parent, const wxSize &_size):
+editPanel::editPanel(wxWindow *_parent, const wxSize &_SIZE):
 wxPanel(_parent, ID::EW::PANEL) {
-	SetSize(_size);
+	SetSize(_SIZE);
 	
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
 	
@@ -68,7 +68,7 @@ void editPanel::clear_points() {
 
 void editPanel::on_left_down(wxMouseEvent &_event) {
 	for(auto i = points.begin(); i != points.end(); i++) {
-		auto _relPos = to_screen_coord(*i, GetSize()) - wxPoint(_event.GetX(), _event.GetY());
+		wxPoint _relPos = to_screen_coord(*i, GetSize()) - wxPoint(_event.GetX(), _event.GetY());
 		int _dist = (_relPos .x * _relPos.x) + (_relPos.y * _relPos.y);
 		if(_dist <= pointRadius * pointRadius) {
 			selectedPoint = i;
@@ -133,8 +133,8 @@ const std::vector<std::complex<float>>& editPanel::get_points() const {
 	return points;
 }
 
-bool editPanel::read_points(const std::string &_fileName) {
-	std::ifstream _file(_fileName);
+bool editPanel::read_points(const std::string &_FILENAME) {
+	std::ifstream _file(_FILENAME);
 	bool _success = true;
 	
 	points.clear();
@@ -161,12 +161,12 @@ bool editPanel::read_points(const std::string &_fileName) {
 	return _success;
 }
 
-bool editPanel::save_points(const std::string &_fileName) {
-	std::ofstream _file(_fileName);
+bool editPanel::save_points(const std::string &_FILENAME) {
+	std::ofstream _file(_FILENAME);
 	bool _success = true;
 	
 	if(_file.is_open()) {
-		for(const auto &i: points) {
+		for(auto i: points) {
 			_file << i << std::endl;
 			
 		}
@@ -183,7 +183,7 @@ bool editPanel::verify_wip() {
 }
 
 void editPanel::render(wxDC &_dc) {
-	const auto _center = wxPoint(GetSize().GetWidth() / 2, GetSize().GetHeight() / 2);
+	const wxPoint _center = wxPoint(GetSize().GetWidth() / 2, GetSize().GetHeight() / 2);
 	pointRadius = int(_dc.GetPPI().GetWidth() * 0.065);
 	
 	std::vector<wxPoint> _pointsOnScreen;
@@ -191,25 +191,25 @@ void editPanel::render(wxDC &_dc) {
 	
 	_dc.SetBrush(*wxTRANSPARENT_BRUSH);
 	
-	for(const auto &i: points) {
+	for(auto i: points) {
 		_pointsOnScreen.push_back(to_screen_coord(i, _center));
 		
 	}
 	
-	_dc.SetPen(wxPen(TRACECOLOR));
+	_dc.SetPen(wxPen(TRACECOLOUR));
 	
 	_dc.DrawLines(_pointsOnScreen.size(), _pointsOnScreen.data());
 	
-	_dc.SetPen(wxPen(POINTSCOLOR));
+	_dc.SetPen(wxPen(POINTSCOLOUR));
 	
-	for(const auto &i: points) {
+	for(auto i: points) {
 		auto _currentPoint = to_screen_coord(i, _center);
 		_dc.DrawCircle(_currentPoint, pointRadius);
 		
 	}
 	
 	if(lastSelectedPoint != points.end()) {
-		_dc.SetPen(wxPen(SELECTEDCOLOR));
+		_dc.SetPen(wxPen(SELECTEDCOLOUR));
 		_dc.DrawCircle(to_screen_coord(*lastSelectedPoint, _center), pointRadius);
 		
 	}
@@ -231,10 +231,10 @@ wxBEGIN_EVENT_TABLE(editFrame, wxFrame)
 
 wxEND_EVENT_TABLE()
 
-editFrame::editFrame(wxWindow *_parent, const wxSize &_size):
-wxFrame(_parent, ID::EW::FRAME, _("Fourier drawing"), wxDefaultPosition, _size),
+editFrame::editFrame(wxWindow *_parent, const wxSize &_SIZE):
+wxFrame(_parent, ID::EW::FRAME, _("Fourier drawing"), wxDefaultPosition, _SIZE),
 panel(new editPanel(this, GetSize())) {
-	if(_size == wxDefaultSize) Maximize(true);
+	if(_SIZE == wxDefaultSize) Maximize(true);
 	
 	SetMenuBar(new wxMenuBar);
 	
@@ -373,7 +373,7 @@ void editFrame::on_clear(wxCommandEvent &_event) {
 }
 
 void editFrame::on_draw(wxCommandEvent &_event) {
-	auto *_drawWindow = new drawFrame(panel -> get_points(), this, GetSize());
+	drawFrame *_drawWindow = new drawFrame(panel -> get_points(), this, GetSize());
 	if(IsMaximized()) _drawWindow -> Maximize(true);
 	
 	_event.Skip();

@@ -39,7 +39,7 @@ SOFTWARE.
 
 class DIPPanel : public wxPanel {
 	public:
-		DIPPanel(const wxImage &_image, wxWindow *_parent = nullptr);
+		DIPPanel(const wxImage &_IMAGE, wxWindow *_parent = nullptr);
 		
 		void on_paint(wxPaintEvent &_event);
 		
@@ -47,16 +47,16 @@ class DIPPanel : public wxPanel {
 		
 		void render(wxDC &_dc);
 		
-		void add_tool(const DIPTool::type _type);
+		void add_tool(const DIPTool::type _TYPE);
 		void remove_tool();
 		void clear_tools();
-		void select_tool(const int _selectedTool);
-		void set_tool_intensity(const double _intensity);
+		void select_tool(const int _SELECTEDTOOL);
+		void set_tool_intensity(const double _INTENSITY);
 		double get_tool_intensity();
 		
 		bool should_show_slider();
 		
-		void set_points_state(const bool _showPoints);
+		void set_points_state(const bool _SHOWPOINTS);
 		
 	private:
 		std::vector<DIPTool> tools;
@@ -71,7 +71,7 @@ class DIPPanel : public wxPanel {
 
 class DIPFrame : public wxFrame {
 	public:
-		DIPFrame(const wxImage &_image, wxWindow *_parent = nullptr);
+		DIPFrame(const wxImage &_IMAGE, wxWindow *_parent = nullptr);
 		
 		void on_clear(wxCommandEvent &_event);
 		void on_remove(wxCommandEvent &_event);
@@ -90,7 +90,7 @@ class DIPFrame : public wxFrame {
 		wxListBox *list;
 		wxSlider *slider;
 		
-		void add_tool(const std::string _toolname, const DIPTool::type _type);
+		void add_tool(const std::string _TOOLNAME, const DIPTool::type _TOOLTYPE);
 		void refresh_tool_info();
 		
 		static constexpr int SLIDERLIMIT = 2048;
