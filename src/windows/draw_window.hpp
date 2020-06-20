@@ -39,7 +39,8 @@ SOFTWARE.
 
 class drawPanel : public wxPanel {
 	public:
-		drawPanel(const std::vector<std::complex<float>> &_POINTS,
+		drawPanel(
+			const std::vector<std::complex<float>> &_POINTS,
 			wxWindow *_parent = nullptr,
 			const wxSize &_SIZE = wxDefaultSize);
 		
@@ -75,7 +76,8 @@ class drawPanel : public wxPanel {
 
 class drawFrame : public wxFrame {
 	public:
-		drawFrame(const std::vector<std::complex<float>> &_POINTS,
+		drawFrame(
+			const std::vector<std::complex<float>> &_POINTS,
 			wxWindow *_parent = nullptr,
 			const wxSize &_SIZE = wxDefaultSize);
 		

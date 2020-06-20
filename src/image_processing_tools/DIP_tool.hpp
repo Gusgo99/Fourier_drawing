@@ -41,7 +41,7 @@ class DIPTool {
 		enum type {THRESHOLD, SELECTION, SKELETONIZATION};
 		
 		DIPTool(const type _toolType);
-		virtual ~DIPTool() = default;
+		~DIPTool() = default;
 		
 		void apply(wxBitmap &_bitmap);
 		bool uses_intensity();
@@ -50,7 +50,7 @@ class DIPTool {
 		double intensity;
 		wxPoint source;
 		
-		// Directions
+		// Available directions
 		static constexpr uint8_t N = 0x01;
 		static constexpr uint8_t NE = 0x02;
 		static constexpr uint8_t E = 0x04;
@@ -63,30 +63,34 @@ class DIPTool {
 		static constexpr uint8_t DIAGONALS = NE | SE | SO | NO;
 		
 	private:
-		type toolType;
-		
+		using forEachCallback = std::function<wxColour(wxNativePixelData::Iterator)>;
+		using expandCallback = std::function<wxColour(
+			wxNativePixelData::Iterator,
+			std::pair<uint8_t, uint8_t>)>;
+			
 		void apply_threshold(wxBitmap &_bitmap);
 		void apply_selection(wxBitmap &_bitmap);
 		void apply_skeletonization(wxBitmap &_bitmap);
-	
-		using forEachCallback = std::function<wxColour(wxNativePixelData::Iterator)>;
-		using expandCallback = std::function<wxColour(wxNativePixelData::Iterator,
-			std::pair<uint8_t, uint8_t>)>;
 		
 		// Functions to help threating bitmaps
 		void for_each_pixel(wxBitmap &_bitmap, forEachCallback _callback) const;
 		bool is_inside_screen(const wxPoint &_POINT, const wxSize &_SIZE) const;
 		
 		// Functions to treat binary images
-		virtual wxColour get_background_colour() const;
-		virtual wxColour get_foreground_colour() const;
+		wxColour get_background_colour() const;
+		wxColour get_foreground_colour() const;
 		void find_foreground(wxBitmap &_bitmap);
-		std::vector<bool> expand_source_pixel(wxBitmap &_bitmap, int _directions, expandCallback _callback);
+		std::vector<bool> expand_source_pixel(
+			wxBitmap &_bitmap,
+			int _directions,
+			expandCallback _callback);
 		std::pair<uint8_t, uint8_t> get_neighbour_pixels(
 			const wxNativePixelData &_PIXELS,
 			const wxPoint _POINT,
 			int _directions) const;
 		bool causes_connection(const std::pair<uint8_t, uint8_t> _NEIGHBOURHOOD) const;
+		
+		type toolType;
 		
 		static const std::array<wxPoint, 8> DIRECTIONS;
 };

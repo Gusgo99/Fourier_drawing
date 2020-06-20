@@ -28,6 +28,8 @@ SOFTWARE.
 IMPLEMENT_APP(mainClass)
 #pragma GCC diagnostic pop
 
+@meta std::cout << "Teste\n";
+
 bool mainClass::OnInit() {
 	editWindow = new editFrame(nullptr, wxSize(800, 600));
 	

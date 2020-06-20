@@ -124,76 +124,91 @@ bool DIPTool::uses_source() {
 }
 
 void DIPTool::apply_threshold(wxBitmap &_bitmap) {
-	const wxColour _backgroundColour = get_background_colour();
-	const wxColour _foregroundColour = get_foreground_colour();
-	const int _intIntensity = int(intensity * 3 * 255);
+	const wxColour _BACKGROUNDCOLOUR = get_background_colour();
+	const wxColour _FOREGROUNDCOLOUR = get_foreground_colour();
+	const int _INTINTENSITY = int(intensity * 3 * 255);
 	
-	for_each_pixel(_bitmap, [=](wxNativePixelData::Iterator _it) {
-		if((_it.Red() + _it.Green() + _it.Blue()) > _intIntensity) return _backgroundColour;
-		else return _foregroundColour;
-		
-	});
+	for_each_pixel(
+		_bitmap,
+		[=](wxNativePixelData::Iterator _it) {
+			if((_it.Red() + _it.Green() + _it.Blue()) > _INTINTENSITY) return _BACKGROUNDCOLOUR;
+			else return _FOREGROUNDCOLOUR;
+			
+		});
 	
 }
 
 void DIPTool::apply_selection(wxBitmap &_bitmap) {
-	const wxColour _backgroundColour = get_background_colour();
-	const wxColour _foregroundColour = get_foreground_colour();
-	wxColour _auxColour(_backgroundColour.Red() | _foregroundColour.Red(),
-		_backgroundColour.Green() ^ _foregroundColour.Green(),
-		_backgroundColour.Blue() & _foregroundColour.Blue());
+	const wxColour _BACKGROUNDCOLOUR = get_background_colour();
+	const wxColour _FOREGROUNDCOLOUR = get_foreground_colour();
+	wxColour _auxColour(
+		_BACKGROUNDCOLOUR.Red() | _FOREGROUNDCOLOUR.Red(),
+		_BACKGROUNDCOLOUR.Green() ^ _FOREGROUNDCOLOUR.Green(),
+		_BACKGROUNDCOLOUR.Blue() & _FOREGROUNDCOLOUR.Blue());
 	
 	if(source != wxDefaultPosition) {
-		expand_source_pixel(_bitmap, SIDES | DIAGONALS, [=](wxNativePixelData::Iterator, const std::pair<uint8_t, uint8_t>) {
-			return _auxColour;
-		});
+		expand_source_pixel(
+			_bitmap,
+			SIDES | DIAGONALS,
+			[=](wxNativePixelData::Iterator, const std::pair<uint8_t, uint8_t>) {
+				return _auxColour;
+			});
 		
-		for_each_pixel(_bitmap, [=](wxNativePixelData::Iterator _pixel) {
-			if(_pixel == _auxColour) return _foregroundColour;
-			
-			return _backgroundColour;
-		});
+		for_each_pixel(
+			_bitmap,
+			[=](wxNativePixelData::Iterator _pixel) {
+				if(_pixel == _auxColour) return _FOREGROUNDCOLOUR;
+				
+				return _BACKGROUNDCOLOUR;
+			});
 	}
 	
 }
 
 void DIPTool::apply_skeletonization(wxBitmap &_bitmap) {
-	const wxColour _backgroundColour = get_background_colour();
-	const wxColour _foregroundColour = get_foreground_colour();
-	wxColour _auxColour(_backgroundColour.Red() | _foregroundColour.Red(),
-		_backgroundColour.Green() ^ _foregroundColour.Green(),
-		_backgroundColour.Blue() & _foregroundColour.Blue());
+	const wxColour _BACKGROUNDCOLOUR = get_background_colour();
+	const wxColour _FOREGROUNDCOLOUR = get_foreground_colour();
 	bool repeat;
+	wxColour _auxColour(
+		_BACKGROUNDCOLOUR.Red() | _FOREGROUNDCOLOUR.Red(),
+		_BACKGROUNDCOLOUR.Green() ^ _FOREGROUNDCOLOUR.Green(),
+		_BACKGROUNDCOLOUR.Blue() & _FOREGROUNDCOLOUR.Blue());
 	
 	do {
 		repeat = false;
 		find_foreground(_bitmap);
-		expand_source_pixel(_bitmap, SIDES | DIAGONALS, [=](wxNativePixelData::Iterator, std::pair<uint8_t, uint8_t> _neighbourhood) {
-			std::pair<uint8_t, uint8_t> _copy(0, _neighbourhood.second);
-			if(_neighbourhood.first & 0x01) _copy.first |= 0x01;
-			if(_neighbourhood.first & 0x02) _copy.second >>= 1;
-			if(_neighbourhood.first & 0x04) _copy.first |= 0x02;
-			if(_neighbourhood.first & 0x08) _copy.second >>= 1;
-			if(_neighbourhood.first & 0x10) _copy.first |= 0x04;
-			if(_neighbourhood.first & 0x20) _copy.second >>= 1;
-			if(_neighbourhood.first & 0x40) _copy.first |= 0x08;
-			if(_neighbourhood.first & 0x80) _copy.second >>= 1;
-			if(_copy.first != 0x0F) return _auxColour;
-			
-			return _foregroundColour;
-		});
+		expand_source_pixel(
+			_bitmap,
+			SIDES | DIAGONALS,
+			[=](wxNativePixelData::Iterator, std::pair<uint8_t, uint8_t> _neighbourhood) {
+				std::pair<uint8_t, uint8_t> _copy(0, _neighbourhood.second);
+				if(_neighbourhood.first & 0x01) _copy.first |= 0x01;
+				if(_neighbourhood.first & 0x02) _copy.second >>= 1;
+				if(_neighbourhood.first & 0x04) _copy.first |= 0x02;
+				if(_neighbourhood.first & 0x08) _copy.second >>= 1;
+				if(_neighbourhood.first & 0x10) _copy.first |= 0x04;
+				if(_neighbourhood.first & 0x20) _copy.second >>= 1;
+				if(_neighbourhood.first & 0x40) _copy.first |= 0x08;
+				if(_neighbourhood.first & 0x80) _copy.second >>= 1;
+				if(_copy.first != 0x0F) return _auxColour;
+				
+				return _FOREGROUNDCOLOUR;
+			});
 		
-		expand_source_pixel(_bitmap, SIDES | DIAGONALS, [&](wxNativePixelData::Iterator _pixel, std::pair<uint8_t, uint8_t> _neighbourhood) {
-			if(_pixel == _auxColour) {
-				if(!causes_connection(_neighbourhood)) {
-					repeat = true;
-					return _backgroundColour;
-					
+		expand_source_pixel(
+			_bitmap,
+			SIDES | DIAGONALS,
+			[&](wxNativePixelData::Iterator _pixel, std::pair<uint8_t, uint8_t> _neighbourhood) {
+				if(_pixel == _auxColour) {
+					if(!causes_connection(_neighbourhood)) {
+						repeat = true;
+						return _BACKGROUNDCOLOUR;
+						
+					}
 				}
-			}
-			
-			return _foregroundColour;
-		});
+				
+				return _FOREGROUNDCOLOUR;
+			});
 	
 	} while(repeat);
 }

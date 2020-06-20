@@ -50,7 +50,11 @@ inline wxPoint to_screen_coord(const std::complex<float> &_position, const wxPoi
 }
 
 inline wxPoint to_screen_coord(const std::complex<float> &_position, const wxSize &_screenSize) {
-	return to_screen_coord(_position, wxPoint(_screenSize.GetWidth() / 2, _screenSize.GetHeight() / 2));
+	return to_screen_coord(
+		_position,
+		wxPoint(
+			_screenSize.GetWidth() / 2,
+			_screenSize.GetHeight() / 2));
 }
 
 inline std::complex<float> to_complex_number(wxPoint _position, const wxPoint &_center) {
@@ -58,11 +62,17 @@ inline std::complex<float> to_complex_number(wxPoint _position, const wxPoint &_
 	
 	_position -= _center;
 	
-	return std::complex(float(_position.x) / _pixelCoef, float(_position.y) / _pixelCoef);
+	return std::complex(
+		float(_position.x) / _pixelCoef,
+		float(_position.y) / _pixelCoef);
 }
 
 inline std::complex<float> to_complex_number(wxPoint _position, const wxSize &_screenSize) {
-	return to_complex_number(_position, wxPoint(_screenSize.GetWidth() / 2, _screenSize.GetHeight() / 2));
+	return to_complex_number(
+		_position,
+		wxPoint(
+			_screenSize.GetWidth() / 2,
+			_screenSize.GetHeight() / 2));
 }
 
 #endif

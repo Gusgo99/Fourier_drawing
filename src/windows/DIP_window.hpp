@@ -62,7 +62,6 @@ class DIPPanel : public wxPanel {
 		std::vector<DIPTool> tools;
 		int selectedTool;
 		wxBitmap origBitmap;
-	
 		bool showPoints;
 		
 		wxDECLARE_EVENT_TABLE();
@@ -86,12 +85,12 @@ class DIPFrame : public wxFrame {
 		void on_slider_scroll(wxCommandEvent &_event);
 	
 	private:
+		void add_tool(const std::string _TOOLNAME, const DIPTool::type _TOOLTYPE);
+		void refresh_tool_info();
+		
 		DIPPanel *panel;
 		wxListBox *list;
 		wxSlider *slider;
-		
-		void add_tool(const std::string _TOOLNAME, const DIPTool::type _TOOLTYPE);
-		void refresh_tool_info();
 		
 		static constexpr int SLIDERLIMIT = 2048;
 		

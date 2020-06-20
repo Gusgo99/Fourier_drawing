@@ -65,9 +65,7 @@ class editPanel : public wxPanel {
 		bool verify_wip();
 		
 	private:
-		const wxColour POINTSCOLOUR = wxColour(0, 0, 255);
-		const wxColour TRACECOLOUR = wxColour(0, 255, 0);
-		const wxColour SELECTEDCOLOUR = wxColour(255, 0, 0);
+		void render(wxDC &_dc);
 		
 		std::vector<std::complex<float>> points;
 		std::vector<std::complex<float>> savedPoints;
@@ -76,7 +74,9 @@ class editPanel : public wxPanel {
 		
 		int pointRadius;
 		
-		void render(wxDC &_dc);
+		const wxColour POINTSCOLOUR = wxColour(0, 0, 255);
+		const wxColour TRACECOLOUR = wxColour(0, 255, 0);
+		const wxColour SELECTEDCOLOUR = wxColour(255, 0, 0);
 		
 		wxDECLARE_EVENT_TABLE();
 	
