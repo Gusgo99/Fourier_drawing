@@ -30,8 +30,6 @@ SOFTWARE.
 
 #include <fstream>
 
-#warning Problem in drawing empty point vector
-
 #include "convertions.hpp"
 #include "draw_window.hpp"
 #include "DIP_window.hpp"

@@ -58,7 +58,7 @@ wxPanel(_parent, ID::DW::PANEL) {
 	drawPoints = false;
 	
 	points = _points;
-	generate_coefficients(_points);
+	if(points.size() > 0) generate_coefficients(points);
 	
 }
 
