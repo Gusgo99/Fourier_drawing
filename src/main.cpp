@@ -25,11 +25,16 @@ SOFTWARE.
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
+#include <wx/xrc/xmlres.h>
+
 IMPLEMENT_APP(mainClass)
 #pragma GCC diagnostic pop
 
 bool mainClass::OnInit() {
-	editWindow = new editFrame(nullptr, wxSize(800, 600));
+	wxXmlResource::Get() -> InitAllHandlers();
+	wxXmlResource::Get() -> Load("./resources/layout.xrc");
+	
+	editWindow = new editFrame();
 	
 	return true;
 }

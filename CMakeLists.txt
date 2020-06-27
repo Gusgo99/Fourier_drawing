@@ -30,6 +30,15 @@ else()
 	add_compile_options(-Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual)
 endif()
 
+file(GLOB_RECURSE RESOURCES "${PROJECT_SOURCE_DIR}/resources/*")
+file(MAKE_DIRECTORY "${${CMAKE_PROJECT_NAME}_BINARY_DIR}")
+message(STATUS "${RESOURCES}")
+file(
+	COPY
+	"${PROJECT_SOURCE_DIR}/resources/layout.xrc"
+	DESTINATION
+	"${${CMAKE_PROJECT_NAME}_BINARY_DIR}/resources")
+
 # Add files in subdirectories
 set(OBJECT_FILES "")
 add_subdirectory("${PROJECT_SOURCE_DIR}/src")

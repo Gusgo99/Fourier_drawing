@@ -25,8 +25,11 @@ SOFTWARE.
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
+#include <wx/dcbuffer.h>
 #include <wx/listbox.h>
 #include <wx/tglbtn.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/scrolwin.h>
 #pragma GCC diagnostic pop
 
 #include <algorithm>
@@ -42,10 +45,16 @@ wxBEGIN_EVENT_TABLE(DIPPanel, wxPanel)
 wxEND_EVENT_TABLE()
 
 DIPPanel::DIPPanel(const wxImage &_IMAGE, wxWindow *_parent):
-wxPanel(_parent, ID::DIPW::PANEL),
+wxPanel(_parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE),
 origBitmap(_IMAGE) {
 	tools.reserve(3);
-	SetSize(origBitmap.GetSize());
+	
+	// Creates a sizer cause for some reason the scrolls won't appear without it
+	_parent -> SetSizer(new wxBoxSizer(wxHORIZONTAL));
+	
+	SetMinSize(origBitmap.GetSize());
+	
+	_parent -> GetSizer() -> Add(this, 0);
 	
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
 	
@@ -165,82 +174,34 @@ bool DIPPanel::should_show_slider() {
 wxBEGIN_EVENT_TABLE(DIPFrame, wxFrame)
 	
 	// Tool bar
-	EVT_BUTTON(ID::DIPW::TB_CLEAR, DIPFrame::on_clear)
-	EVT_BUTTON(ID::DIPW::TB_REMOVE, DIPFrame::on_remove)
-	EVT_BUTTON(ID::DIPW::TB_THRESHOLD, DIPFrame::on_add_threshold)
-	EVT_BUTTON(ID::DIPW::TB_SELECTION, DIPFrame::on_add_selection)
-	EVT_BUTTON(ID::DIPW::TB_SKELETONIZATION, DIPFrame::on_add_skeletonization)
-	EVT_TOGGLEBUTTON(ID::DIPW::TB_SHOWPOINTS, DIPFrame::on_show_points)
-	EVT_BUTTON(ID::DIPW::TB_GETPOINTS, DIPFrame::on_get_points)
+	EVT_BUTTON(XRCID("DIPWindow_Clear"), DIPFrame::on_clear)
+	EVT_BUTTON(XRCID("DIPWindow_RemoveTool"), DIPFrame::on_remove_tool)
+	EVT_BUTTON(XRCID("DIPWindow_AddTool"), DIPFrame::on_add_tool)
+	EVT_SLIDER(XRCID("DIPWindow_Intensity"), DIPFrame::on_slider_scroll)
 	
 	// List box
-	EVT_LISTBOX(ID::DIPW::LISTBOX, DIPFrame::on_list_select)
+	EVT_LISTBOX(XRCID("DIPWindow_Splitter_Left_List"), DIPFrame::on_list_select)
 	
 	// Status bar
-	EVT_SLIDER(ID::DIPW::SB_SLIDER, DIPFrame::on_slider_scroll)
+	
 	
 wxEND_EVENT_TABLE()
 
-DIPFrame::DIPFrame(const wxImage &_IMAGE, wxWindow *_parent):
-wxFrame(_parent, ID::DIPW::FRAME, _("Image processing"), wxDefaultPosition, wxDefaultSize,
-	wxMINIMIZE_BOX | wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxCLIP_CHILDREN),
-panel(new DIPPanel(_IMAGE, this)) {
-	wxSize _size;
+DIPFrame::DIPFrame(const wxImage &_IMAGE, wxWindow *_parent) {
+	wxXmlResource::Get() -> LoadFrame(this, _parent, "DIPWindow");
 	
-	// Toolbar
-	CreateToolBar();
+	panel = new DIPPanel(_IMAGE, XRCCTRL(*this, "DIPWindow_Splitter_Right", wxScrolledWindow));
 	
-	wxButton *_button;
+	list = XRCCTRL(*this, "DIPWindow_Splitter_Left_List", wxListBox);
 	
-	GetToolBar() -> AddControl(_button = new wxButton(GetToolBar(), ID::DIPW::TB_CLEAR, "Clear"));
-	GetToolBar() -> AddControl(new wxButton(GetToolBar(), ID::DIPW::TB_REMOVE, "Remove"));
-	GetToolBar() -> AddControl(new wxButton(GetToolBar(), ID::DIPW::TB_THRESHOLD, "Add threshold"));
-	GetToolBar() -> AddControl(new wxButton(GetToolBar(), ID::DIPW::TB_SELECTION, "Add selection"));
-	GetToolBar() -> AddControl(
-		new wxButton(GetToolBar(),
-		ID::DIPW::TB_SKELETONIZATION,
-		"Add skeletonization"));
-	GetToolBar() -> AddControl(new wxToggleButton(GetToolBar(), ID::DIPW::TB_SHOWPOINTS, "Show points"));
-	GetToolBar() -> AddControl(new wxButton(GetToolBar(), ID::DIPW::TB_GETPOINTS, "Get points from image"));
+	slider = XRCCTRL(*this, "DIPWindow_Intensity", wxSlider);
 	
-	GetToolBar() -> Realize();
+	// Gets the maximum value the slider can reach based on data loaded from the xml resource file
+	// Obs: It does assume that the minimum value is 0
+	sliderLimit = slider -> GetMax();
 	
-	// Increase the size of the toolbar to fit buttons
-	GetToolBar() -> SetSize(GetToolBar() -> GetSize() + wxSize(0, _button -> GetPosition().y));
+	toolAdded = XRCCTRL(*this, "DIPWindow_ToolSelection", wxChoice);
 	
-	_size = _IMAGE.GetSize();
-	
-	_size.SetWidth(std::max(100, GetToolBar() -> GetSize().GetWidth() - _size.GetWidth()));
-	
-	list = new wxListBox(this, ID::DIPW::LISTBOX, wxDefaultPosition, _size);
-	
-	// Configure status bar
-	CreateStatusBar(2);
-	_size = GetStatusBar() -> GetSize();
-	slider = new wxSlider(GetStatusBar(),
-		ID::DIPW::SB_SLIDER,
-		SLIDERLIMIT / 2,
-		0,
-		SLIDERLIMIT,
-		wxDefaultPosition,
-		_size);
-	slider -> Enable(false);
-	
-	// Configure sizer for the window
-	SetSizer(new wxFlexGridSizer(1, 2, 0, 0));
-	dynamic_cast<wxFlexGridSizer*>(GetSizer()) -> AddGrowableCol(1);
-	dynamic_cast<wxFlexGridSizer*>(GetSizer()) -> AddGrowableRow(0);
-	
-	GetSizer() -> Add(list, 1, wxEXPAND | wxALL);
-	GetSizer() -> Add(panel, 1, wxEXPAND | wxALL);
-	
-	_size = _IMAGE.GetSize();
-	_size += wxSize(list -> GetSize().GetWidth(), 0);
-	
-	GetSizer() -> SetMinSize(_size);
-	GetSizer() -> Fit(this);
-	
-	SetAutoLayout(true);
 	Show(true);
 	
 }
@@ -251,7 +212,7 @@ void DIPFrame::on_clear([[maybe_unused]]wxCommandEvent &_event) {
 	
 }
 
-void DIPFrame::on_remove([[maybe_unused]]wxCommandEvent &_event) {
+void DIPFrame::on_remove_tool([[maybe_unused]]wxCommandEvent &_event) {
 	if(list -> GetSelection() != wxNOT_FOUND) {
 		int _removed = list -> GetSelection();
 		list -> Delete(_removed);
@@ -263,30 +224,9 @@ void DIPFrame::on_remove([[maybe_unused]]wxCommandEvent &_event) {
 	}
 }
 
-void DIPFrame::on_add_threshold([[maybe_unused]]wxCommandEvent &_event) {
-	add_tool("Threshold", DIPTool::THRESHOLD);
-	
-}
-
-void DIPFrame::on_add_selection([[maybe_unused]]wxCommandEvent &_event) {
-	add_tool("Selection", DIPTool::SELECTION);
-	
-}
-
-void DIPFrame::on_add_skeletonization([[maybe_unused]]wxCommandEvent &_event) {
-	add_tool("Skeletonization", DIPTool::SKELETONIZATION);
-	
-}
-
-void DIPFrame::on_show_points([[maybe_unused]]wxCommandEvent &_event) {
-	wxToggleButton *_button = dynamic_cast<wxToggleButton*>(_event.GetEventObject());
-	if(_button != nullptr) panel -> set_points_state(_button -> GetValue());
-	
-}
-
-void DIPFrame::on_get_points([[maybe_unused]]wxCommandEvent &_event) {
-	std::cout << "Sending points to editWindow\n";
-	Close();
+void DIPFrame::on_add_tool([[maybe_unused]]wxCommandEvent &_event) {
+	int _selected = toolAdded -> GetSelection();
+	add_tool(toolAdded -> GetString(_selected), DIPTool::type(_selected));
 	
 }
 
@@ -297,29 +237,30 @@ void DIPFrame::on_list_select(wxCommandEvent &_event) {
 }
 
 void DIPFrame::on_slider_scroll(wxCommandEvent &_event) {
-	panel -> set_tool_intensity(_event.GetInt() / double(SLIDERLIMIT));
+	panel -> set_tool_intensity(_event.GetInt() / double(sliderLimit));
 	
 }
 
-void DIPFrame::add_tool(const std::string _TOOLNAME, const DIPTool::type _TOOLTYPE) {
+void DIPFrame::add_tool(const wxString _TOOLNAME, const DIPTool::type _TOOLTYPE) {
 	if(list -> GetSelection() != wxNOT_FOUND) {
-		list -> Insert(_(_TOOLNAME), list -> GetSelection() + 1);
+		list -> Insert(_TOOLNAME, list -> GetSelection() + 1);
 		panel -> add_tool(_TOOLTYPE);
 		list -> SetSelection(list -> GetSelection() + 1);
 		
 	}
 	else {
-		list -> Append(_(_TOOLNAME));
+		list -> Append(_TOOLNAME);
 		panel -> add_tool(_TOOLTYPE);
 		list -> SetSelection(list -> GetCount() - 1);
 		
 	}
+	toolAdded -> SetSelection(std::min(toolAdded -> GetSelection() + 1, int(toolAdded -> GetCount()) - 1));
 	refresh_tool_info();
 }
 
 void DIPFrame::refresh_tool_info() {
 	slider -> Enable(panel -> should_show_slider());
 	panel -> select_tool(list -> GetSelection());
-	slider -> SetValue(panel -> get_tool_intensity() * SLIDERLIMIT);
+	slider -> SetValue(panel -> get_tool_intensity() * sliderLimit);
 	
 }

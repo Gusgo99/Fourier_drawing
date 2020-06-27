@@ -24,6 +24,7 @@ SOFTWARE.
 #ifndef MAIN_HPP
 #define MAIN_HPP
 #pragma once
+
 #include "debug.hpp"
 
 #include "windows/edit_window.hpp"

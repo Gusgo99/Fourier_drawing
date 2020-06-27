@@ -24,22 +24,21 @@ SOFTWARE.
 #ifndef DIP_WINDOW_HPP
 #define DIP_WINDOW_HPP
 #pragma once
+
 #include "debug.hpp"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 #include <wx/wx.h>
-#include <wx/dcbuffer.h>
 #pragma GCC diagnostic pop
 
 #include <memory>
 
 #include "image_processing_tools/DIP_tool.hpp"
-#include "IDs.hpp"
 
 class DIPPanel : public wxPanel {
 	public:
-		DIPPanel(const wxImage &_IMAGE, wxWindow *_parent = nullptr);
+		DIPPanel(const wxImage &_IMAGE, wxWindow *_parent);
 		
 		void on_paint(wxPaintEvent &_event);
 		
@@ -70,13 +69,11 @@ class DIPPanel : public wxPanel {
 
 class DIPFrame : public wxFrame {
 	public:
-		DIPFrame(const wxImage &_IMAGE, wxWindow *_parent = nullptr);
+		DIPFrame(const wxImage &_IMAGE, wxWindow *_parent);
 		
 		void on_clear(wxCommandEvent &_event);
-		void on_remove(wxCommandEvent &_event);
-		void on_add_threshold(wxCommandEvent &_event);
-		void on_add_selection(wxCommandEvent &_event);
-		void on_add_skeletonization(wxCommandEvent &_event);
+		void on_remove_tool(wxCommandEvent &_event);
+		void on_add_tool(wxCommandEvent &_event);
 		void on_show_points(wxCommandEvent &_event);
 		void on_get_points(wxCommandEvent &_event);
 		
@@ -85,14 +82,15 @@ class DIPFrame : public wxFrame {
 		void on_slider_scroll(wxCommandEvent &_event);
 	
 	private:
-		void add_tool(const std::string _TOOLNAME, const DIPTool::type _TOOLTYPE);
+		void add_tool(const wxString _TOOLNAME, const DIPTool::type _TOOLTYPE);
 		void refresh_tool_info();
 		
 		DIPPanel *panel;
 		wxListBox *list;
 		wxSlider *slider;
+		wxChoice *toolAdded;
 		
-		static constexpr int SLIDERLIMIT = 2048;
+		int sliderLimit;
 		
 		wxDECLARE_EVENT_TABLE();
 	

@@ -24,23 +24,21 @@ SOFTWARE.
 #ifndef EDIT_WINDOW_HPP
 #define EDIT_WINDOW_HPP
 #pragma once
+
 #include "debug.hpp"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 #include <wx/wx.h>
-#include <wx/dcbuffer.h>
 #pragma GCC diagnostic pop
 
 #include <complex>
 #include <string>
 #include <vector>
 
-#include "IDs.hpp"
-
 class editPanel : public wxPanel {
 	public:
-		editPanel(wxWindow *_parent = nullptr, const wxSize &_SIZE = wxDefaultSize);
+		editPanel(wxWindow *_parent, const wxSize &_SIZE);
 		
 		void clear_points();
 		
@@ -84,7 +82,7 @@ class editPanel : public wxPanel {
 
 class editFrame : public wxFrame {
 	public:
-		editFrame(wxWindow *_parent = nullptr, const wxSize &_SIZE = wxDefaultSize);
+		editFrame();
 		
 		// File menu
 		void on_open_file(wxCommandEvent &_event);
@@ -99,6 +97,8 @@ class editFrame : public wxFrame {
 		
 		// Info menu
 		void on_about(wxCommandEvent &_event);
+		
+		editPanel* get_panel() { return panel; }
 		
 	private:
 		editPanel *panel;

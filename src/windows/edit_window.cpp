@@ -25,14 +25,16 @@ SOFTWARE.
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
+#include <wx/dcbuffer.h>
 #include <wx/aboutdlg.h>
+#include <wx/xrc/xmlres.h>
 #pragma GCC diagnostic pop
 
 #include <fstream>
 
 #include "convertions.hpp"
-#include "draw_window.hpp"
 #include "DIP_window.hpp"
+#include "draw_window.hpp"
 
 wxBEGIN_EVENT_TABLE(editPanel, wxPanel)
 
@@ -51,7 +53,7 @@ wxBEGIN_EVENT_TABLE(editPanel, wxPanel)
 wxEND_EVENT_TABLE()
 
 editPanel::editPanel(wxWindow *_parent, const wxSize &_SIZE):
-wxPanel(_parent, ID::EW::PANEL) {
+wxPanel(_parent, wxID_ANY) {
 	SetSize(_SIZE);
 	
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
@@ -219,43 +221,23 @@ void editPanel::render(wxDC &_dc) {
 wxBEGIN_EVENT_TABLE(editFrame, wxFrame)
 
 	// Menu bar events
-	EVT_MENU(ID::EW::MB_OPEN, editFrame::on_open_file)
-	EVT_MENU(ID::EW::MB_OPENIMAGE, editFrame::on_open_image)
-	EVT_MENU(ID::EW::MB_SAVE, editFrame::on_save_file)
-	EVT_MENU(ID::EW::MB_SAVEAS, editFrame::on_save_as_file)
-	EVT_MENU(wxID_EXIT, editFrame::on_exit)
+	EVT_MENU(XRCID("EditWindow_File_Open"), editFrame::on_open_file)
+	EVT_MENU(XRCID("EditWindow_File_OpenImage"), editFrame::on_open_image)
+	EVT_MENU(XRCID("EditWindow_File_Save"), editFrame::on_save_file)
+	EVT_MENU(XRCID("EditWindow_File_SaveAs"), editFrame::on_save_as_file)
+	EVT_MENU(XRCID("EditWindow_File_Quit"), editFrame::on_exit)
 
-	EVT_MENU(ID::EW::MB_DRAW, editFrame::on_draw)
-	EVT_MENU(ID::EW::MB_CLEAR, editFrame::on_clear)
-	EVT_MENU(wxID_ABOUT, editFrame::on_about)
+	EVT_MENU(XRCID("EditWindow_Edit_Draw"), editFrame::on_draw)
+	EVT_MENU(XRCID("EditWindow_Edit_Clear"), editFrame::on_clear)
+	
+	EVT_MENU(XRCID("EditWindow_Info_About"), editFrame::on_about)
 
 wxEND_EVENT_TABLE()
 
-editFrame::editFrame(wxWindow *_parent, const wxSize &_SIZE):
-wxFrame(_parent, ID::EW::FRAME, _("Fourier drawing"), wxDefaultPosition, _SIZE),
-panel(new editPanel(this, GetSize())) {
-	if(_SIZE == wxDefaultSize) Maximize(true);
+editFrame::editFrame() {
+	wxXmlResource::Get() -> LoadFrame(this, nullptr, "EditWindow");
 	
-	SetMenuBar(new wxMenuBar);
-	
-	wxMenu *_menu = new wxMenu;
-	_menu -> Append(ID::EW::MB_OPEN, _("&Open\tCtrl-O"));
-	_menu -> Append(ID::EW::MB_OPENIMAGE, _("Open image\tCtrl-Shift-O"));
-	_menu -> Append(ID::EW::MB_SAVE, _("&Save\tCtrl-S"));
-	_menu -> Append(ID::EW::MB_SAVEAS, _("Save as\tCtrl-Alt-S"));
-	_menu -> Append(wxID_EXIT);
-	GetMenuBar() -> Append(_menu, _("&File"));
-	
-	_menu = new wxMenu;
-	_menu -> Append(ID::EW::MB_DRAW, _("&Draw\tCtrl-D"));
-	_menu -> Append(ID::EW::MB_CLEAR, _("&Clear"));
-	GetMenuBar() -> Append(_menu, _("&Edit"));
-	
-	_menu = new wxMenu;
-	_menu -> Append(wxID_ABOUT);
-	GetMenuBar() -> Append(_menu, _("&Info"));
-	
-	SetAutoLayout(true);
+	panel = new editPanel(this, GetSize());
 	
 	Show(true);
 	
@@ -373,8 +355,7 @@ void editFrame::on_clear(wxCommandEvent &_event) {
 }
 
 void editFrame::on_draw(wxCommandEvent &_event) {
-	drawFrame *_drawWindow = new drawFrame(panel -> get_points(), this, GetSize());
-	if(IsMaximized()) _drawWindow -> Maximize(true);
+	new drawFrame(panel -> get_points(), this, GetSize(), IsMaximized());
 	
 	_event.Skip();
 	
@@ -407,7 +388,6 @@ void editFrame::on_about(wxCommandEvent &_event) {
 	
 	_aboutInfo.SetName("Fourier drawing");
 	_aboutInfo.SetDescription("A program that draws curves using the Fourier series");
-	_aboutInfo.AddDeveloper(L"Gustavo Pacola Gonçalves");
 	_aboutInfo.SetLicense(LICENSE);
 	
 	wxAboutBox(_aboutInfo);

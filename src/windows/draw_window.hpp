@@ -24,25 +24,23 @@ SOFTWARE.
 #ifndef DRAW_MODE_HPP
 #define DRAW_MODE_HPP
 #pragma once
+
 #include "debug.hpp"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 #include <wx/wx.h>
-#include <wx/dcbuffer.h>
 #pragma GCC diagnostic pop
 
 #include <complex>
 #include <vector>
 
-#include "IDs.hpp"
-
 class drawPanel : public wxPanel {
 	public:
 		drawPanel(
 			const std::vector<std::complex<float>> &_POINTS,
-			wxWindow *_parent = nullptr,
-			const wxSize &_SIZE = wxDefaultSize);
+			wxWindow *_parent,
+			const wxSize &_SIZE);
 		
 		void on_paint(wxPaintEvent &_event);
 		void on_refresh_timer(wxTimerEvent &_event);
@@ -70,6 +68,8 @@ class drawPanel : public wxPanel {
 		bool drawCircles;
 		bool drawPoints;
 		
+		static constexpr int TIMERID = 5;
+		
 		wxDECLARE_EVENT_TABLE();
 	
 };
@@ -78,8 +78,9 @@ class drawFrame : public wxFrame {
 	public:
 		drawFrame(
 			const std::vector<std::complex<float>> &_POINTS,
-			wxWindow *_parent = nullptr,
-			const wxSize &_SIZE = wxDefaultSize);
+			wxWindow *_parent,
+			const wxSize _SIZE,
+			const bool MAXIMIZE);
 		
 		void on_clear(wxCommandEvent &_event);
 		void on_hide_circles(wxCommandEvent &_event);

@@ -25,7 +25,9 @@ SOFTWARE.
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
+#include <wx/dcbuffer.h>
 #include <wx/tglbtn.h>
+#include <wx/xrc/xmlres.h>
 #pragma GCC diagnostic pop
 
 #include "convertions.hpp"
@@ -37,19 +39,20 @@ wxBEGIN_EVENT_TABLE(drawPanel, wxPanel)
 	EVT_PAINT(drawPanel::on_paint)
 	
 	// Timer event
-	EVT_TIMER(ID::DW::TMR_REFRESH, drawPanel::on_refresh_timer)
+	EVT_TIMER(TIMERID, drawPanel::on_refresh_timer)
 	
 wxEND_EVENT_TABLE()
 
-drawPanel::drawPanel(const std::vector<std::complex<float>> &_POINTS,
+drawPanel::drawPanel(
+	const std::vector<std::complex<float>> &_POINTS,
 	wxWindow *_parent,
 	const wxSize &_SIZE):
-wxPanel(_parent, ID::DW::PANEL) {
+wxPanel(_parent, wxID_ANY) {
 	SetSize(_SIZE);
 	
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
 	
-	refreshTimer.SetOwner(this, ID::DW::TMR_REFRESH);
+	refreshTimer.SetOwner(this, TIMERID);
 	refreshTimer.Start(50, wxTIMER_CONTINUOUS);
 	
 	points = _POINTS;
@@ -197,29 +200,25 @@ void drawPanel::generate_coefficients(const std::vector<std::complex<float>> &_P
 wxBEGIN_EVENT_TABLE(drawFrame, wxFrame)
 	
 	// Tool bar buttons
-	EVT_TOGGLEBUTTON(ID::DW::TB_HIDECIRCLES, drawFrame::on_hide_circles)
-	EVT_TOGGLEBUTTON(ID::DW::TB_SHOWPOINTS, drawFrame::on_show_points)
-	EVT_BUTTON(ID::DW::TB_CLEAR, drawFrame::on_clear)
+	EVT_TOGGLEBUTTON(XRCID("DrawWindow_HideCircles"), drawFrame::on_hide_circles)
+	EVT_TOGGLEBUTTON(XRCID("DrawWindow_ShowPoints"), drawFrame::on_show_points)
+	EVT_BUTTON(XRCID("DrawWindow_Clear"), drawFrame::on_clear)
 	
 wxEND_EVENT_TABLE()
 
-drawFrame::drawFrame(const std::vector<std::complex<float>> &_POINTS, wxWindow *_parent, const wxSize &_SIZE):
-wxFrame(_parent, ID::DW::FRAME, _("Drawing"), wxDefaultPosition, _SIZE),
-panel(new drawPanel(_POINTS, this, GetSize())) {
-	if(_SIZE == wxDefaultSize) Maximize(true);
+drawFrame::drawFrame(
+	const std::vector<std::complex<float>> &_POINTS,
+	wxWindow *_parent,
+	const wxSize _SIZE,
+	const bool _MAXIMIZE) {
 	
-	CreateToolBar();
+	wxXmlResource::Get() -> LoadFrame(this, _parent, "DrawWindow");
 	
-	wxButton *_button;
-	GetToolBar() -> AddControl(new wxToggleButton(GetToolBar(), ID::DW::TB_HIDECIRCLES, "Hide circles"));
-	GetToolBar() -> AddControl (new wxToggleButton(GetToolBar(), ID::DW::TB_SHOWPOINTS, "Show points"));
-	GetToolBar() -> AddControl(_button = new wxButton(GetToolBar(), ID::DW::TB_CLEAR, "Clear"));
+	SetSize(_SIZE);
+	Maximize(_MAXIMIZE);
 	
-	GetToolBar() -> Realize();
+	panel = new drawPanel(_POINTS, this, GetSize());
 	
-	GetToolBar() -> SetSize(GetToolBar() -> GetSize() + wxSize(0, _button -> GetPosition().y));
-	
-	SetAutoLayout(true);
 	Show(true);
 	
 }

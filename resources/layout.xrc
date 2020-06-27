@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
+	<object class="wxFrame" name="DIPWindow">
+		<style>wxCAPTION|wxCLOSE_BOX|wxDEFAULT_FRAME_STYLE|wxMINIMIZE_BOX|wxSYSTEM_MENU|wxTAB_TRAVERSAL</style>
+		<size>600,400</size>
+		<font>
+			<style>normal</style>
+			<weight>normal</weight>
+			<underlined>0</underlined>
+		</font>
+		<title>Image Processing</title>
+		<centered>1</centered>
+		<aui_managed>0</aui_managed>
+		<object class="wxToolBar" name="m_toolBar1">
+			<style>wxTB_FLAT|wxTB_HORIZONTAL</style>
+			<bitmapsize></bitmapsize>
+			<margins>2,2</margins>
+			<packing>1</packing>
+			<separation>5</separation>
+			<object class="wxButton" name="DIPWindow_Clear">
+				<style>wxTAB_TRAVERSAL</style>
+				<label>Clear</label>
+				<default>0</default>
+				<markup>0</markup>
+				<bitmap />
+			</object>
+			<object class="separator" />
+			<object class="wxSlider" name="DIPWindow_Intensity">
+				<style>wxSL_HORIZONTAL|wxTAB_TRAVERSAL</style>
+				<size>150,-1</size>
+				<value>1024</value>
+				<min>0</min>
+				<max>2048</max>
+			</object>
+			<object class="wxButton" name="DIPWindow_RemoveTool">
+				<style>wxTAB_TRAVERSAL</style>
+				<label>Remove tool</label>
+				<default>0</default>
+				<markup>0</markup>
+				<bitmap />
+			</object>
+			<object class="separator" />
+			<object class="wxChoice" name="DIPWindow_ToolSelection">
+				<style>wxTAB_TRAVERSAL</style>
+				<selection>0</selection>
+				<content>
+					<item>Threshold</item>
+					<item>Selection</item>
+					<item>Skeletonization</item>
+				</content>
+			</object>
+			<object class="wxButton" name="DIPWindow_AddTool">
+				<style>wxTAB_TRAVERSAL</style>
+				<label>Add tool</label>
+				<default>0</default>
+				<markup>0</markup>
+				<bitmap />
+			</object>
+		</object>
+		<object class="wxSplitterWindow" name="DIPWindow_Splitter">
+			<style>wxSP_3D|wxSP_BORDER|wxSP_LIVE_UPDATE</style>
+			<sashpos>100</sashpos>
+			<gravity>0</gravity>
+			<minsize>75</minsize>
+			<orientation>vertical</orientation>
+			<object class="wxScrolledWindow" name="DIPWindow_Splitter_Left">
+				<style>wxHSCROLL|wxVSCROLL</style>
+				<scrollrate>5,5</scrollrate>
+				<object class="wxBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<option>1</option>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>0</border>
+						<object class="wxListBox" name="DIPWindow_Splitter_Left_List">
+							<style>wxBORDER_NONE|wxTAB_TRAVERSAL</style>
+							<size>75,-1</size>
+							<content />
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="wxScrolledWindow" name="DIPWindow_Splitter_Right">
+				<style>wxBORDER_DEFAULT|wxHSCROLL|wxVSCROLL</style>
+				<bg>#ffffff</bg>
+				<fg>#ffffff</fg>
+				<scrollrate>5,5</scrollrate>
+			</object>
+		</object>
+	</object>
+	<object class="wxFrame" name="EditWindow">
+		<style>wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL</style>
+		<size>800,600</size>
+		<title>Fourier Drawing</title>
+		<centered>1</centered>
+		<aui_managed>0</aui_managed>
+		<object class="wxMenuBar" name="m_menubar1">
+			<label>MyMenuBar</label>
+			<object class="wxMenu" name="EditWindow_File">
+				<label>_File</label>
+				<object class="wxMenuItem" name="EditWindow_File_Open">
+					<label>_Open\tCtrl-O</label>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="EditWindow_File_OpenImage">
+					<label>Open image\tCtrl-Shift-O</label>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="EditWindow_File_Save">
+					<label>_Save\tCtrl-S</label>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="EditWindow_File_SaveAs">
+					<label>Save As\tCtrl-Shift-S</label>
+					<help></help>
+				</object>
+				<object class="separator" />
+				<object class="wxMenuItem" name="EditWindow_File_Quit">
+					<label>_Quit\tAlt-F4</label>
+					<help></help>
+				</object>
+			</object>
+			<object class="wxMenu" name="EditWindow_Edit">
+				<label>_Edit</label>
+				<object class="wxMenuItem" name="EditWindow_Edit_Draw">
+					<label>_Draw\tCtrl-D</label>
+					<help></help>
+				</object>
+				<object class="wxMenuItem" name="EditWindow_Edit_Clear">
+					<label>_Clear</label>
+					<help></help>
+				</object>
+			</object>
+			<object class="wxMenu" name="EditWindow_Info">
+				<label>_Info</label>
+				<object class="wxMenuItem" name="EditWindow_Info_About">
+					<label>_About\tF1</label>
+					<help></help>
+				</object>
+			</object>
+		</object>
+	</object>
+	<object class="wxFrame" name="DrawWindow">
+		<style>wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL</style>
+		<size>500,300</size>
+		<title>Drawing</title>
+		<centered>1</centered>
+		<aui_managed>0</aui_managed>
+		<object class="wxToolBar" name="m_toolBar2">
+			<style>wxTB_FLAT|wxTB_HORIZONTAL</style>
+			<size>-1,30</size>
+			<bitmapsize></bitmapsize>
+			<margins>5,5</margins>
+			<packing>5</packing>
+			<separation>10</separation>
+			<object class="wxToggleButton" name="DrawWindow_HideCircles">
+				<tooltip>Testing tooltip</tooltip>
+				<label>Hide Circles</label>
+				<checked>0</checked>
+			</object>
+			<object class="wxToggleButton" name="DrawWindow_ShowPoints">
+				<label>Show Points</label>
+				<checked>0</checked>
+			</object>
+			<object class="wxButton" name="DrawWindow_Clear">
+				<label>Clear</label>
+				<default>0</default>
+				<markup>0</markup>
+				<bitmap />
+				<margins>5,5</margins>
+			</object>
+		</object>
+	</object>
+</resource>
