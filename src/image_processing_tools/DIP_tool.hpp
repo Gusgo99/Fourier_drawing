@@ -78,8 +78,6 @@ class DIPTool {
 		bool is_inside_screen(const wxPoint &_POINT, const wxSize &_SIZE) const;
 		
 		// Functions to treat binary images
-		wxColour get_background_colour() const;
-		wxColour get_foreground_colour() const;
 		void find_foreground(wxBitmap &_bitmap);
 		std::vector<bool> expand_source_pixel(
 			wxBitmap &_bitmap,
@@ -94,6 +92,8 @@ class DIPTool {
 		type toolType;
 		
 		static const std::array<wxPoint, 8> DIRECTIONS;
+		static const wxColour BACKGROUNDCOLOUR;
+		static const wxColour FOREGROUNDCOLOUR;
 };
 
 // Helper functions

@@ -47,6 +47,9 @@ const std::array<wxPoint, 8> DIPTool::DIRECTIONS{
 	
 };
 
+const wxColour DIPTool::BACKGROUNDCOLOUR(255, 255, 255);
+const wxColour DIPTool::FOREGROUNDCOLOUR(0, 0, 0);
+
 DIPTool::DIPTool(const type _toolType) {
 	toolType = _toolType;
 	intensity = 0.5;
@@ -124,27 +127,23 @@ bool DIPTool::uses_source() {
 }
 
 void DIPTool::apply_threshold(wxBitmap &_bitmap) {
-	const wxColour _BACKGROUNDCOLOUR = get_background_colour();
-	const wxColour _FOREGROUNDCOLOUR = get_foreground_colour();
-	const int _INTINTENSITY = int(intensity * 3 * 255);
+	const int _iIntensity = int(intensity * 3 * 255);
 	
 	for_each_pixel(
 		_bitmap,
 		[=](wxNativePixelData::Iterator _it) {
-			if((_it.Red() + _it.Green() + _it.Blue()) > _INTINTENSITY) return _BACKGROUNDCOLOUR;
-			else return _FOREGROUNDCOLOUR;
+			if((_it.Red() + _it.Green() + _it.Blue()) > _iIntensity) return BACKGROUNDCOLOUR;
+			else return FOREGROUNDCOLOUR;
 			
 		});
 	
 }
 
 void DIPTool::apply_selection(wxBitmap &_bitmap) {
-	const wxColour _BACKGROUNDCOLOUR = get_background_colour();
-	const wxColour _FOREGROUNDCOLOUR = get_foreground_colour();
 	wxColour _auxColour(
-		_BACKGROUNDCOLOUR.Red() | _FOREGROUNDCOLOUR.Red(),
-		_BACKGROUNDCOLOUR.Green() ^ _FOREGROUNDCOLOUR.Green(),
-		_BACKGROUNDCOLOUR.Blue() & _FOREGROUNDCOLOUR.Blue());
+		BACKGROUNDCOLOUR.Red() | FOREGROUNDCOLOUR.Red(),
+		BACKGROUNDCOLOUR.Green() ^ FOREGROUNDCOLOUR.Green(),
+		BACKGROUNDCOLOUR.Blue() & FOREGROUNDCOLOUR.Blue());
 	
 	if(source != wxDefaultPosition) {
 		expand_source_pixel(
@@ -157,22 +156,20 @@ void DIPTool::apply_selection(wxBitmap &_bitmap) {
 		for_each_pixel(
 			_bitmap,
 			[=](wxNativePixelData::Iterator _pixel) {
-				if(_pixel == _auxColour) return _FOREGROUNDCOLOUR;
+				if(_pixel == _auxColour) return FOREGROUNDCOLOUR;
 				
-				return _BACKGROUNDCOLOUR;
+				return BACKGROUNDCOLOUR;
 			});
 	}
 	
 }
 
 void DIPTool::apply_skeletonization(wxBitmap &_bitmap) {
-	const wxColour _BACKGROUNDCOLOUR = get_background_colour();
-	const wxColour _FOREGROUNDCOLOUR = get_foreground_colour();
 	bool repeat;
 	wxColour _auxColour(
-		_BACKGROUNDCOLOUR.Red() | _FOREGROUNDCOLOUR.Red(),
-		_BACKGROUNDCOLOUR.Green() ^ _FOREGROUNDCOLOUR.Green(),
-		_BACKGROUNDCOLOUR.Blue() & _FOREGROUNDCOLOUR.Blue());
+		BACKGROUNDCOLOUR.Red() | FOREGROUNDCOLOUR.Red(),
+		BACKGROUNDCOLOUR.Green() ^ FOREGROUNDCOLOUR.Green(),
+		BACKGROUNDCOLOUR.Blue() & FOREGROUNDCOLOUR.Blue());
 	
 	do {
 		repeat = false;
@@ -192,7 +189,7 @@ void DIPTool::apply_skeletonization(wxBitmap &_bitmap) {
 				if(_neighbourhood.first & 0x80) _copy.second >>= 1;
 				if(_copy.first != 0x0F) return _auxColour;
 				
-				return _FOREGROUNDCOLOUR;
+				return FOREGROUNDCOLOUR;
 			});
 		
 		expand_source_pixel(
@@ -202,12 +199,12 @@ void DIPTool::apply_skeletonization(wxBitmap &_bitmap) {
 				if(_pixel == _auxColour) {
 					if(!causes_connection(_neighbourhood)) {
 						repeat = true;
-						return _BACKGROUNDCOLOUR;
+						return BACKGROUNDCOLOUR;
 						
 					}
 				}
 				
-				return _FOREGROUNDCOLOUR;
+				return FOREGROUNDCOLOUR;
 			});
 	
 	} while(repeat);
@@ -241,7 +238,7 @@ void DIPTool::find_foreground(wxBitmap &_bitmap) {
 	for(int i = 0; i < _size.GetWidth(); i++) {
 		for(int j = 0; j < _size.GetHeight(); j++) {
 			_it.MoveTo(_pixels, i, j);
-			if(_it != get_background_colour()) {
+			if(_it != BACKGROUNDCOLOUR) {
 				source = wxPoint(i, j);
 				goto end;
 			}
@@ -297,19 +294,10 @@ bool DIPTool::is_inside_screen(const wxPoint &_POINT, const wxSize &_SIZE) const
 		(_POINT.y < _SIZE.GetHeight());
 }
 
-wxColour DIPTool::get_background_colour() const {
-	return wxColour(255, 255, 255);
-}
-
-wxColour DIPTool::get_foreground_colour() const {
-	return wxColour(0, 0, 0);
-}
-
 std::pair<uint8_t, uint8_t> DIPTool::get_neighbour_pixels(
 	const wxNativePixelData &_PIXELS,
 	const wxPoint _POINT,
 	int _directions) const {
-	const wxColour _backgroundColour = get_background_colour();
 	std::pair<uint8_t, uint8_t> _neighbourhood(0, 0);
 	wxNativePixelData::Iterator _neighbour = _PIXELS.GetPixels();
 	
@@ -319,7 +307,7 @@ std::pair<uint8_t, uint8_t> DIPTool::get_neighbour_pixels(
 			wxPoint _currentPoint = _POINT + DIRECTIONS[7 - i];
 			if(is_inside_screen(_currentPoint, _PIXELS.GetSize())) {
 				_neighbour.MoveTo(_PIXELS, _currentPoint.x, _currentPoint.y);
-				if(_neighbour != _backgroundColour) {
+				if(_neighbour != BACKGROUNDCOLOUR) {
 					_neighbourhood.second <<= 1;
 					_neighbourhood.second |= 1;
 					_neighbourhood.first |= 1;
