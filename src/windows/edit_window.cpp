@@ -52,9 +52,9 @@ wxBEGIN_EVENT_TABLE(editPanel, wxPanel)
 
 wxEND_EVENT_TABLE()
 
-editPanel::editPanel(wxWindow *_parent, const wxSize &_SIZE):
+editPanel::editPanel(wxWindow *_parent, const wxSize &_size):
 wxPanel(_parent, wxID_ANY) {
-	SetSize(_SIZE);
+	SetSize(_size);
 	
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
 	
@@ -135,8 +135,8 @@ const std::vector<std::complex<float>>& editPanel::get_points() const {
 	return points;
 }
 
-bool editPanel::read_points(const std::string &_FILENAME) {
-	std::ifstream _file(_FILENAME);
+bool editPanel::read_points(const std::string &_fileName) {
+	std::ifstream _file(_fileName);
 	bool _success = true;
 	
 	points.clear();
@@ -163,8 +163,8 @@ bool editPanel::read_points(const std::string &_FILENAME) {
 	return _success;
 }
 
-bool editPanel::save_points(const std::string &_FILENAME) {
-	std::ofstream _file(_FILENAME);
+bool editPanel::save_points(const std::string &_fileName) {
+	std::ofstream _file(_fileName);
 	bool _success = true;
 	
 	if(_file.is_open()) {

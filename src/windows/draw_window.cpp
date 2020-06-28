@@ -44,18 +44,18 @@ wxBEGIN_EVENT_TABLE(drawPanel, wxPanel)
 wxEND_EVENT_TABLE()
 
 drawPanel::drawPanel(
-	const std::vector<std::complex<float>> &_POINTS,
+	const std::vector<std::complex<float>> &_points,
 	wxWindow *_parent,
-	const wxSize &_SIZE):
+	const wxSize &_size):
 wxPanel(_parent, wxID_ANY) {
-	SetSize(_SIZE);
+	SetSize(_size);
 	
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
 	
 	refreshTimer.SetOwner(this, TIMERID);
 	refreshTimer.Start(50, wxTIMER_CONTINUOUS);
 	
-	points = _POINTS;
+	points = _points;
 	if(points.size() > 0) generate_coefficients(points);
 	
 	angle = 0.0;
@@ -96,21 +96,21 @@ void drawPanel::clear_image() {
 	
 }
 
-void drawPanel::set_circle_state(const bool _DRAWCIRCLES) {
-	drawCircles = _DRAWCIRCLES;
+void drawPanel::set_circle_state(const bool _drawCircles) {
+	drawCircles = _drawCircles;
 	
 }
 
-void drawPanel::set_point_state(const bool _DRAWPOINTS) {
-	drawPoints = _DRAWPOINTS;
+void drawPanel::set_point_state(const bool _drawPoints) {
+	drawPoints = _drawPoints;
 	
 }
 
 void drawPanel::render(wxDC &_temporary, wxDC &_permanent) {
-	const wxPoint _SCREENCENTER(GetSize().GetWidth() / 2, GetSize().GetHeight() / 2);
-	const int _POINTRADIUS = int(_temporary.GetPPI().GetWidth() * 0.065);
-	int _pixelCoef = get_pixel_coefficient(_SCREENCENTER);
-	wxPoint _center = _SCREENCENTER;
+	const wxPoint _screenCenter(GetSize().GetWidth() / 2, GetSize().GetHeight() / 2);
+	const int _pointRadius = int(_temporary.GetPPI().GetWidth() * 0.065);
+	int _pixelCoef = get_pixel_coefficient(_screenCenter);
+	wxPoint _center = _screenCenter;
 	wxPoint _newCenter = wxPoint(0, 0);
 	std::complex<float> _coef(std::cos(coefficients.size() * angle), std::sin(coefficients.size() * angle));
 	std::complex<float> _currentCoef(1, 0);
@@ -127,7 +127,7 @@ void drawPanel::render(wxDC &_temporary, wxDC &_permanent) {
 			
 		}
 		else _currentCoef = std::conj(_currentCoef);
-		_newCenter = to_screen_coord(_currentPosition, _SCREENCENTER);
+		_newCenter = to_screen_coord(_currentPosition, _screenCenter);
 		if(drawCircles) {
 			_temporary.DrawLine(_center, _newCenter);
 			_temporary.DrawCircle(_center, std::abs(coefficients[i]) * _pixelCoef);
@@ -141,9 +141,9 @@ void drawPanel::render(wxDC &_temporary, wxDC &_permanent) {
 		_temporary.SetPen(wxPen(POINTSCOLOUR));
 		
 		for(auto i: points) {
-			wxPoint _pointPosition = to_screen_coord(i, _SCREENCENTER);
+			wxPoint _pointPosition = to_screen_coord(i, _screenCenter);
 			
-			_temporary.DrawCircle(_pointPosition, _POINTRADIUS);
+			_temporary.DrawCircle(_pointPosition, _pointRadius);
 			_temporary.DrawPoint(_pointPosition);
 			
 		}
@@ -165,12 +165,12 @@ void drawPanel::render(wxDC &_temporary, wxDC &_permanent) {
 	
 }
 
-void drawPanel::generate_coefficients(const std::vector<std::complex<float>> &_POINTS) {
-	kiss_fft_cfg _cfg = kiss_fft_alloc(_POINTS.size(), 0, nullptr, nullptr);
-	std::vector<kiss_fft_cpx> _samples(_POINTS.size()), _pOutput(_POINTS.size()), _nOutput(_POINTS.size());
-    for(size_t i = 0; i < _POINTS.size(); i++) {
-		_samples[i].r = _POINTS[i].real();
-		_samples[i].i = _POINTS[i].imag();
+void drawPanel::generate_coefficients(const std::vector<std::complex<float>> &_points) {
+	kiss_fft_cfg _cfg = kiss_fft_alloc(_points.size(), 0, nullptr, nullptr);
+	std::vector<kiss_fft_cpx> _samples(_points.size()), _pOutput(_points.size()), _nOutput(_points.size());
+    for(size_t i = 0; i < _points.size(); i++) {
+		_samples[i].r = _points[i].real();
+		_samples[i].i = _points[i].imag();
 		
 	}
     
@@ -180,18 +180,18 @@ void drawPanel::generate_coefficients(const std::vector<std::complex<float>> &_P
 	
     kiss_fft_free(_cfg);
 	
-	coefficients.reserve(_POINTS.size());
-	for(size_t i = 0; i < _POINTS.size(); i++) {
+	coefficients.reserve(_points.size());
+	for(size_t i = 0; i < _points.size(); i++) {
 		if((i % 2) == 0) {
 			coefficients.emplace_back(
-				_nOutput[i / 2].r / _POINTS.size(),
-				-_nOutput[i / 2].i / _POINTS.size());
+				_nOutput[i / 2].r / _points.size(),
+				-_nOutput[i / 2].i / _points.size());
 				
 		}
 		else {
 			coefficients.emplace_back(
-				_pOutput[1 + i / 2].r / _POINTS.size(),
-				_pOutput[1 + i / 2].i / _POINTS.size());
+				_pOutput[1 + i / 2].r / _points.size(),
+				_pOutput[1 + i / 2].i / _points.size());
 				
 		}
 	}
@@ -207,17 +207,17 @@ wxBEGIN_EVENT_TABLE(drawFrame, wxFrame)
 wxEND_EVENT_TABLE()
 
 drawFrame::drawFrame(
-	const std::vector<std::complex<float>> &_POINTS,
+	const std::vector<std::complex<float>> &_points,
 	wxWindow *_parent,
-	const wxSize _SIZE,
-	const bool _MAXIMIZE) {
+	const wxSize _size,
+	const bool _maximize) {
 	
 	wxXmlResource::Get() -> LoadFrame(this, _parent, "DrawWindow");
 	
-	SetSize(_SIZE);
-	Maximize(_MAXIMIZE);
+	SetSize(_size);
+	Maximize(_maximize);
 	
-	panel = new drawPanel(_POINTS, this, GetSize());
+	panel = new drawPanel(_points, this, GetSize());
 	
 	Show(true);
 	

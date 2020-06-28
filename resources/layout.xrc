@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
 	<object class="wxFrame" name="DIPWindow">
-		<style>wxCAPTION|wxCLOSE_BOX|wxDEFAULT_FRAME_STYLE|wxMINIMIZE_BOX|wxSYSTEM_MENU|wxTAB_TRAVERSAL</style>
+		<style>wxCAPTION|wxCLOSE_BOX|wxDEFAULT_FRAME_STYLE|wxMINIMIZE_BOX|wxSYSTEM_MENU</style>
 		<size>600,400</size>
 		<font>
 			<style>normal</style>
@@ -12,13 +12,13 @@
 		<centered>1</centered>
 		<aui_managed>0</aui_managed>
 		<object class="wxToolBar" name="m_toolBar1">
-			<style>wxTB_FLAT|wxTB_HORIZONTAL</style>
+			<style>wxTB_FLAT|wxTB_HORIZONTAL|wxTAB_TRAVERSAL</style>
 			<bitmapsize></bitmapsize>
 			<margins>2,2</margins>
 			<packing>1</packing>
 			<separation>5</separation>
 			<object class="wxButton" name="DIPWindow_Clear">
-				<style>wxTAB_TRAVERSAL</style>
+				<tooltip>Clear all the tools in the list</tooltip>
 				<label>Clear</label>
 				<default>0</default>
 				<markup>0</markup>
@@ -26,14 +26,15 @@
 			</object>
 			<object class="separator" />
 			<object class="wxSlider" name="DIPWindow_Intensity">
-				<style>wxSL_HORIZONTAL|wxTAB_TRAVERSAL</style>
+				<style>wxSL_HORIZONTAL</style>
 				<size>150,-1</size>
+				<tooltip>Choose the intensity of the tool selected in the list</tooltip>
 				<value>1024</value>
 				<min>0</min>
 				<max>2048</max>
 			</object>
 			<object class="wxButton" name="DIPWindow_RemoveTool">
-				<style>wxTAB_TRAVERSAL</style>
+				<tooltip>Remove the selected tool in the list</tooltip>
 				<label>Remove tool</label>
 				<default>0</default>
 				<markup>0</markup>
@@ -41,7 +42,6 @@
 			</object>
 			<object class="separator" />
 			<object class="wxChoice" name="DIPWindow_ToolSelection">
-				<style>wxTAB_TRAVERSAL</style>
 				<selection>0</selection>
 				<content>
 					<item>Threshold</item>
@@ -50,7 +50,7 @@
 				</content>
 			</object>
 			<object class="wxButton" name="DIPWindow_AddTool">
-				<style>wxTAB_TRAVERSAL</style>
+				<tooltip>Add the tool selected to the list</tooltip>
 				<label>Add tool</label>
 				<default>0</default>
 				<markup>0</markup>
@@ -73,7 +73,7 @@
 						<flag>wxALL|wxEXPAND</flag>
 						<border>0</border>
 						<object class="wxListBox" name="DIPWindow_Splitter_Left_List">
-							<style>wxBORDER_NONE|wxTAB_TRAVERSAL</style>
+							<style>wxBORDER_NONE</style>
 							<size>75,-1</size>
 							<content />
 						</object>
@@ -82,9 +82,10 @@
 			</object>
 			<object class="wxScrolledWindow" name="DIPWindow_Splitter_Right">
 				<style>wxBORDER_DEFAULT|wxHSCROLL|wxVSCROLL</style>
-				<bg>#ffffff</bg>
-				<fg>#ffffff</fg>
 				<scrollrate>5,5</scrollrate>
+				<object class="wxBoxSizer">
+					<orient>wxVERTICAL</orient>
+				</object>
 			</object>
 		</object>
 	</object>
@@ -141,20 +142,19 @@
 		</object>
 	</object>
 	<object class="wxFrame" name="DrawWindow">
-		<style>wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL</style>
+		<style>wxDEFAULT_FRAME_STYLE</style>
 		<size>500,300</size>
 		<title>Drawing</title>
 		<centered>1</centered>
 		<aui_managed>0</aui_managed>
 		<object class="wxToolBar" name="m_toolBar2">
-			<style>wxTB_FLAT|wxTB_HORIZONTAL</style>
+			<style>wxTB_FLAT|wxTB_HORIZONTAL|wxTAB_TRAVERSAL</style>
 			<size>-1,30</size>
 			<bitmapsize></bitmapsize>
 			<margins>5,5</margins>
 			<packing>5</packing>
 			<separation>10</separation>
 			<object class="wxToggleButton" name="DrawWindow_HideCircles">
-				<tooltip>Testing tooltip</tooltip>
 				<label>Hide Circles</label>
 				<checked>0</checked>
 			</object>

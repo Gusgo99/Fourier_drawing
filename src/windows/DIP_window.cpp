@@ -44,13 +44,10 @@ wxBEGIN_EVENT_TABLE(DIPPanel, wxPanel)
 	
 wxEND_EVENT_TABLE()
 
-DIPPanel::DIPPanel(const wxImage &_IMAGE, wxWindow *_parent):
+DIPPanel::DIPPanel(const wxImage &_image, wxWindow *_parent):
 wxPanel(_parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE),
-origBitmap(_IMAGE) {
+origBitmap(_image) {
 	tools.reserve(3);
-	
-	// Creates a sizer cause for some reason the scrolls won't appear without it
-	_parent -> SetSizer(new wxBoxSizer(wxHORIZONTAL));
 	
 	SetMinSize(origBitmap.GetSize());
 	
@@ -67,6 +64,7 @@ origBitmap(_IMAGE) {
 void DIPPanel::on_paint([[maybe_unused]]wxPaintEvent &_event) {
 	wxAutoBufferedPaintDC _dc(this);
 	PrepareDC(_dc);
+	
 	wxBitmap _processedBitmap = origBitmap.GetSubBitmap(
 		wxRect(0, 0, origBitmap.GetWidth(), origBitmap.GetHeight()));
 	
@@ -105,14 +103,14 @@ void DIPPanel::render(wxDC &_dc) {
 	}
 }
 
-void DIPPanel::add_tool(const DIPTool::type _TOOLTYPE) {
+void DIPPanel::add_tool(const DIPTool::type _toolType) {
 	if(selectedTool >= 0) {
-		tools.insert(tools.begin() + selectedTool + 1, DIPTool(_TOOLTYPE));
+		tools.insert(tools.begin() + selectedTool + 1, DIPTool(_toolType));
 		selectedTool++;
 		
 	}
 	else {
-		tools.push_back(DIPTool(_TOOLTYPE));
+		tools.push_back(DIPTool(_toolType));
 		selectedTool = 0;
 		
 	}
@@ -134,16 +132,16 @@ void DIPPanel::clear_tools() {
 	
 }
 
-void DIPPanel::select_tool(const int _SELECTEDTOOL) {
-	if(tools.size() != 0) selectedTool = _SELECTEDTOOL % tools.size();
+void DIPPanel::select_tool(const int _selectedTool) {
+	if(tools.size() != 0) selectedTool = _selectedTool % tools.size();
 	else selectedTool = -1;
 	Refresh();
 	
 }
 
-void DIPPanel::set_tool_intensity(const double _INTENSITY) {
+void DIPPanel::set_tool_intensity(const double _intensity) {
 	if(selectedTool >= 0) {
-		tools[selectedTool].intensity = std::max(0.0, std::min(1.0, _INTENSITY));
+		tools[selectedTool].intensity = std::max(0.0, std::min(1.0, _intensity));
 		Refresh();
 		
 	}
@@ -157,8 +155,8 @@ double DIPPanel::get_tool_intensity() {
 	return _intensity;
 }
 
-void DIPPanel::set_points_state(const bool _SHOWPOINTS) {
-	showPoints = _SHOWPOINTS;
+void DIPPanel::set_points_state(const bool _showPoints) {
+	showPoints = _showPoints;
 	Refresh();
 	
 }
@@ -187,10 +185,10 @@ wxBEGIN_EVENT_TABLE(DIPFrame, wxFrame)
 	
 wxEND_EVENT_TABLE()
 
-DIPFrame::DIPFrame(const wxImage &_IMAGE, wxWindow *_parent) {
+DIPFrame::DIPFrame(const wxImage &_image, wxWindow *_parent) {
 	wxXmlResource::Get() -> LoadFrame(this, _parent, "DIPWindow");
 	
-	panel = new DIPPanel(_IMAGE, XRCCTRL(*this, "DIPWindow_Splitter_Right", wxScrolledWindow));
+	panel = new DIPPanel(_image, XRCCTRL(*this, "DIPWindow_Splitter_Right", wxScrolledWindow));
 	
 	list = XRCCTRL(*this, "DIPWindow_Splitter_Left_List", wxListBox);
 	
@@ -201,6 +199,9 @@ DIPFrame::DIPFrame(const wxImage &_IMAGE, wxWindow *_parent) {
 	sliderLimit = slider -> GetMax();
 	
 	toolAdded = XRCCTRL(*this, "DIPWindow_ToolSelection", wxChoice);
+	
+	// Makes sure the size is enough to display the toolbar
+	SetMinSize(wxSize(550, 100));
 	
 	Show(true);
 	
@@ -241,16 +242,16 @@ void DIPFrame::on_slider_scroll(wxCommandEvent &_event) {
 	
 }
 
-void DIPFrame::add_tool(const wxString _TOOLNAME, const DIPTool::type _TOOLTYPE) {
+void DIPFrame::add_tool(const wxString _toolName, const DIPTool::type _toolType) {
 	if(list -> GetSelection() != wxNOT_FOUND) {
-		list -> Insert(_TOOLNAME, list -> GetSelection() + 1);
-		panel -> add_tool(_TOOLTYPE);
+		list -> Insert(_toolName, list -> GetSelection() + 1);
+		panel -> add_tool(_toolType);
 		list -> SetSelection(list -> GetSelection() + 1);
 		
 	}
 	else {
-		list -> Append(_TOOLNAME);
-		panel -> add_tool(_TOOLTYPE);
+		list -> Append(_toolName);
+		panel -> add_tool(_toolType);
 		list -> SetSelection(list -> GetCount() - 1);
 		
 	}

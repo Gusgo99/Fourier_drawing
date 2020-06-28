@@ -38,7 +38,7 @@ SOFTWARE.
 
 class editPanel : public wxPanel {
 	public:
-		editPanel(wxWindow *_parent, const wxSize &_SIZE);
+		editPanel(wxWindow *_parent, const wxSize &_size);
 		
 		void clear_points();
 		
@@ -56,10 +56,10 @@ class editPanel : public wxPanel {
 		
 		const std::vector<std::complex<float>>& get_points() const;
 		
-		void show_points(const bool _SHOW);
+		void show_points(const bool _show);
 		
-		bool read_points(const std::string &_FILENAME);
-		bool save_points(const std::string &_FILENAME);
+		bool read_points(const std::string &_fileName);
+		bool save_points(const std::string &_fileName);
 		bool verify_wip();
 		
 	private:

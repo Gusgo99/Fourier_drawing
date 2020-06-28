@@ -38,6 +38,7 @@ SOFTWARE.
 
 class DIPTool {
 	public:
+		// Important: The order of those should match the order used in the xrc file
 		enum type {THRESHOLD, SELECTION, SKELETONIZATION};
 		
 		DIPTool(const type _toolType);

@@ -38,16 +38,16 @@ SOFTWARE.
 class drawPanel : public wxPanel {
 	public:
 		drawPanel(
-			const std::vector<std::complex<float>> &_POINTS,
+			const std::vector<std::complex<float>> &_points,
 			wxWindow *_parent,
-			const wxSize &_SIZE);
+			const wxSize &_size);
 		
 		void on_paint(wxPaintEvent &_event);
 		void on_refresh_timer(wxTimerEvent &_event);
 		
 		void clear_image();
-		void set_circle_state(const bool _DRAWCIRCLES);
-		void set_point_state(const bool _DRAWPOINTS);
+		void set_circle_state(const bool _drawCircles);
+		void set_point_state(const bool _drawPoints);
 	
 	private:
 		const wxColour POINTSCOLOUR = wxColour(0, 0, 0);
@@ -55,7 +55,7 @@ class drawPanel : public wxPanel {
 		const wxColour TRACECOLOUR = wxColour(0, 255, 0);
 		
 		void render(wxDC &_temporary, wxDC &_permanent);
-		void generate_coefficients(const std::vector<std::complex<float>> &_POINTS);
+		void generate_coefficients(const std::vector<std::complex<float>> &_points);
 		
 		std::vector<std::complex<float>> points;
 		std::vector<std::complex<float>> coefficients;
@@ -77,10 +77,10 @@ class drawPanel : public wxPanel {
 class drawFrame : public wxFrame {
 	public:
 		drawFrame(
-			const std::vector<std::complex<float>> &_POINTS,
+			const std::vector<std::complex<float>> &_points,
 			wxWindow *_parent,
-			const wxSize _SIZE,
-			const bool MAXIMIZE);
+			const wxSize _size,
+			const bool _maximize);
 		
 		void on_clear(wxCommandEvent &_event);
 		void on_hide_circles(wxCommandEvent &_event);
