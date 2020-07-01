@@ -31,10 +31,11 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 
 It can be compiled the same way as the debug version
 
-## Built With
+## Created using
 
 * [Mingw-W64](http://mingw-w64.org/doku.php) - Compiler - version: 10.1.0
 * [wxWidgets](https://www.wxwidgets.org/) - Graphical library - version: 3.1.3
+* [wxFormBuilder](https://github.com/wxFormBuilder/wxFormBuilder) - XRC editor for wxWidgets - version: 3.9.0
 * [KissFFT](https://github.com/mborgerding/kissfft) - FFT library
 
 ## Authors
