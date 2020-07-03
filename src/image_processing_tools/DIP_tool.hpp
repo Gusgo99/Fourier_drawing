@@ -45,8 +45,8 @@ class DIPTool {
 		~DIPTool() = default;
 		
 		void apply(wxBitmap &_bitmap);
-		bool uses_intensity();
-		bool uses_source();
+		bool uses_intensity() const;
+		bool uses_source() const;
 		
 		double intensity;
 		wxPoint source;
@@ -63,31 +63,34 @@ class DIPTool {
 		static constexpr uint8_t SIDES = N | E | S | O;
 		static constexpr uint8_t DIAGONALS = NE | SE | SO | NO;
 		
+		using pixelData = wxNativePixelData::Iterator;
+		
 	private:
-		using forEachCallback = std::function<wxColour(wxNativePixelData::Iterator)>;
-		using expandCallback = std::function<wxColour(
-			wxNativePixelData::Iterator,
-			std::pair<uint8_t, uint8_t>)>;
-			
+		using forEachCallback = std::function<wxColour(pixelData)>;
+		using expandCallback = std::function<wxColour(pixelData, std::pair<uint8_t, uint8_t>)>;
+		
+		// Available image processing tools
 		void apply_threshold(wxBitmap &_bitmap);
 		void apply_selection(wxBitmap &_bitmap);
 		void apply_skeletonization(wxBitmap &_bitmap);
 		
-		// Functions to help threating bitmaps
-		void for_each_pixel(wxBitmap &_bitmap, forEachCallback _callback) const;
-		bool is_inside_screen(const wxPoint &_POINT, const wxSize &_SIZE) const;
-		
-		// Functions to treat binary images
-		void find_foreground(wxBitmap &_bitmap);
+		// Functions to iterate through images
+		void for_each_pixel(wxBitmap &_bitmap, forEachCallback _callback);
 		std::vector<bool> expand_source_pixel(
 			wxBitmap &_bitmap,
 			int _directions,
-			expandCallback _callback);
+			expandCallback _callback) const;
+		
+		// Binary images analysis
+		bool causes_connection(const std::pair<uint8_t, uint8_t> _NEIGHBOURHOOD);
 		std::pair<uint8_t, uint8_t> get_neighbour_pixels(
-			const wxNativePixelData &_PIXELS,
-			const wxPoint _POINT,
+			const wxNativePixelData &_pixels,
+			const wxPoint _point,
 			int _directions) const;
-		bool causes_connection(const std::pair<uint8_t, uint8_t> _NEIGHBOURHOOD) const;
+		
+		// General helper functions
+		static bool is_inside_screen(const wxPoint &_point, const wxSize &_size);
+		void find_foreground(wxBitmap &_bitmap);
 		
 		type toolType;
 		
@@ -97,7 +100,7 @@ class DIPTool {
 };
 
 // Helper functions
-bool operator==(wxNativePixelData::Iterator _pixel, const wxColour &_colour);
-bool operator!=(wxNativePixelData::Iterator _pixel, const wxColour &_colour);
+bool operator==(DIPTool::pixelData _pixel, const wxColour &_colour);
+bool operator!=(DIPTool::pixelData _pixel, const wxColour &_colour);
 
 #endif
