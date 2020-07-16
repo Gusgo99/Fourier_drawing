@@ -3,6 +3,7 @@
 #pragma once
 #ifdef DEBUG
 
+#define _GLIBCXX_DEBUG
 
 #endif
 #endif

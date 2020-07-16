@@ -105,12 +105,12 @@ void DIPPanel::render(wxDC &_dc) {
 
 void DIPPanel::add_tool(const DIPTool::type _toolType) {
 	if(selectedTool >= 0) {
-		tools.insert(tools.begin() + selectedTool + 1, DIPTool(_toolType));
+		tools.emplace(tools.begin() + selectedTool + 1, _toolType);
 		selectedTool++;
 		
 	}
 	else {
-		tools.push_back(DIPTool(_toolType));
+		tools.emplace_back(_toolType);
 		selectedTool = 0;
 		
 	}

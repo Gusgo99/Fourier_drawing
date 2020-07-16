@@ -56,6 +56,8 @@ editPanel::editPanel(wxWindow *_parent, const wxSize &_size):
 wxPanel(_parent, wxID_ANY) {
 	SetSize(_size);
 	
+	clear_points();
+	
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
 	
 }

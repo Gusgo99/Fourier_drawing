@@ -35,7 +35,11 @@ SOFTWARE.
 #pragma GCC diagnostic pop
 
 class mainClass : public wxApp {
+	public:
+		mainClass(): wxApp() {}
 	private:
+		mainClass(mainClass&) = delete;
+		operator=(mainClass&) = delete;
 		bool OnInit();
 		
 		editFrame *editWindow;

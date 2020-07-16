@@ -23,7 +23,7 @@ include_directories("${wxWidgets_INCLUDE_DIRS}")
 
 # Define compiler options for each build
 if(CMAKE_BUILD_TYPE STREQUAL Release)
-	add_link_options(-mwindows)
+	add_link_options(-mwindows -flto)
 else()
 	add_definitions(-DDEBUG)
 	add_compile_options(-Wall -Wextra -Wpedantic -Wshadow -Wcast-align -Wunused)
@@ -31,8 +31,6 @@ else()
 endif()
 
 file(GLOB_RECURSE RESOURCES "${PROJECT_SOURCE_DIR}/resources/*")
-file(MAKE_DIRECTORY "${${CMAKE_PROJECT_NAME}_BINARY_DIR}")
-message(STATUS "${RESOURCES}")
 file(
 	COPY
 	"${PROJECT_SOURCE_DIR}/resources/layout.xrc"

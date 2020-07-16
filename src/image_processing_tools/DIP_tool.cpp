@@ -50,8 +50,9 @@ const std::array<wxPoint, 8> DIPTool::DIRECTIONS{
 const wxColour DIPTool::BACKGROUNDCOLOUR(255, 255, 255);
 const wxColour DIPTool::FOREGROUNDCOLOUR(0, 0, 0);
 
-DIPTool::DIPTool(const type _toolType) {
-	toolType = _toolType;
+DIPTool::DIPTool(const type _toolType):
+toolType{_toolType} {
+	
 	intensity = 0.5;
 	source = wxDefaultPosition;
 	
