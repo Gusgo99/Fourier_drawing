@@ -39,7 +39,7 @@ class mainClass : public wxApp {
 		mainClass(): wxApp() {}
 	private:
 		mainClass(mainClass&) = delete;
-		operator=(mainClass&) = delete;
+		mainClass& operator=(mainClass&) = delete;
 		bool OnInit();
 		
 		editFrame *editWindow;

@@ -40,7 +40,7 @@ class editPanel : public wxPanel {
 	public:
 		editPanel(wxWindow *_parent, const wxSize &_size);
 		editPanel(editPanel&) = delete;
-		operator=(editPanel&) = delete;
+		editPanel& operator=(editPanel&) = delete;
 		
 		void clear_points();
 		
@@ -86,7 +86,7 @@ class editFrame : public wxFrame {
 	public:
 		editFrame();
 		editFrame(editFrame&) = delete;
-		operator=(editFrame&) = delete;
+		editFrame& operator=(editFrame&) = delete;
 		
 		// File menu
 		void on_open_file(wxCommandEvent &_event);

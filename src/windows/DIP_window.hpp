@@ -40,7 +40,7 @@ class DIPPanel : public wxPanel {
 	public:
 		DIPPanel(const wxImage &_image, wxWindow *_parent);
 		DIPPanel(DIPPanel&) = delete;
-		operator=(DIPPanel&) = delete;
+		DIPPanel& operator=(DIPPanel&) = delete;
 		
 		void on_paint(wxPaintEvent &_event);
 		
@@ -73,7 +73,7 @@ class DIPFrame : public wxFrame {
 	public:
 		DIPFrame(const wxImage &_image, wxWindow *_parent);
 		DIPFrame(DIPFrame&) = delete;
-		operator=(DIPFrame&) = delete;
+		DIPPanel& operator=(DIPFrame&) = delete;
 		
 		void on_clear(wxCommandEvent &_event);
 		void on_remove_tool(wxCommandEvent &_event);

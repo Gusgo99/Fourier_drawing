@@ -42,7 +42,7 @@ class drawPanel : public wxPanel {
 			wxWindow *_parent,
 			const wxSize &_size);
 		drawPanel(drawPanel&) = delete;
-		operator=(drawPanel&) = delete;
+		drawPanel& operator=(drawPanel&) = delete;
 		
 		void on_paint(wxPaintEvent &_event);
 		void on_refresh_timer(wxTimerEvent &_event);
@@ -84,7 +84,7 @@ class drawFrame : public wxFrame {
 			const wxSize _size,
 			const bool _maximize);
 		drawFrame(drawFrame&) = delete;
-		operator=(drawFrame&) = delete;
+		drawFrame& operator=(drawFrame&) = delete;
 		
 		void on_clear(wxCommandEvent &_event);
 		void on_hide_circles(wxCommandEvent &_event);
