@@ -34,7 +34,7 @@ SOFTWARE.
 
 #include <memory>
 
-#include "image_processing_tools/DIP_tool.hpp"
+#include "image_processing/DIP_tool.hpp"
 
 class DIPPanel : public wxPanel {
 	public:

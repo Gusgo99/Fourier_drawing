@@ -26,7 +26,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Release)
 	add_link_options(-mwindows -flto)
 else()
 	add_definitions(-DDEBUG)
-	add_compile_options(-Wall -Wextra -Wpedantic -Wshadow -Wcast-align -Wunused)
+	add_compile_options(-Og -Wall -Wextra -Wpedantic -Wshadow -Wcast-align -Wunused)
 	add_compile_options(-Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual)
 endif()
 

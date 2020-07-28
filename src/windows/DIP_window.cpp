@@ -180,9 +180,6 @@ wxBEGIN_EVENT_TABLE(DIPFrame, wxFrame)
 	// List box
 	EVT_LISTBOX(XRCID("DIPWindow_Splitter_Left_List"), DIPFrame::on_list_select)
 	
-	// Status bar
-	
-	
 wxEND_EVENT_TABLE()
 
 DIPFrame::DIPFrame(const wxImage &_image, wxWindow *_parent) {

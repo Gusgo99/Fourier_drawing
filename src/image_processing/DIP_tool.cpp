@@ -27,6 +27,8 @@ SOFTWARE.
 #include <stack>
 #include <queue>
 
+#include "grid.hpp"
+
 const std::array<wxPoint, 8> DIPTool::DIRECTIONS{
 	// N
 	wxPoint(0, -1),
@@ -71,11 +73,11 @@ void DIPTool::apply(wxBitmap &_bitmap) {
 		case SKELETONIZATION:
 			apply_skeletonization(_bitmap);
 			break;
-		
+			
 		default:
 			wxASSERT(false);
 			break;
-		
+			
 	}
 }
 
@@ -93,7 +95,7 @@ bool DIPTool::uses_intensity() const {
 		case SKELETONIZATION:
 			_usesIntensity = false;
 			break;
-		
+			
 		default:
 			wxASSERT(false);
 			break;
@@ -117,7 +119,7 @@ bool DIPTool::uses_source() const {
 		case SKELETONIZATION:
 			_usesSource = false;
 			break;
-		
+			
 		default:
 			wxASSERT(false);
 			break;

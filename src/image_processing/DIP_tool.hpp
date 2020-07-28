@@ -47,6 +47,7 @@ class DIPTool {
 		void apply(wxBitmap &_bitmap);
 		bool uses_intensity() const;
 		bool uses_source() const;
+		bool generates_info() const;
 		
 		double intensity;
 		wxPoint source;
@@ -68,6 +69,7 @@ class DIPTool {
 	private:
 		using forEachCallback = std::function<wxColour(pixelData)>;
 		using expandCallback = std::function<wxColour(pixelData, std::pair<uint8_t, uint8_t>)>;
+		using selectedCallback = std::function<wxColour(pixelData)>;
 		
 		// Available image processing tools
 		void apply_threshold(wxBitmap &_bitmap);
