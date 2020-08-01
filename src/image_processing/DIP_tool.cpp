@@ -24,9 +24,11 @@ SOFTWARE.
 #include "DIP_tool.hpp"
 
 #include <algorithm>
+#include <complex>
 #include <stack>
 #include <queue>
 
+#include "windows/convertions.hpp"
 #include "grid.hpp"
 
 const std::array<wxPoint, 8> DIPTool::DIRECTIONS{
@@ -74,6 +76,10 @@ void DIPTool::apply(wxBitmap &_bitmap) {
 			apply_skeletonization(_bitmap);
 			break;
 			
+		case PATHGENERATION:
+			apply_path_generation(_bitmap);
+			break;
+			
 		default:
 			wxASSERT(false);
 			break;
@@ -93,6 +99,10 @@ bool DIPTool::uses_intensity() const {
 			break;
 			
 		case SKELETONIZATION:
+			_usesIntensity = false;
+			break;
+			
+		case PATHGENERATION:
 			_usesIntensity = false;
 			break;
 			
@@ -120,6 +130,10 @@ bool DIPTool::uses_source() const {
 			_usesSource = false;
 			break;
 			
+		case PATHGENERATION:
+			_usesSource = false;
+			break;
+			
 		default:
 			wxASSERT(false);
 			break;
@@ -127,6 +141,38 @@ bool DIPTool::uses_source() const {
 	}
 	
 	return _usesSource;
+}
+
+bool DIPTool::generates_info() const {
+	bool _generatesInfo = false;
+	switch(toolType) {
+		case THRESHOLD:
+			_generatesInfo = false;
+			break;
+			
+		case SELECTION:
+			_generatesInfo = false;
+			break;
+			
+		case SKELETONIZATION:
+			_generatesInfo = false;
+			break;
+			
+		case PATHGENERATION:
+			_generatesInfo = true;
+			break;
+			
+		default:
+			wxASSERT(false);
+			break;
+			
+	}
+	
+	return _generatesInfo;
+}
+
+std::any DIPTool::get_info() const {
+	return info;	
 }
 
 void DIPTool::apply_threshold(wxBitmap &_bitmap) {
@@ -211,6 +257,42 @@ void DIPTool::apply_skeletonization(wxBitmap &_bitmap) {
 			});
 	
 	} while(repeat);
+}
+
+void DIPTool::apply_path_generation(wxBitmap &_bitmap) {
+	find_foreground(_bitmap);
+	grid image(_bitmap.GetHeight(), _bitmap.GetWidth());
+	image.fill(grid::NOTHING);
+	grid::position _position{0, 0};
+	for_each_pixel(
+		_bitmap,
+		[&](const pixelData _pixel) {
+			if(_pixel == FOREGROUNDCOLOUR) {
+				image(_position) = grid::EDGE;
+
+			}
+
+			_position.second++;
+			if(_position.second == image.num_columns()) {
+				_position.first++;
+				_position.second = 0;
+
+			}
+
+			return BACKGROUNDCOLOUR;
+		});
+
+	std::vector<grid::position> _path = image.solve_chinese_postman();
+
+	std::vector<std::complex<float>> _floatPath;
+	_floatPath.reserve(_path.size());
+
+	for(auto i: _path) {
+		_floatPath.push_back(to_complex_number(wxPoint(i.second, i.first), _bitmap.GetSize()));
+	}
+
+	info = _floatPath;
+	
 }
 
 void DIPTool::for_each_pixel(wxBitmap &_bitmap, forEachCallback _callback) {

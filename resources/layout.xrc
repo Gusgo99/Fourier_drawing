@@ -47,6 +47,7 @@
 					<item>Threshold</item>
 					<item>Selection</item>
 					<item>Skeletonization</item>
+					<item>Path generation</item>
 				</content>
 			</object>
 			<object class="wxButton" name="DIPWindow_AddTool">

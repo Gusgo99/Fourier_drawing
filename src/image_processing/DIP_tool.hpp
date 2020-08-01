@@ -32,6 +32,7 @@ SOFTWARE.
 #include <wx/rawbmp.h>
 #pragma GCC diagnostic pop
 
+#include <any>
 #include <array>
 #include <functional>
 #include <vector>
@@ -39,7 +40,7 @@ SOFTWARE.
 class DIPTool {
 	public:
 		// Important: The order of those should match the order used in the xrc file
-		enum type {THRESHOLD, SELECTION, SKELETONIZATION};
+		enum type {THRESHOLD, SELECTION, SKELETONIZATION, PATHGENERATION};
 		
 		DIPTool(const type _toolType);
 		~DIPTool() = default;
@@ -48,6 +49,8 @@ class DIPTool {
 		bool uses_intensity() const;
 		bool uses_source() const;
 		bool generates_info() const;
+
+		std::any get_info() const;
 		
 		double intensity;
 		wxPoint source;
@@ -75,6 +78,7 @@ class DIPTool {
 		void apply_threshold(wxBitmap &_bitmap);
 		void apply_selection(wxBitmap &_bitmap);
 		void apply_skeletonization(wxBitmap &_bitmap);
+		void apply_path_generation(wxBitmap &_bitmap);
 		
 		// Functions to iterate through images
 		void for_each_pixel(wxBitmap &_bitmap, forEachCallback _callback);
@@ -95,6 +99,7 @@ class DIPTool {
 		void find_foreground(wxBitmap &_bitmap);
 		
 		type toolType;
+		std::any info;
 		
 		static const std::array<wxPoint, 8> DIRECTIONS;
 		static const wxColour BACKGROUNDCOLOUR;

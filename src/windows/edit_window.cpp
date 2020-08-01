@@ -62,6 +62,14 @@ wxPanel(_parent, wxID_ANY) {
 	
 }
 
+void editPanel::set_points(const std::vector<std::complex<float>> &_points) {
+	points = _points;
+	selectedPoint = points.end();
+	lastSelectedPoint = points.begin();
+
+	Refresh();
+}
+
 void editPanel::clear_points() {
 	points.clear();
 	selectedPoint = points.end();
@@ -208,7 +216,7 @@ void editPanel::render(wxDC &_dc) {
 	
 	for(auto i: points) {
 		auto _currentPoint = to_screen_coord(i, _center);
-		_dc.DrawCircle(_currentPoint, pointRadius);
+		if(points.size() < HIDECIRCLELIMITS) _dc.DrawCircle(_currentPoint, pointRadius);
 		
 	}
 	
@@ -243,6 +251,10 @@ editFrame::editFrame() {
 	
 	Show(true);
 	
+}
+
+void editFrame::set_points(const std::vector<std::complex<float>> &_points) {
+	panel -> set_points(_points);
 }
 
 void editFrame::on_open_file(wxCommandEvent &_event) {
@@ -288,7 +300,8 @@ void editFrame::on_open_image(wxCommandEvent &_event) {
 		else break;
 	}
 	
-	wxFileDialog openDialog(this,
+	wxFileDialog openDialog(
+		this,
 		_("Open points file"),
 		"",
 		"",

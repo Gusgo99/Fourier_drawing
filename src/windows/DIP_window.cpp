@@ -34,6 +34,8 @@ SOFTWARE.
 
 #include <algorithm>
 
+#include "edit_window.hpp"
+
 wxBEGIN_EVENT_TABLE(DIPPanel, wxPanel)
 	
 	// Mouse event
@@ -71,6 +73,23 @@ void DIPPanel::on_paint([[maybe_unused]]wxPaintEvent &_event) {
 	for(auto &i: tools) i.apply(_processedBitmap);
 	
 	if(_dc.CanDrawBitmap()) _dc.DrawBitmap(_processedBitmap, 0, 0);
+
+	if(!tools.empty()) {
+		if(tools.back().generates_info()) {
+			auto parent = GetParent();
+			auto _editWindow = dynamic_cast<editFrame*>(parent);
+			while(_editWindow == nullptr) {
+				parent = parent -> GetParent();
+				_editWindow = dynamic_cast<editFrame*>(parent);
+			}
+			if(_editWindow != nullptr) {
+				std::any _information = tools.back().get_info();
+				auto _points = std::any_cast<std::vector<std::complex<float>>>(_information);
+				_editWindow -> set_points(_points);
+
+			}
+		}
+	}
 	
 	if(selectedTool >= 0) {
 		wxASSERT(selectedTool < int(tools.size()));

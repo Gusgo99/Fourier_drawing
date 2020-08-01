@@ -42,6 +42,7 @@ class editPanel : public wxPanel {
 		editPanel(editPanel&) = delete;
 		editPanel& operator=(editPanel&) = delete;
 		
+		void set_points(const std::vector<std::complex<float>> &_points);
 		void clear_points();
 		
 		// Mouse event handlers
@@ -77,6 +78,7 @@ class editPanel : public wxPanel {
 		const wxColour POINTSCOLOUR = wxColour(0, 0, 255);
 		const wxColour TRACECOLOUR = wxColour(0, 255, 0);
 		const wxColour SELECTEDCOLOUR = wxColour(255, 0, 0);
+		static constexpr size_t HIDECIRCLELIMITS = 200;
 		
 		wxDECLARE_EVENT_TABLE();
 	
@@ -87,6 +89,8 @@ class editFrame : public wxFrame {
 		editFrame();
 		editFrame(editFrame&) = delete;
 		editFrame& operator=(editFrame&) = delete;
+
+		void set_points(const std::vector<std::complex<float>> &_points);
 		
 		// File menu
 		void on_open_file(wxCommandEvent &_event);
