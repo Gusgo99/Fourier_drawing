@@ -157,7 +157,7 @@ void drawPanel::render(wxDC &_temporary, wxDC &_permanent) {
 	lastCenter -= _newCenter;
 	lastCenter.x *= lastCenter.x;
 	lastCenter.y *= lastCenter.y;
-	if(lastCenter.x + lastCenter.y > 30) angularSpeed *= 0.85;
+	if(lastCenter.x + lastCenter.y > 30) angularSpeed *= 0.5;
 	else if(lastCenter.x + lastCenter.y < 16) angularSpeed *= 1.1;
 	
 	lastCenter = _newCenter;
