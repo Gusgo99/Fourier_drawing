@@ -38,7 +38,7 @@ class grid {
 	public:
 		using position = std::pair<size_t, size_t>;
 		using offset = std::pair<int, int>;
-		enum data {NOTHING, EDGE, NODE};
+		enum data {NOTHING, EDGE};
 		
 		grid(
 			const size_t _numLines = 0,

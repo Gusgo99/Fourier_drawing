@@ -58,7 +58,7 @@ gridData{_gridData} {
 }
 
 void grid::fill(const int _value) {
-	for(auto &i: gridData) i = _value;
+	std::fill(gridData.begin(), gridData.end(), _value);
 	
 }
 
@@ -225,6 +225,7 @@ grid::position grid::find_value(const int _value) const {
 	return _pos;
 }
 
+#warning TODO: Finish this function (Still doesnt find the smallest way)
 std::vector<grid::position> grid::solve_chinese_postman() {
 	std::vector<position> _path;
 	std::vector<grid> _heightmaps;
@@ -249,15 +250,15 @@ std::vector<grid::position> grid::solve_chinese_postman() {
 
 		}
 		else {
-			// Potential for optimizations:
 			if(_heightmaps.size() == 1) break;
 			auto _closest = _heightmaps.begin() + 1;
-			if((*_closest)(_path.back()) == NOTHING) _closest++;
+			if((*_closest)(_path.back()) == NOTHING) _closest = _heightmaps.erase(_closest);
 			for(auto i = _closest; i != _heightmaps.end(); i++) {
 				if((*i)(_path.back()) != NOTHING) {
 					if((*_closest)(_path.back()) > (*i)(_path.back())) _closest = i;
 
 				}
+				else i = _heightmaps.erase(i) - 1;
 			}
 			std::vector<position> _newPoints = _closest -> descend_heightmap(_path.back());
 			_path.insert(_path.end(), _newPoints.begin() + 1, _newPoints.end());
