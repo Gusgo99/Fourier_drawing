@@ -66,6 +66,7 @@ class grid {
 		std::vector<position> descend_heightmap(const position _start) const;
 		std::vector<position> find_every_value(const int _value) const;
 		position find_value(const int _value) const;
+		void remove_unconnected_cells(const position _targetPosition);
 		std::vector<position> solve_chinese_postman();
 		
 	private:

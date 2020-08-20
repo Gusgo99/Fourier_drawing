@@ -187,28 +187,20 @@ void DIPTool::apply_threshold(wxBitmap &_bitmap) {
 }
 
 void DIPTool::apply_selection(wxBitmap &_bitmap) {
-	wxColour _auxColour(
-		BACKGROUNDCOLOUR.Red() | FOREGROUNDCOLOUR.Red(),
-		BACKGROUNDCOLOUR.Green() ^ FOREGROUNDCOLOUR.Green(),
-		BACKGROUNDCOLOUR.Blue() & FOREGROUNDCOLOUR.Blue());
-	
 	if(source != wxDefaultPosition) {
-		expand_source_pixel(
+		grid _image = generate_grid(
+			_bitmap, 
+			{{BACKGROUNDCOLOUR, grid::NOTHING}, {FOREGROUNDCOLOUR, grid::EDGE}}
+		);
+
+		_image.remove_unconnected_cells({source.x, source.y});
+
+		draw_grid_to_bitmap(
 			_bitmap,
-			SIDES | DIAGONALS,
-			[=](pixelData, const std::pair<uint8_t, uint8_t>) {
-				return _auxColour;
-			});
-		
-		for_each_pixel(
-			_bitmap,
-			[=](pixelData _pixel) {
-				if(_pixel == _auxColour) return FOREGROUNDCOLOUR;
-				
-				return BACKGROUNDCOLOUR;
-			});
+			_image,
+			{{grid::NOTHING, BACKGROUNDCOLOUR}, {grid::EDGE, FOREGROUNDCOLOUR}}
+		);
 	}
-	
 }
 
 void DIPTool::apply_skeletonization(wxBitmap &_bitmap) {

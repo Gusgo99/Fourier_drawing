@@ -225,6 +225,14 @@ grid::position grid::find_value(const int _value) const {
 	return _pos;
 }
 
+void grid::remove_unconnected_cells(const position _targetPosition) {
+	grid _aux = distance_heightmap(_targetPosition);
+	for(size_t i = 0; i < gridData.size(); i++) {
+		gridData[i] = (_aux.gridData[i] == INT_MAX) ? NOTHING : EDGE;
+
+	}
+}
+
 #warning TODO: Finish this function (Still doesnt find the smallest way)
 std::vector<grid::position> grid::solve_chinese_postman() {
 	std::vector<position> _path;
