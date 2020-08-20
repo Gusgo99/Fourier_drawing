@@ -37,6 +37,8 @@ SOFTWARE.
 #include <functional>
 #include <vector>
 
+#include "grid.hpp"
+
 class DIPTool {
 	public:
 		// Important: The order of those should match the order used in the xrc file
@@ -88,11 +90,21 @@ class DIPTool {
 			expandCallback _callback) const;
 		
 		// Binary images analysis
+		grid generate_grid(
+			wxBitmap &_bitmap,
+			const std::vector<std::pair<wxColour, grid::data>> &_colours = {}
+		);
+		void draw_grid_to_bitmap(
+			wxBitmap &_bitmap,
+			const grid &_grid,
+			const std::vector<std::pair<grid::data, wxColour>> &_colours = {}
+		);
 		bool causes_connection(const std::pair<uint8_t, uint8_t> _NEIGHBOURHOOD);
 		std::pair<uint8_t, uint8_t> get_neighbour_pixels(
 			const wxNativePixelData &_pixels,
 			const wxPoint _point,
-			int _directions) const;
+			int _directions
+		) const;
 		
 		// General helper functions
 		static bool is_inside_screen(const wxPoint &_point, const wxSize &_size);

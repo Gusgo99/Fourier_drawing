@@ -33,7 +33,7 @@ SOFTWARE.
 #include <utility>
 #include <vector>
 
-// Class for treating binary images
+// Class for treating binary(up to this point) data in a grid
 class grid {
 	public:
 		using position = std::pair<size_t, size_t>;
@@ -67,18 +67,6 @@ class grid {
 		std::vector<position> find_every_value(const int _value) const;
 		position find_value(const int _value) const;
 		std::vector<position> solve_chinese_postman();
-
-		void _print() {
-			for(size_t i = 0; i < size.first; i++) {
-				for(size_t j = 0; j < size.second; j++) {
-					if(operator()(i, j) != INT_MAX) std::cout << operator()(i, j) << " ";
-					else std::cout << "- ";
-
-				}
-				std::cout << std::endl;
-
-			}
-		}
 		
 	private:
 		position size;

@@ -25,11 +25,9 @@ SOFTWARE.
 
 #include <algorithm>
 #include <complex>
-#include <stack>
 #include <queue>
 
 #include "windows/convertions.hpp"
-#include "grid.hpp"
 
 const std::array<wxPoint, 8> DIPTool::DIRECTIONS{
 	// N
@@ -260,26 +258,11 @@ void DIPTool::apply_skeletonization(wxBitmap &_bitmap) {
 }
 
 void DIPTool::apply_path_generation(wxBitmap &_bitmap) {
-	find_foreground(_bitmap);
-	grid image(_bitmap.GetHeight(), _bitmap.GetWidth());
-	image.fill(grid::NOTHING);
-	grid::position _position{0, 0};
-	for_each_pixel(
+	grid image = generate_grid(
 		_bitmap,
-		[&](const pixelData _pixel) {
-			if(_pixel == FOREGROUNDCOLOUR) {
-				image(_position) = grid::EDGE;
-
-			}
-
-			_position.second++;
-			if(_position.second == image.num_columns()) {
-				_position.first++;
-				_position.second = 0;
-
-			}
-
-			return BACKGROUNDCOLOUR;
+		{
+			{BACKGROUNDCOLOUR, grid::NOTHING},
+			{FOREGROUNDCOLOUR, grid::EDGE}
 		});
 
 	std::vector<grid::position> _path = image.solve_chinese_postman();
@@ -288,7 +271,7 @@ void DIPTool::apply_path_generation(wxBitmap &_bitmap) {
 	_floatPath.reserve(_path.size());
 
 	for(auto i: _path) {
-		_floatPath.push_back(to_complex_number(wxPoint(i.second, i.first), _bitmap.GetSize()));
+		_floatPath.push_back(to_complex_number(wxPoint(i.first, i.second), _bitmap.GetSize()));
 	}
 
 	info = _floatPath;
@@ -318,6 +301,7 @@ void DIPTool::for_each_pixel(wxBitmap &_bitmap, forEachCallback _callback) {
 std::vector<bool> DIPTool::expand_source_pixel(wxBitmap &_bitmap,
 	int _directions,
 	expandCallback _callback) const {
+	
 	wxSize _size = _bitmap.GetSize();
 	std::vector<bool> _visited(_size.GetWidth() * _size.GetHeight());
 	
@@ -352,6 +336,64 @@ std::vector<bool> DIPTool::expand_source_pixel(wxBitmap &_bitmap,
 	}
 	
 	return _visited;
+}
+
+grid DIPTool::generate_grid(
+	wxBitmap &_bitmap,
+	const std::vector<std::pair<wxColour, grid::data>> &_colours) {
+	
+	grid _result(_bitmap.GetWidth(), _bitmap.GetHeight());
+	_result.fill(grid::NOTHING);
+	grid::position _position{0, 0};
+
+	for_each_pixel(
+		_bitmap,
+		[&_position, &_result, &_colours](pixelData _pixel) {
+			for(auto i: _colours) {
+				if(_pixel == i.first) {
+					_result(_position) = i.second;
+					break;
+				}
+			}
+			_position.first++;
+			if(_position.first == _result.num_lines()) {
+				_position.first = 0;
+				_position.second++;
+			}
+
+			return wxColour(_pixel.Red(), _pixel.Green(), _pixel.Blue());
+		}
+	);
+
+	return _result;
+}
+
+void DIPTool::draw_grid_to_bitmap(
+	wxBitmap &_bitmap,
+	const grid &_grid,
+	const std::vector<std::pair<grid::data, wxColour>> &_colours) {
+	
+	grid::position _position{0, 0};
+
+	for_each_pixel(
+		_bitmap,
+		[&_position, &_grid, &_colours](const pixelData) {
+			wxColour _pixelColour = BACKGROUNDCOLOUR;
+			for(auto i: _colours) {
+				if(_grid(_position) == i.first) {
+					_pixelColour = i.second;
+					break;
+				}
+			}
+			_position.first++;
+			if(_position.first == _grid.num_lines()) {
+				_position.first = 0;
+				_position.second++;
+			}
+
+			return _pixelColour;
+		}
+	);
 }
 
 bool DIPTool::causes_connection(const std::pair<uint8_t, uint8_t> _neighbourhood) {
