@@ -40,6 +40,7 @@ wxBEGIN_EVENT_TABLE(DIPPanel, wxPanel)
 	
 	// Mouse event
 	EVT_LEFT_DOWN(DIPPanel::on_left_down)
+	EVT_RIGHT_DOWN(DIPPanel::on_right_down)
 	
 	// Rendering event
 	EVT_PAINT(DIPPanel::on_paint)
@@ -102,6 +103,16 @@ void DIPPanel::on_left_down(wxMouseEvent &_event) {
 	if(selectedTool >= 0) {
 		if(tools[selectedTool].uses_source()) {
 			tools[selectedTool].source = wxPoint(_event.GetX(), _event.GetY());
+			Refresh();
+			
+		}
+	}
+}
+
+void DIPPanel::on_right_down([[maybe_unused]]wxMouseEvent &_event) {
+	if(selectedTool >= 0) {
+		if(tools[selectedTool].uses_source()) {
+			tools[selectedTool].source = wxDefaultPosition;
 			Refresh();
 			
 		}

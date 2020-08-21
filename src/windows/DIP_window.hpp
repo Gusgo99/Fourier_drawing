@@ -45,6 +45,7 @@ class DIPPanel : public wxPanel {
 		void on_paint(wxPaintEvent &_event);
 		
 		void on_left_down(wxMouseEvent &_event);
+		void on_right_down(wxMouseEvent &_event);
 		
 		void render(wxDC &_dc);
 		
