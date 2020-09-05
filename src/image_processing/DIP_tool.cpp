@@ -204,49 +204,19 @@ void DIPTool::apply_selection(wxBitmap &_bitmap) {
 }
 
 void DIPTool::apply_skeletonization(wxBitmap &_bitmap) {
-	bool repeat;
-	wxColour _auxColour(
-		BACKGROUNDCOLOUR.Red() | FOREGROUNDCOLOUR.Red(),
-		BACKGROUNDCOLOUR.Green() ^ FOREGROUNDCOLOUR.Green(),
-		BACKGROUNDCOLOUR.Blue() & FOREGROUNDCOLOUR.Blue());
+	grid _image = generate_grid(
+		_bitmap,
+		{{BACKGROUNDCOLOUR, grid::NOTHING}, {FOREGROUNDCOLOUR, grid::EDGE}}
+	);
+
+	_image.skeletonize();
+
+	draw_grid_to_bitmap(
+		_bitmap,
+		_image,
+		{{grid::NOTHING, BACKGROUNDCOLOUR}, {grid::EDGE, FOREGROUNDCOLOUR}}
+	);
 	
-	do {
-		repeat = false;
-		find_foreground(_bitmap);
-		expand_source_pixel(
-			_bitmap,
-			SIDES | DIAGONALS,
-			[=](pixelData, std::pair<uint8_t, uint8_t> _neighbourhood) {
-				std::pair<uint8_t, uint8_t> _copy(0, _neighbourhood.second);
-				if(_neighbourhood.first & 0x01) _copy.first |= 0x01;
-				if(_neighbourhood.first & 0x02) _copy.second >>= 1;
-				if(_neighbourhood.first & 0x04) _copy.first |= 0x02;
-				if(_neighbourhood.first & 0x08) _copy.second >>= 1;
-				if(_neighbourhood.first & 0x10) _copy.first |= 0x04;
-				if(_neighbourhood.first & 0x20) _copy.second >>= 1;
-				if(_neighbourhood.first & 0x40) _copy.first |= 0x08;
-				if(_neighbourhood.first & 0x80) _copy.second >>= 1;
-				if(_copy.first != 0x0F) return _auxColour;
-				
-				return FOREGROUNDCOLOUR;
-			});
-		
-		expand_source_pixel(
-			_bitmap,
-			SIDES | DIAGONALS,
-			[&](pixelData _pixel, std::pair<uint8_t, uint8_t> _neighbourhood) {
-				if(_pixel == _auxColour) {
-					if(!causes_connection(_neighbourhood)) {
-						repeat = true;
-						return BACKGROUNDCOLOUR;
-						
-					}
-				}
-				
-				return FOREGROUNDCOLOUR;
-			});
-	
-	} while(repeat);
 }
 
 void DIPTool::apply_path_generation(wxBitmap &_bitmap) {
@@ -288,46 +258,6 @@ void DIPTool::for_each_pixel(wxBitmap &_bitmap, forEachCallback _callback) {
 			}
 		}
 	}
-}
-
-std::vector<bool> DIPTool::expand_source_pixel(wxBitmap &_bitmap,
-	int _directions,
-	expandCallback _callback) const {
-	
-	wxSize _size = _bitmap.GetSize();
-	std::vector<bool> _visited(_size.GetWidth() * _size.GetHeight());
-	
-	wxNativePixelData _pixels(_bitmap);
-	pixelData _pixel;
-	std::queue<wxPoint> _frontier;
-	
-	if(_pixels) {
-		_frontier.push(source);
-		while(!_frontier.empty()) {
-			wxPoint _currentPoint = _frontier.front();
-			_frontier.pop();
-			if(is_inside_screen(_currentPoint, _size)) {
-				if(!_visited[_currentPoint.x + _currentPoint.y * _size.GetWidth()]) {
-					_visited[_currentPoint.x + _currentPoint.y * _size.GetWidth()] = true;
-					auto _neighbourhood = get_neighbour_pixels(_pixels, _currentPoint, _directions);
-					uint8_t _tempNeighbours = _neighbourhood.first;
-					for(auto i: DIRECTIONS) {
-						if(_tempNeighbours & 0x01) _frontier.push(_currentPoint + i);
-						_tempNeighbours >>= 1;
-						
-					}
-					_pixel.MoveTo(_pixels, _currentPoint.x, _currentPoint.y);
-					wxColour _colour = _callback(_pixel, _neighbourhood);
-					_pixel.Red() = _colour.Red();
-					_pixel.Green() = _colour.Green();
-					_pixel.Blue() = _colour.Blue();
-					
-				}
-			}
-		}
-	}
-	
-	return _visited;
 }
 
 grid DIPTool::generate_grid(

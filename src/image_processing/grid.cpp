@@ -132,7 +132,10 @@ std::vector<int> grid::positions_data(const std::vector<position> _positions) co
 	std::vector<int> _data;
 	_data.reserve(_positions.size());
 
-	for(auto i: _positions) _data.push_back(operator()(i));
+	for(auto i: _positions) {
+		if(i < size) _data.push_back(operator()(i));
+
+	}
 
 	return _data;
 }
@@ -142,11 +145,29 @@ std::array<int, 8> grid::neighbours_data(const position _targetPosition) const {
 	auto _neighbourPositions = _targetPosition + NEIGHBOUROFFSET;
 	for(size_t i = 0; i < _neighbourPositions.size(); i++) {
 		if(_neighbourPositions[i] < size) _data[i] = operator()(_neighbourPositions[i]);
-		else _data[i] = 0;
+		else _data[i] = NOTHING;
 		
 	}
 	
 	return _data;
+}
+
+template<typename inputIt>
+int grid::count_regions(const inputIt _begin, const inputIt _end) {
+	int _counter = 0;
+	int _lastValue = *_begin;
+
+	for(auto i = _begin; i != _end; i++) {
+		if(_lastValue != *i) {
+			_counter++;
+			_lastValue = *i;
+
+		}
+	}
+
+	if(_lastValue != *_begin) _counter++;
+
+	return _counter;
 }
 
 grid grid::distance_heightmap(const position _targetPosition) const {
@@ -211,13 +232,13 @@ std::vector<grid::position> grid::find_every_value(const int _value) const {
 grid::position grid::find_value(const int _value) const {
 	position _pos{0, 0};
 
-	for(size_t i = 0; i < gridData.size(); i++) {
+	for(auto i: gridData) {
 		if(_pos.second == size.second) {
 			_pos.first++;
 			_pos.second = 0;
 
 		}
-		if(operator()(_pos) == _value) break;
+		if(i == _value) break;
 		_pos.second++;
 
 	}
@@ -230,6 +251,60 @@ void grid::remove_unconnected_cells(const position _targetPosition) {
 	for(size_t i = 0; i < gridData.size(); i++) {
 		gridData[i] = (_aux.gridData[i] == INT_MAX) ? NOTHING : EDGE;
 
+	}
+}
+
+void grid::skeletonize() {
+	std::vector<position> _contour;
+	int _visitedMarker = EDGE;
+	bool _modified;
+
+	// Make sure there are only 2 values in the grid
+	for(auto &i: gridData) {
+		if(i != NOTHING) i = _visitedMarker;
+	}
+
+	do {
+		std::queue<position> _frontier;
+		_frontier.push(find_value(_visitedMarker));
+		if(!(_frontier.front() < size)) break;
+		_contour.clear();
+		operator()(_frontier.front()) = _visitedMarker + 1;
+		while(!_frontier.empty()) {
+			bool _isContour = false;
+			position _currentPosition = _frontier.front();
+			std::array<int, 8> _neighbourData = neighbours_data(_currentPosition);
+			std::array<position, 8> _neighbourPosition = _currentPosition + NEIGHBOUROFFSET;
+			_frontier.pop();
+			for(size_t i = 0; i < _neighbourData.size(); i++) {
+				if((_neighbourData[i] == NOTHING) && (i % 2 == 1)) _isContour = true;
+				if(_neighbourData[i] == _visitedMarker) {
+					operator()(_neighbourPosition[i]) = _visitedMarker + 1;
+					_frontier.push(_neighbourPosition[i]);
+
+				}
+			}
+			if(_isContour) _contour.push_back(_currentPosition);
+		}
+
+		_modified = false;
+		for(auto i: _contour) {
+			std::array<int, 8> _data = neighbours_data(i);
+			int _regions = count_regions(_data.begin(), _data.end());
+			bool _causesConnection = _regions != 2;
+			int _count = std::count(_data.begin(), _data.end(), NOTHING);
+			if(!_causesConnection && (_count != 7)) {
+				_modified = true;
+				operator()(i) = NOTHING;
+			
+			}
+		}
+		_visitedMarker++;
+	} while(_modified);
+
+	// Make sure there are only 2 values in the grid
+	for(auto &i: gridData) {
+		if(i != NOTHING) i = EDGE;
 	}
 }
 

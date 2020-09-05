@@ -54,19 +54,22 @@ class grid {
 		position get_size() const;
 		
 		int& operator()(const size_t _line, const size_t _column);
-		int& operator()(const std::pair<size_t, size_t> _position);
+		int& operator()(const position _position);
 		int operator()(const size_t _line, const size_t _column) const;
-		int operator()(const std::pair<size_t, size_t> _position) const;
+		int operator()(const position _position) const;
 		
 		position max_neighbour(const position _targetPosition) const;
 		position min_neighbour(const position _targetPosition) const;
 		std::vector<int> positions_data(const std::vector<position> _positions) const;
 		std::array<int, 8> neighbours_data(const position _targetPosition) const;
+		template<typename inputIt>
+		static int count_regions(const inputIt _begin, const inputIt _end);
 		grid distance_heightmap(const position _targetPosition) const;
 		std::vector<position> descend_heightmap(const position _start) const;
 		std::vector<position> find_every_value(const int _value) const;
 		position find_value(const int _value) const;
 		void remove_unconnected_cells(const position _targetPosition);
+		void skeletonize();
 		std::vector<position> solve_chinese_postman();
 		
 	private:
