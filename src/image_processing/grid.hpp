@@ -41,8 +41,8 @@ class grid {
 		enum data {NOTHING, EDGE};
 		
 		grid(
-			const size_t _numLines = 0,
-			const size_t _numColumns = 0,
+			const size_t _numLines,
+			const size_t _numColumns,
 			const std::vector<int> &_gridData = {});
 		grid(
 			const position _size = {0, 0},
