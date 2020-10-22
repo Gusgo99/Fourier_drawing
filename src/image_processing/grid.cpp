@@ -152,10 +152,34 @@ std::array<int, 8> grid::neighbours_data(const position _targetPosition) const {
 	return _data;
 }
 
+std::array<int, 4> grid::diagonal_neighbours_data(const position _targetPosition) const {
+	std::array<int, 4> _data;
+	auto _neighbourPositions = _targetPosition + NEIGHBOUROFFSET;
+	for(size_t i = 0; i < _neighbourPositions.size(); i+=2) {
+		if(_neighbourPositions[i] < size) _data[i / 2] = operator()(_neighbourPositions[i]);
+		else _data[i / 2] = NOTHING;
+		
+	}
+	
+	return _data;
+}
+
+std::array<int, 4> grid::non_diagonal_neighbours_data(const position _targetPosition) const {
+	std::array<int, 4> _data;
+	auto _neighbourPositions = _targetPosition + NEIGHBOUROFFSET;
+	for(size_t i = 1; i < _neighbourPositions.size(); i+=2) {
+		if(_neighbourPositions[i] < size) _data[i / 2] = operator()(_neighbourPositions[i]);
+		else _data[i / 2] = NOTHING;
+		
+	}
+	
+	return _data;
+}
+
 template<typename inputIt>
 int grid::count_regions(const inputIt _begin, const inputIt _end) {
 	int _counter = 0;
-	int _lastValue = *_begin;
+	auto _lastValue = *_begin;
 
 	for(auto i = _begin; i != _end; i++) {
 		if(_lastValue != *i) {
@@ -246,69 +270,113 @@ grid::position grid::find_value(const int _value) const {
 	return _pos;
 }
 
+std::vector<grid::position> grid::get_contour() const {
+	std::vector<position> _contour;
+
+	for(size_t i = 0; i < size.first; i++) {
+		for(size_t j = 0; j < size.second; j++) {
+			if(operator()({i, j}) != NOTHING) {
+				std::array<int, 4> _neighbourhood = non_diagonal_neighbours_data({i, j});
+				int _nothingCount = std::count(_neighbourhood.begin(), _neighbourhood.end(), NOTHING);
+				if(_nothingCount != 0) {
+					_contour.push_back({i, j});
+	
+				}
+			}
+		}
+	}
+
+	return _contour;
+}
+
 void grid::remove_unconnected_cells(const position _targetPosition) {
 	grid _aux = distance_heightmap(_targetPosition);
+
 	for(size_t i = 0; i < gridData.size(); i++) {
 		gridData[i] = (_aux.gridData[i] == INT_MAX) ? NOTHING : EDGE;
 
 	}
 }
 
-void grid::skeletonize() {
-	std::vector<position> _contour;
-	int _visitedMarker = EDGE;
-	bool _modified;
+bool grid::remove_non_connecting_cells(const std::vector<position> &_positions) {
+	bool _modified = false;
 
-	// Make sure there are only 2 values in the grid
-	for(auto &i: gridData) {
-		if(i != NOTHING) i = _visitedMarker;
+	for(auto i: _positions) {
+		if(!causes_connections(i)) {
+			_modified = true;
+			operator()(i) = NOTHING;
+		}
 	}
 
+	return _modified;
+}
+
+void grid::skeletonize() {
+	bool _wasGridModified;
+	
 	do {
-		std::queue<position> _frontier;
-		_frontier.push(find_value(_visitedMarker));
-		if(!(_frontier.front() < size)) break;
-		_contour.clear();
-		operator()(_frontier.front()) = _visitedMarker + 1;
-		while(!_frontier.empty()) {
-			bool _isContour = false;
-			position _currentPosition = _frontier.front();
-			std::array<int, 8> _neighbourData = neighbours_data(_currentPosition);
-			std::array<position, 8> _neighbourPosition = _currentPosition + NEIGHBOUROFFSET;
-			_frontier.pop();
-			for(size_t i = 0; i < _neighbourData.size(); i++) {
-				if((_neighbourData[i] == NOTHING) && (i % 2 == 1)) _isContour = true;
-				if(_neighbourData[i] == _visitedMarker) {
-					operator()(_neighbourPosition[i]) = _visitedMarker + 1;
-					_frontier.push(_neighbourPosition[i]);
+		std::vector<position> _contour = get_contour();
+		_wasGridModified = remove_non_connecting_cells(_contour);
+
+	} while(_wasGridModified);
+
+}
+
+bool grid::causes_connections(const position _targetPosition) const {
+	std::array<int, 8> _neighbourhood = neighbours_data(_targetPosition);
+	std::array<bool, 8> _reacheable = {false, false, false, false, false, false, false, false};
+	std::queue<size_t> _frontier;
+
+	for(size_t i = 0; i < _neighbourhood.size(); i++) {
+		if(_neighbourhood[i] != NOTHING) {
+			_reacheable[i] = true;
+			_frontier.push(i);
+			break;
+
+		}
+	}
+
+	while(!_frontier.empty()) {
+		size_t _current = _frontier.front();
+		_frontier.pop();
+		for(auto i: {1, 7}) {
+			size_t _added = (_current + i) % _reacheable.size();
+			if(_neighbourhood[_added] != NOTHING && !_reacheable[_added]) {
+				_reacheable[_added] = true;
+				_frontier.push(_added);
+
+			}
+		}
+		if((_current % 2) == 1) {
+			for(auto i: {2, 6}) {
+				size_t _added = (_current + i) % _reacheable.size();
+				if(_neighbourhood[_added] != NOTHING && !_reacheable[_added]) {
+					_reacheable[_added] = true;
+					_frontier.push(_added);
 
 				}
 			}
-			if(_isContour) _contour.push_back(_currentPosition);
 		}
-
-		_modified = false;
-		for(auto i: _contour) {
-			std::array<int, 8> _data = neighbours_data(i);
-			int _regions = count_regions(_data.begin(), _data.end());
-			bool _causesConnection = _regions != 2;
-			int _count = std::count(_data.begin(), _data.end(), NOTHING);
-			if(!_causesConnection && (_count != 7)) {
-				_modified = true;
-				operator()(i) = NOTHING;
-			
-			}
-		}
-		_visitedMarker++;
-	} while(_modified);
-
-	// Make sure there are only 2 values in the grid
-	for(auto &i: gridData) {
-		if(i != NOTHING) i = EDGE;
 	}
+
+	bool _causesConnections = false;
+
+	for(size_t i = 0; i < _neighbourhood.size(); i++) {
+		if((_neighbourhood[i] != NOTHING) && !_reacheable[i]) {
+			_causesConnections = true;
+			break;
+
+		}
+	}
+
+	int _count = std::count(_neighbourhood.begin(), _neighbourhood.end(), NOTHING);
+
+	_causesConnections |= _count == 7;
+	_causesConnections &= _count != 8;
+
+	return _causesConnections;
 }
 
-#warning TODO: Finish this function (Still doesnt find the smallest way)
 std::vector<grid::position> grid::solve_chinese_postman() {
 	std::vector<position> _path;
 	std::vector<grid> _heightmaps;
@@ -317,11 +385,14 @@ std::vector<grid::position> grid::solve_chinese_postman() {
 
 	for(auto i: find_every_value(EDGE)) {
 		std::array<int, 8> _data = neighbours_data(i);
-		size_t _connections = _data.size() - std::count(_data.begin(), _data.end(), 0);
-		if((_connections % 2) == 1) _heightmaps.push_back(distance_heightmap(i));
-
+		size_t _connections = _data.size() - std::count(_data.begin(), _data.end(), NOTHING);
+		if((_connections % 2) == 1) {
+			_heightmaps.push_back(distance_heightmap(i));
+			operator()(i) = 2;
+			
+		}
 	}
-	
+
 	_path.push_back(_heightmaps[0].find_value(0));
 	operator()(_path.back()) = NOTHING;
 

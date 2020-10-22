@@ -220,20 +220,30 @@ void DIPTool::apply_skeletonization(wxBitmap &_bitmap) {
 }
 
 void DIPTool::apply_path_generation(wxBitmap &_bitmap) {
-	grid image = generate_grid(
+	grid _image = generate_grid(
 		_bitmap,
 		{
 			{BACKGROUNDCOLOUR, grid::NOTHING},
 			{FOREGROUNDCOLOUR, grid::EDGE}
 		});
 
-	std::vector<grid::position> _path = image.solve_chinese_postman();
+	std::vector<grid::position> _path = _image.solve_chinese_postman();
+
+	draw_grid_to_bitmap(
+		_bitmap,
+		_image,
+		{
+			{grid::NOTHING, BACKGROUNDCOLOUR},
+			{grid::EDGE, FOREGROUNDCOLOUR}
+		}
+	);
 
 	std::vector<std::complex<float>> _floatPath;
 	_floatPath.reserve(_path.size());
 
 	for(auto i: _path) {
 		_floatPath.push_back(to_complex_number(wxPoint(i.first, i.second), _bitmap.GetSize()));
+
 	}
 
 	info = _floatPath;
@@ -244,7 +254,7 @@ void DIPTool::for_each_pixel(wxBitmap &_bitmap, forEachCallback _callback) {
 	wxSize _size = _bitmap.GetSize();
 	wxNativePixelData _pixels(_bitmap);
 	pixelData _pixel = _pixels.GetPixels();
-	_pixel.Offset(_bitmap, 0, 0);
+
 	if(_pixels) {
 		for(int y = 0; y < _size.GetHeight(); y++) {
 			_pixel.MoveTo(_bitmap, 0, y);
