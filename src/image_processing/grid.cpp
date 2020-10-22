@@ -51,8 +51,9 @@ grid::grid(const size_t _numLines, const size_t _numColumns, const std::vector<i
 grid{{_numLines, _numColumns}, _gridData} {}
 
 grid::grid(const position _size, const std::vector<int> &_gridData):
-size{_size},
-gridData{_gridData} {
+	size{_size},
+	gridData{_gridData} {
+	
 	gridData.resize(size.first * size.second);
 	
 }
@@ -72,6 +73,14 @@ size_t grid::num_columns() const {
 
 grid::position grid::get_size() const {
 	return size;
+}
+
+std::vector<int>::iterator grid::begin() {
+	return gridData.begin();
+}
+
+std::vector<int>::iterator grid::end() {
+	return gridData.end();
 }
 
 int& grid::operator()(const size_t _line, const size_t _column) {

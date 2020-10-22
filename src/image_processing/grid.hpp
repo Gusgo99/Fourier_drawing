@@ -52,6 +52,9 @@ class grid {
 		size_t num_lines() const;
 		size_t num_columns() const;
 		position get_size() const;
+
+		std::vector<int>::iterator begin();
+		std::vector<int>::iterator end();
 		
 		int& operator()(const size_t _line, const size_t _column);
 		int& operator()(const position _position);
