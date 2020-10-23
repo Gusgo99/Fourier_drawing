@@ -90,6 +90,7 @@ class DIPTool {
 			expandCallback _callback) const;
 		
 		// Binary images analysis
+		grid generate_grid(wxBitmap &_bitmap, const std::function<int(wxColour)> &_converter);
 		grid generate_grid(
 			wxBitmap &_bitmap,
 			const std::vector<std::pair<wxColour, grid::data>> &_colours = {}

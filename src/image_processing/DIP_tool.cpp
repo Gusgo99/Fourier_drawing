@@ -270,6 +270,31 @@ void DIPTool::for_each_pixel(wxBitmap &_bitmap, forEachCallback _callback) {
 	}
 }
 
+grid DIPTool::generate_grid(wxBitmap &_bitmap, const std::function<int(wxColour)> &_converter) {
+	grid _result(_bitmap.GetWidth(), _bitmap.GetHeight());
+	_result.fill(grid::NOTHING);
+	grid::position _position{0, 0};
+
+	_result.fill(grid::NOTHING);
+
+	for_each_pixel(
+		_bitmap,
+		[&](pixelData _pixel) {
+			_result(_position) = _converter(wxColour{_pixel.Red(), _pixel.Green(), _pixel.Blue()});
+
+			_position.first++;
+			if(_position.first == _result.num_lines()) {
+				_position.first = 0;
+				_position.second++;
+			}
+
+			return wxColour(_pixel.Red(), _pixel.Green(), _pixel.Blue());
+		}
+	);
+
+	return _result;
+}
+
 grid DIPTool::generate_grid(
 	wxBitmap &_bitmap,
 	const std::vector<std::pair<wxColour, grid::data>> &_colours) {

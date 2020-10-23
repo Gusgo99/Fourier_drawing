@@ -33,11 +33,11 @@ SOFTWARE.
 #include <utility>
 #include <vector>
 
-// Class for treating binary(up to this point) data in a grid
 class grid {
 	public:
 		using position = std::pair<size_t, size_t>;
 		using offset = std::pair<int, int>;
+		using iterator = std::vector<int>::iterator;
 		enum data {NOTHING, EDGE};
 		
 		grid(
@@ -53,8 +53,8 @@ class grid {
 		size_t num_columns() const;
 		position get_size() const;
 
-		std::vector<int>::iterator begin();
-		std::vector<int>::iterator end();
+		iterator begin();
+		iterator end();
 		
 		int& operator()(const size_t _line, const size_t _column);
 		int& operator()(const position _position);
