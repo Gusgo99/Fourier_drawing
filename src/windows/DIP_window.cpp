@@ -34,8 +34,6 @@ SOFTWARE.
 
 #include <algorithm>
 
-#include "edit_window.hpp"
-
 wxBEGIN_EVENT_TABLE(DIPPanel, wxPanel)
 	
 	// Mouse event
@@ -47,72 +45,48 @@ wxBEGIN_EVENT_TABLE(DIPPanel, wxPanel)
 	
 wxEND_EVENT_TABLE()
 
-DIPPanel::DIPPanel(const wxImage &_image, wxWindow *_parent):
-wxPanel(_parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE),
-origBitmap(_image) {
-	tools.reserve(3);
+DIPPanel::DIPPanel(const wxImage &_image, wxWindow *_parent, wxWindow *_pointsDestination):
+	wxPanel{_parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SIMPLE},
+	selectedTool{INVALIDTOOL},
+	origBitmap{_image},
+	showPoints{false},
+	pointsDestination{dynamic_cast<editFrame*>(_pointsDestination)} {
+
+	tools.reserve(10);
 	
 	SetMinSize(origBitmap.GetSize());
 	
 	_parent -> GetSizer() -> Add(this, 0);
 	
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
-	
-	selectedTool = -1;
-	
-	showPoints = false;
+
+	selectedTool = INVALIDTOOL;
 	
 }
 
-void DIPPanel::on_paint([[maybe_unused]]wxPaintEvent &_event) {
+void DIPPanel::on_paint(wxPaintEvent&) {
 	wxAutoBufferedPaintDC _dc(this);
 	PrepareDC(_dc);
-	
-	wxBitmap _processedBitmap = origBitmap.GetSubBitmap(
-		wxRect(0, 0, origBitmap.GetWidth(), origBitmap.GetHeight()));
-	
-	for(auto &i: tools) i.apply(_processedBitmap);
-	
-	if(_dc.CanDrawBitmap()) _dc.DrawBitmap(_processedBitmap, 0, 0);
 
-	if(!tools.empty()) {
-		if(tools.back().generates_info()) {
-			auto parent = GetParent();
-			auto _editWindow = dynamic_cast<editFrame*>(parent);
-			while(_editWindow == nullptr) {
-				parent = parent -> GetParent();
-				_editWindow = dynamic_cast<editFrame*>(parent);
-			}
-			if(_editWindow != nullptr) {
-				std::any _information = tools.back().get_info();
-				auto _points = std::any_cast<std::vector<std::complex<float>>>(_information);
-				_editWindow -> set_points(_points);
+	paint_frame(_dc);
 
-			}
-		}
-	}
-	
-	if(selectedTool >= 0) {
-		wxASSERT(selectedTool < int(tools.size()));
-		if(tools[selectedTool].uses_source()) render(_dc);
-		
-	}
+	handle_information_from_tools();
 }
 
 void DIPPanel::on_left_down(wxMouseEvent &_event) {
-	if(selectedTool >= 0) {
-		if(tools[selectedTool].uses_source()) {
-			tools[selectedTool].source = wxPoint(_event.GetX(), _event.GetY());
+	if(selectedTool < tools.size()) {
+		if(tools[selectedTool] -> uses_source()) {
+			tools[selectedTool] -> set_source(_event.GetX(), _event.GetY());
 			Refresh();
 			
 		}
 	}
 }
 
-void DIPPanel::on_right_down([[maybe_unused]]wxMouseEvent &_event) {
-	if(selectedTool >= 0) {
-		if(tools[selectedTool].uses_source()) {
-			tools[selectedTool].source = wxDefaultPosition;
+void DIPPanel::on_right_down(wxMouseEvent&) {
+	if(selectedTool < tools.size()) {
+		if(tools[selectedTool] -> uses_source()) {
+			tools[selectedTool] -> set_source(wxDefaultPosition);
 			Refresh();
 			
 		}
@@ -124,7 +98,7 @@ void DIPPanel::render(wxDC &_dc) {
 	int _pointRadius = int(_dc.GetPPI().GetWidth() * 0.065);
 	_dc.SetPen(wxPen(wxColour(255, 0, 0)));
 	
-	wxPoint _selectedPoint = tools[selectedTool].source;
+	wxPoint _selectedPoint = tools[selectedTool] -> get_source();
 	
 	if(_selectedPoint != wxDefaultPosition) {
 		_dc.DrawCircle(_selectedPoint, _pointRadius);
@@ -133,17 +107,9 @@ void DIPPanel::render(wxDC &_dc) {
 	}
 }
 
-void DIPPanel::add_tool(const DIPTool::type _toolType) {
-	if(selectedTool >= 0) {
-		tools.emplace(tools.begin() + selectedTool + 1, _toolType);
-		selectedTool++;
-		
-	}
-	else {
-		tools.emplace_back(_toolType);
-		selectedTool = 0;
-		
-	}
+void DIPPanel::add_tool(const DIP::strategies _toolType) {
+	auto _addedStrategy = DIP::create_strategy(_toolType);
+	tools.emplace(tools.begin() + ++selectedTool, std::move(_addedStrategy));
 	Refresh();
 	
 }
@@ -157,21 +123,22 @@ void DIPPanel::remove_tool() {
 
 void DIPPanel::clear_tools() {
 	tools.clear();
-	selectedTool = -1;
+	selectedTool = INVALIDTOOL;
 	Refresh();
 	
 }
 
 void DIPPanel::select_tool(const int _selectedTool) {
 	if(tools.size() != 0) selectedTool = _selectedTool % tools.size();
-	else selectedTool = -1;
+	else selectedTool = INVALIDTOOL;
 	Refresh();
 	
 }
 
 void DIPPanel::set_tool_intensity(const double _intensity) {
-	if(selectedTool >= 0) {
-		tools[selectedTool].intensity = std::max(0.0, std::min(1.0, _intensity));
+	if(selectedTool < tools.size()) {
+		double _clampedIntensity = std::max(0.0, std::min(1.0, _intensity));
+		tools[selectedTool] -> set_intensity(_clampedIntensity);
 		Refresh();
 		
 	}
@@ -180,7 +147,7 @@ void DIPPanel::set_tool_intensity(const double _intensity) {
 double DIPPanel::get_tool_intensity() {
 	double _intensity = 0.5;
 	
-	if(selectedTool >= 0) _intensity = tools[selectedTool].intensity;
+	if(selectedTool < tools.size()) _intensity = tools[selectedTool] -> get_intensity();
 	
 	return _intensity;
 }
@@ -194,9 +161,45 @@ void DIPPanel::set_points_state(const bool _showPoints) {
 bool DIPPanel::should_show_slider() {
 	bool _show = false;
 	
-	if(selectedTool >= 0) _show = tools[selectedTool].uses_intensity();
+	if(selectedTool < tools.size()) _show = tools[selectedTool] -> uses_intensity();
 	
 	return _show;
+}
+
+void DIPPanel::paint_frame(wxDC &_dc) {
+	// Copying a bitmap won't actually copy it, but instead increase the refcount.
+	// This is done so there is an actual copy
+	wxBitmap _processedBitmap = origBitmap.GetSubBitmap(
+		wxRect(0, 0, origBitmap.GetWidth(), origBitmap.GetHeight())
+	);
+	
+	apply_valid_tools_to_bitmap(_processedBitmap);
+	
+	if(_dc.CanDrawBitmap()) _dc.DrawBitmap(_processedBitmap, 0, 0);
+	
+	if(selectedTool < tools.size()) {
+		if(tools[selectedTool] -> uses_source()) render(_dc);
+		
+	}
+	
+}
+
+void DIPPanel::apply_valid_tools_to_bitmap(wxBitmap &_bitmap) {
+	for(auto &i: tools) {
+		if(i != nullptr) i -> apply(_bitmap);
+	}
+}
+
+void DIPPanel::handle_information_from_tools() {
+	if(!tools.empty()) {
+		if(tools.back() -> generates_info()) {
+			if(pointsDestination != nullptr) {
+				std::any _information = tools.back() -> get_info();
+				auto _points = std::any_cast<std::vector<std::complex<float>>>(_information);
+				pointsDestination -> set_points(_points);
+			}
+		}
+	}
 }
 
 wxBEGIN_EVENT_TABLE(DIPFrame, wxFrame)
@@ -215,7 +218,7 @@ wxEND_EVENT_TABLE()
 DIPFrame::DIPFrame(const wxImage &_image, wxWindow *_parent) {
 	wxXmlResource::Get() -> LoadFrame(this, _parent, "DIPWindow");
 	
-	panel = new DIPPanel(_image, XRCCTRL(*this, "DIPWindow_Splitter_Right", wxScrolledWindow));
+	panel = new DIPPanel(_image, XRCCTRL(*this, "DIPWindow_Splitter_Right", wxScrolledWindow), _parent);
 	
 	list = XRCCTRL(*this, "DIPWindow_Splitter_Left_List", wxListBox);
 	
@@ -234,13 +237,13 @@ DIPFrame::DIPFrame(const wxImage &_image, wxWindow *_parent) {
 	
 }
 
-void DIPFrame::on_clear([[maybe_unused]]wxCommandEvent &_event) {
+void DIPFrame::on_clear(wxCommandEvent&) {
 	list -> Clear();
 	panel -> clear_tools();
 	
 }
 
-void DIPFrame::on_remove_tool([[maybe_unused]]wxCommandEvent &_event) {
+void DIPFrame::on_remove_tool(wxCommandEvent&) {
 	if(list -> GetSelection() != wxNOT_FOUND) {
 		int _removed = list -> GetSelection();
 		list -> Delete(_removed);
@@ -252,9 +255,9 @@ void DIPFrame::on_remove_tool([[maybe_unused]]wxCommandEvent &_event) {
 	}
 }
 
-void DIPFrame::on_add_tool([[maybe_unused]]wxCommandEvent &_event) {
+void DIPFrame::on_add_tool(wxCommandEvent&) {
 	int _selected = toolAdded -> GetSelection();
-	add_tool(toolAdded -> GetString(_selected), DIPTool::type(_selected));
+	add_tool(toolAdded -> GetString(_selected), _selected);
 	
 }
 
@@ -269,16 +272,18 @@ void DIPFrame::on_slider_scroll(wxCommandEvent &_event) {
 	
 }
 
-void DIPFrame::add_tool(const wxString _toolName, const DIPTool::type _toolType) {
-	if(list -> GetSelection() != wxNOT_FOUND) {
+void DIPFrame::add_tool(const wxString _toolName, const int _toolType) {
+	if(_toolType != wxNOT_FOUND) {
 		list -> Insert(_toolName, list -> GetSelection() + 1);
-		panel -> add_tool(_toolType);
+		DIP::strategies _addedTool = map_selected_item_to_strategy(_toolType);
+		panel -> add_tool(_addedTool);
 		list -> SetSelection(list -> GetSelection() + 1);
 		
 	}
 	else {
 		list -> Append(_toolName);
-		panel -> add_tool(_toolType);
+		DIP::strategies _addedTool = map_selected_item_to_strategy(_toolType);
+		panel -> add_tool(_addedTool);
 		list -> SetSelection(list -> GetCount() - 1);
 		
 	}
@@ -291,4 +296,15 @@ void DIPFrame::refresh_tool_info() {
 	panel -> select_tool(list -> GetSelection());
 	slider -> SetValue(panel -> get_tool_intensity() * sliderLimit);
 	
+}
+
+DIP::strategies DIPFrame::map_selected_item_to_strategy(const int _selected) {
+	constexpr std::array<DIP::strategies, 4> EQUIVALENCETABLE = {
+		DIP::strategies::THRESHOLD,
+		DIP::strategies::SELECTION,
+		DIP::strategies::SKELETONIZATION,
+		DIP::strategies::PATHGENERATION
+	};
+
+	return EQUIVALENCETABLE[_selected];
 }

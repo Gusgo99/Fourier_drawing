@@ -65,7 +65,7 @@ wxPanel(_parent, wxID_ANY) {
 	
 }
 
-void drawPanel::on_paint([[maybe_unused]]wxPaintEvent &_event) {
+void drawPanel::on_paint(wxPaintEvent&) {
 	wxAutoBufferedPaintDC _dc(this);
 	_dc.Clear();
 	wxMemoryDC _auxDC(permanentBitmap);
@@ -84,7 +84,7 @@ void drawPanel::on_paint([[maybe_unused]]wxPaintEvent &_event) {
 	
 }
 
-void drawPanel::on_refresh_timer([[maybe_unused]]wxTimerEvent &_event) {
+void drawPanel::on_refresh_timer(wxTimerEvent&) {
 	angle += angularSpeed;
 	if(angle > 6.28) angle = 0;
 	Refresh();
@@ -223,7 +223,7 @@ drawFrame::drawFrame(
 	
 }
 
-void drawFrame::on_clear([[maybe_unused]]wxCommandEvent &_event) {
+void drawFrame::on_clear(wxCommandEvent&) {
 	panel -> clear_image();
 	
 }

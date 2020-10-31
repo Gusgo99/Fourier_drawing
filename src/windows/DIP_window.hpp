@@ -34,11 +34,14 @@ SOFTWARE.
 
 #include <memory>
 
-#include "image_processing/DIP_tool.hpp"
+#include "edit_window.hpp"
+
+#include "image_processing/strategies/DIP_strategy.hpp"
+#include "image_processing/strategies/DIP_strategy_utilities.hpp"
 
 class DIPPanel : public wxPanel {
 	public:
-		DIPPanel(const wxImage &_image, wxWindow *_parent);
+		DIPPanel(const wxImage &_image, wxWindow *_parent, wxWindow *_pointsDestination);
 		DIPPanel(DIPPanel&) = delete;
 		DIPPanel& operator=(DIPPanel&) = delete;
 		
@@ -49,7 +52,7 @@ class DIPPanel : public wxPanel {
 		
 		void render(wxDC &_dc);
 		
-		void add_tool(const DIPTool::type _toolType);
+		void add_tool(const DIP::strategies _toolType);
 		void remove_tool();
 		void clear_tools();
 		void select_tool(const int _selectedTool);
@@ -61,10 +64,18 @@ class DIPPanel : public wxPanel {
 		void set_points_state(const bool _showPoints);
 		
 	private:
-		std::vector<DIPTool> tools;
-		int selectedTool;
+		void paint_frame(wxDC &_dc);
+		void apply_valid_tools_to_bitmap(wxBitmap &_bitmap);
+		void handle_information_from_tools();
+
+		std::vector<std::unique_ptr<DIP::strategy>> tools;
+		size_t selectedTool;
 		wxBitmap origBitmap;
 		bool showPoints;
+
+		editFrame *const pointsDestination;
+
+		static constexpr size_t INVALIDTOOL = std::numeric_limits<size_t>::max();
 		
 		wxDECLARE_EVENT_TABLE();
 	
@@ -87,8 +98,10 @@ class DIPFrame : public wxFrame {
 		void on_slider_scroll(wxCommandEvent &_event);
 	
 	private:
-		void add_tool(const wxString _toolName, const DIPTool::type _toolType);
+		void add_tool(const wxString _toolName, const int _toolType);
 		void refresh_tool_info();
+
+		DIP::strategies map_selected_item_to_strategy(const int _selected);
 		
 		DIPPanel *panel;
 		wxListBox *list;

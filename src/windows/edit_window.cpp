@@ -99,7 +99,7 @@ void editPanel::on_left_down(wxMouseEvent &_event) {
 	
 }
 
-void editPanel::on_left_up([[maybe_unused]]wxMouseEvent &_event) {
+void editPanel::on_left_up(wxMouseEvent&) {
 	selectedPoint = points.end();
 	
 }
@@ -128,7 +128,7 @@ void editPanel::on_right_up(wxMouseEvent &_event) {
 	
 }
 
-void editPanel::on_paint([[maybe_unused]]wxPaintEvent &_event) {
+void editPanel::on_paint(wxPaintEvent&) {
 	wxAutoBufferedPaintDC _dc(this);
 	_dc.Clear();
 	
@@ -136,7 +136,7 @@ void editPanel::on_paint([[maybe_unused]]wxPaintEvent &_event) {
 	
 }
 
-void editPanel::on_resize([[maybe_unused]]wxSizeEvent &_event) {
+void editPanel::on_resize(wxSizeEvent&) {
 	Refresh();
 	
 }
