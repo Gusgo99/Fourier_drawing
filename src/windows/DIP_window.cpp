@@ -209,6 +209,7 @@ wxBEGIN_EVENT_TABLE(DIPFrame, wxFrame)
 	EVT_BUTTON(XRCID("DIPWindow_RemoveTool"), DIPFrame::on_remove_tool)
 	EVT_BUTTON(XRCID("DIPWindow_AddTool"), DIPFrame::on_add_tool)
 	EVT_SLIDER(XRCID("DIPWindow_Intensity"), DIPFrame::on_slider_scroll)
+	EVT_SPINCTRL(XRCID("DIPWindow_IntensityEntry"), DIPFrame::on_intensity_entry)
 	
 	// List box
 	EVT_LISTBOX(XRCID("DIPWindow_Splitter_Left_List"), DIPFrame::on_list_select)
@@ -221,17 +222,20 @@ DIPFrame::DIPFrame(const wxImage &_image, wxWindow *_parent) {
 	panel = new DIPPanel(_image, XRCCTRL(*this, "DIPWindow_Splitter_Right", wxScrolledWindow), _parent);
 	
 	list = XRCCTRL(*this, "DIPWindow_Splitter_Left_List", wxListBox);
-	
 	slider = XRCCTRL(*this, "DIPWindow_Intensity", wxSlider);
+	toolAdded = XRCCTRL(*this, "DIPWindow_ToolSelection", wxChoice);
+	intensityEntry = XRCCTRL(*this, "DIPWindow_IntensityEntry", wxSpinCtrl);
 	
 	// Gets the maximum value the slider can reach based on data loaded from the xml resource file
 	// Obs: It does assume that the minimum value is 0
 	sliderLimit = slider -> GetMax();
-	
-	toolAdded = XRCCTRL(*this, "DIPWindow_ToolSelection", wxChoice);
+
+	wxASSERT(slider -> GetMin() == 0);
+	wxASSERT(intensityEntry -> GetMin() == 0);
+	wxASSERT(slider -> GetMax() == intensityEntry -> GetMax());
 	
 	// Makes sure the size is enough to display the toolbar
-	SetMinSize(wxSize(550, 100));
+	SetMinSize(wxSize(610, 100));
 	
 	Show(true);
 	
@@ -269,7 +273,13 @@ void DIPFrame::on_list_select(wxCommandEvent &_event) {
 
 void DIPFrame::on_slider_scroll(wxCommandEvent &_event) {
 	panel -> set_tool_intensity(_event.GetInt() / double(sliderLimit));
+	refresh_tool_info();
 	
+}
+
+void DIPFrame::on_intensity_entry(wxSpinEvent &_event) {
+	panel -> set_tool_intensity(_event.GetPosition() / double(sliderLimit));
+	refresh_tool_info();
 }
 
 void DIPFrame::add_tool(const wxString _toolName, const int _toolType) {
@@ -292,9 +302,11 @@ void DIPFrame::add_tool(const wxString _toolName, const int _toolType) {
 }
 
 void DIPFrame::refresh_tool_info() {
-	slider -> Enable(panel -> should_show_slider());
 	panel -> select_tool(list -> GetSelection());
+	slider -> Enable(panel -> should_show_slider());
 	slider -> SetValue(panel -> get_tool_intensity() * sliderLimit);
+	intensityEntry -> Enable(panel -> should_show_slider());
+	intensityEntry -> SetValue(panel -> get_tool_intensity() * sliderLimit);
 	
 }
 

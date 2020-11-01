@@ -30,6 +30,7 @@ SOFTWARE.
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 #include <wx/wx.h>
+#include <wx/spinctrl.h>
 #pragma GCC diagnostic pop
 
 #include <memory>
@@ -96,6 +97,7 @@ class DIPFrame : public wxFrame {
 		void on_list_select(wxCommandEvent &_event);
 		
 		void on_slider_scroll(wxCommandEvent &_event);
+		void on_intensity_entry(wxSpinEvent &_event);
 	
 	private:
 		void add_tool(const wxString _toolName, const int _toolType);
@@ -107,6 +109,7 @@ class DIPFrame : public wxFrame {
 		wxListBox *list;
 		wxSlider *slider;
 		wxChoice *toolAdded;
+		wxSpinCtrl *intensityEntry;
 		
 		int sliderLimit;
 		

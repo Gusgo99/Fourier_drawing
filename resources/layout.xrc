@@ -2,7 +2,7 @@
 <resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
 	<object class="wxFrame" name="DIPWindow">
 		<style>wxCAPTION|wxCLOSE_BOX|wxDEFAULT_FRAME_STYLE|wxMINIMIZE_BOX|wxSYSTEM_MENU</style>
-		<size>600,400</size>
+		<size>650,400</size>
 		<font>
 			<style>normal</style>
 			<weight>normal</weight>
@@ -24,21 +24,31 @@
 				<markup>0</markup>
 				<bitmap />
 			</object>
-			<object class="separator" />
-			<object class="wxSlider" name="DIPWindow_Intensity">
-				<style>wxSL_HORIZONTAL</style>
-				<size>150,-1</size>
-				<tooltip>Choose the intensity of the tool selected in the list</tooltip>
-				<value>1024</value>
-				<min>0</min>
-				<max>2048</max>
-			</object>
 			<object class="wxButton" name="DIPWindow_RemoveTool">
 				<tooltip>Remove the selected tool in the list</tooltip>
 				<label>Remove tool</label>
 				<default>0</default>
 				<markup>0</markup>
 				<bitmap />
+			</object>
+			<object class="separator" />
+			<object class="wxSlider" name="DIPWindow_Intensity">
+				<style>wxSL_HORIZONTAL</style>
+				<size>150,-1</size>
+				<enabled>0</enabled>
+				<tooltip>Choose the intensity of the tool selected in the list</tooltip>
+				<value>500</value>
+				<min>0</min>
+				<max>1000</max>
+			</object>
+			<object class="wxSpinCtrl" name="DIPWindow_IntensityEntry">
+				<style>wxSP_ARROW_KEYS</style>
+				<size>60,-1</size>
+				<enabled>0</enabled>
+				<tooltip>Choose the intensity of the tool selected in the list</tooltip>
+				<value>500</value>
+				<min>0</min>
+				<max>1000</max>
 			</object>
 			<object class="separator" />
 			<object class="wxChoice" name="DIPWindow_ToolSelection">
