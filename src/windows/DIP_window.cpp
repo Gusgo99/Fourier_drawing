@@ -185,9 +185,11 @@ void DIPPanel::paint_frame(wxDC &_dc) {
 }
 
 void DIPPanel::apply_valid_tools_to_bitmap(wxBitmap &_bitmap) {
+	wxBeginBusyCursor(wxHOURGLASS_CURSOR);
 	for(auto &i: tools) {
 		if(i != nullptr) i -> apply(_bitmap);
 	}
+	wxEndBusyCursor();
 }
 
 void DIPPanel::handle_information_from_tools() {
