@@ -48,6 +48,10 @@ namespace DIP {
             case strategies::PATHGENERATION:
                 _newStrategy = std::make_unique<pathGenerationStrategy>();
                 break;
+
+            default:
+                wxASSERT(false);
+                break;
         }
 
         return _newStrategy;
