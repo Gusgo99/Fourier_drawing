@@ -25,12 +25,7 @@ SOFTWARE.
 #define DRAW_MODE_HPP
 #pragma once
 
-#include "debug.hpp"
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
-#include <wx/wx.h>
-#pragma GCC diagnostic pop
+#include "wxWidgets_headers.hpp"
 
 #include <complex>
 #include <vector>

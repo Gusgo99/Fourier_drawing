@@ -29,11 +29,7 @@ SOFTWARE.
 #include <complex>
 #include <cmath>
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
-#include <wx/wx.h>
-#include <wx/dcbuffer.h>
-#pragma GCC diagnostic pop
+#include "wxWidgets_headers.hpp"
 
 inline int norm(const wxPoint &_point) {
 	return std::sqrt(_point.x * _point.x + _point.y * _point.y);

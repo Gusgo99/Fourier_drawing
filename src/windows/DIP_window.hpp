@@ -25,13 +25,7 @@ SOFTWARE.
 #define DIP_WINDOW_HPP
 #pragma once
 
-#include "debug.hpp"
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
-#include <wx/wx.h>
-#include <wx/spinctrl.h>
-#pragma GCC diagnostic pop
+#include "wxWidgets_headers.hpp"
 
 #include <memory>
 

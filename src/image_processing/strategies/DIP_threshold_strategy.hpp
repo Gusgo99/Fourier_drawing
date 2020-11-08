@@ -24,7 +24,6 @@ SOFTWARE.
 #ifndef DIP_THRESHOLD_STRATEGY_HPP
 #define DIP_THRESHOLD_STRATEGY_HPP
 #pragma once
-#include "debug.hpp"
 
 #include "DIP_strategy.hpp"
 #include  "image_processing/grid.hpp"

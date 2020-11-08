@@ -23,11 +23,7 @@ SOFTWARE.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "DIP_skeletonization_strategy.hpp"
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
-#include <wx/wx.h>
-#include <wx/rawbmp.h>
-#pragma GCC diagnostic pop
+#include "wxWidgets_headers.hpp"
 
 namespace DIP {
 	void skeletonizationStrategy::apply(wxBitmap &_bitmap) {

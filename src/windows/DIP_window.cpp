@@ -23,15 +23,6 @@ SOFTWARE.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "DIP_window.hpp"
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
-#include <wx/dcbuffer.h>
-#include <wx/listbox.h>
-#include <wx/tglbtn.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/scrolwin.h>
-#pragma GCC diagnostic pop
-
 #include <algorithm>
 
 wxBEGIN_EVENT_TABLE(DIPPanel, wxPanel)

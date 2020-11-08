@@ -25,8 +25,6 @@ SOFTWARE.
 #define GRID_HPP
 #pragma once
 
-#include "debug.hpp"
-
 #include <iostream>
 
 #include <array>

@@ -23,11 +23,7 @@ SOFTWARE.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "DIP_path_generation_strategy.hpp"
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
-#include <wx/wx.h>
-#include <wx/rawbmp.h>
-#pragma GCC diagnostic pop
+#include "wxWidgets_headers.hpp"
 
 #include <vector>
 #include <complex>

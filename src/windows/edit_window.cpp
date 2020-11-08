@@ -23,13 +23,6 @@ SOFTWARE.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "edit_window.hpp"
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
-#include <wx/dcbuffer.h>
-#include <wx/aboutdlg.h>
-#include <wx/xrc/xmlres.h>
-#pragma GCC diagnostic pop
-
 #include <fstream>
 
 #include "convertions.hpp"

@@ -24,7 +24,6 @@ SOFTWARE.
 #ifndef DIP_STRATEGY_UTILITIES_HPP
 #define DIP_STRATEGY_UTILITIES_HPP
 #pragma once
-#include "debug.hpp"
 
 #include <memory>
 

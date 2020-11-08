@@ -21,24 +21,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#ifndef MAIN_HPP
-#define MAIN_HPP
+#ifndef WXWIDGETS_HEADERS_HPP
+#define WXWIDGETS_HEADERS_HPP
 #pragma once
 
-#include "wxWidgets_headers.hpp"
-
-#include "windows/edit_window.hpp"
-
-class mainClass : public wxApp {
-	public:
-		mainClass(): wxApp() {}
-	private:
-		mainClass(mainClass&) = delete;
-		mainClass& operator=(mainClass&) = delete;
-		bool OnInit();
-		
-		editFrame *editWindow;
-	
-};
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wdeprecated-copy"
+#include <wx/wx.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/spinctrl.h>
+#include <wx/dcbuffer.h>
+#include <wx/aboutdlg.h>
+#include <wx/rawbmp.h>
+#include <wx/dcbuffer.h>
+#include <wx/tglbtn.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/dcbuffer.h>
+#include <wx/dcbuffer.h>
+#include <wx/listbox.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/scrolwin.h>
+#pragma GCC diagnostic pop
 
 #endif

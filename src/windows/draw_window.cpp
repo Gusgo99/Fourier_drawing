@@ -23,13 +23,6 @@ SOFTWARE.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "draw_window.hpp"
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
-#include <wx/dcbuffer.h>
-#include <wx/tglbtn.h>
-#include <wx/xrc/xmlres.h>
-#pragma GCC diagnostic pop
-
 #include "convertions.hpp"
 #include "math/kiss_fft.h"
 

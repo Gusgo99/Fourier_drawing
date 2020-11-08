@@ -6,41 +6,49 @@ project("Fourier_drawing")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Add directory for cmake modules
-set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${PROJECT_SOURCE_DIR}/cmake")
+set(INTERPROCEDURAL_OPTIMIZATION_RELEASE ON)
+
+include("${PROJECT_SOURCE_DIR}/cmake/standard_warnings_and_optimizations.cmake")
+include("${PROJECT_SOURCE_DIR}/cmake/copy_resources_to_binary_directory.cmake")
 
 find_package(wxWidgets REQUIRED xrc html xml core base)
-
-include("${wxWidgets_USE_FILE}")
 
 add_definitions("-DUNICODE")
 add_definitions("-D_UNICODE")
 
-# Add include directories
+if((CMAKE_CXX_COMPILER_ID STREQUAL GNU) AND (CMAKE_BUILD_TYPE STREQUAL Debug))
+	add_definitions("-D_GLIBCXX_DEBUG")
+endif()
+
 include_directories("${PROJECT_SOURCE_DIR}/src")
 include_directories("${PROJECT_SOURCE_DIR}/include")
 include_directories("${wxWidgets_INCLUDE_DIRS}")
 
-# Define compiler options for each build
-if(CMAKE_BUILD_TYPE STREQUAL Release)
-	add_link_options(-mwindows -flto)
+file(GLOB_RECURSE CXX_FILES "${PROJECT_SOURCE_DIR}/src/*.cpp")
+file(GLOB_RECURSE C_FILES "${PROJECT_SOURCE_DIR}/src/*.c")
+
+add_library(CXX_OBJECT_FILES OBJECT "${CXX_FILES}")
+add_library(C_OBJECT_FILES OBJECT "${C_FILES}")
+
+set_standard_c_flags(C_OBJECT_FILES PUBLIC)
+set_standard_cxx_flags(CXX_OBJECT_FILES PUBLIC)
+
+target_precompile_headers(
+	CXX_OBJECT_FILES
+	PRIVATE
+	"${PROJECT_SOURCE_DIR}/include/wxWidgets_headers.hpp"
+)
+
+if((CMAKE_BUILD_TYPE STREQUAL Debug) OR (NOT WIN32))
+	add_executable(run "")
 else()
-	add_definitions(-DDEBUG)
-	add_compile_options(-Og -Wall -Wextra -Wpedantic -Wshadow -Wcast-align -Wunused)
-	add_compile_options(-Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual)
+	add_executable(run WIN32 "")
 endif()
 
-file(GLOB_RECURSE RESOURCES "${PROJECT_SOURCE_DIR}/resources/*")
-file(
-	COPY
-	"${PROJECT_SOURCE_DIR}/resources/layout.xrc"
-	DESTINATION
-	"${${CMAKE_PROJECT_NAME}_BINARY_DIR}/resources")
+set_standard_linker_flags(run PRIVATE)
 
-# Add files in subdirectories
-set(OBJECT_FILES "")
-add_subdirectory("${PROJECT_SOURCE_DIR}/src")
+target_link_libraries(run PRIVATE ${wxWidgets_LIBRARIES})
+target_link_libraries(run PRIVATE CXX_OBJECT_FILES)
+target_link_libraries(run PRIVATE C_OBJECT_FILES)
 
-# Created the executable
-add_executable(run "${PROJECT_SOURCE_DIR}/src/main.cpp")
-target_link_libraries(run PRIVATE ${wxWidgets_LIBRARIES} "${OBJECT_FILES}")
+copy_resources_to_binary_directory()
