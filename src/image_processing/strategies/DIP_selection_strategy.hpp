@@ -30,14 +30,14 @@ SOFTWARE.
 
 namespace DIP {
 	class selectionStrategy: public strategy {
-		public:
-			selectionStrategy() = default;
-			virtual ~selectionStrategy() = default;
-			
-			void apply(wxBitmap &_bitmap) final;
-			bool uses_intensity() const final;
-			bool uses_source() const final;
-			bool generates_info() const final;
+	public:
+		selectionStrategy() = default;
+		virtual ~selectionStrategy() = default;
+		
+		void apply(wxBitmap &_bitmap) final;
+		bool uses_intensity() const final;
+		bool uses_source() const final;
+		bool generates_info() const final;
 
 	};
 }

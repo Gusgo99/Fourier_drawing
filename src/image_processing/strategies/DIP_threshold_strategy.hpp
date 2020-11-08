@@ -30,14 +30,14 @@ SOFTWARE.
 
 namespace DIP {
 	class thresholdStrategy: public strategy {
-		public:
-			thresholdStrategy() = default;
-			virtual ~thresholdStrategy() = default;
-			
-			void apply(wxBitmap &_bitmap)  final;
-			bool uses_intensity() const final;
-			bool uses_source() const final;
-			bool generates_info() const final;
+	public:
+		thresholdStrategy() = default;
+		virtual ~thresholdStrategy() = default;
+		
+		void apply(wxBitmap &_bitmap)  final;
+		bool uses_intensity() const final;
+		bool uses_source() const final;
+		bool generates_info() const final;
 
 	};
 }

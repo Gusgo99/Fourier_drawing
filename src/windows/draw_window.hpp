@@ -31,64 +31,64 @@ SOFTWARE.
 #include <vector>
 
 class drawPanel : public wxPanel {
-	public:
-		drawPanel(
-			const std::vector<std::complex<float>> &_points,
-			wxWindow *_parent,
-			const wxSize &_size);
-		drawPanel(drawPanel&) = delete;
-		drawPanel& operator=(drawPanel&) = delete;
-		
-		void on_paint(wxPaintEvent &_event);
-		void on_refresh_timer(wxTimerEvent &_event);
-		
-		void clear_image();
-		void set_circle_state(const bool _drawCircles);
-		void set_point_state(const bool _drawPoints);
+public:
+	drawPanel(
+		const std::vector<std::complex<float>> &_points,
+		wxWindow *_parent,
+		const wxSize &_size);
+	drawPanel(drawPanel&) = delete;
+	drawPanel& operator=(drawPanel&) = delete;
 	
-	private:
-		const wxColour POINTSCOLOUR = wxColour(0, 0, 0);
-		const wxColour CIRCLECOLOUR = wxColour(0, 0, 255);
-		const wxColour TRACECOLOUR = wxColour(0, 255, 0);
-		
-		void render(wxDC &_temporary, wxDC &_permanent);
-		void generate_coefficients(const std::vector<std::complex<float>> &_points);
-		
-		std::vector<std::complex<float>> points;
-		std::vector<std::complex<float>> coefficients;
-		
-		wxTimer refreshTimer;
-		wxBitmap permanentBitmap;
-		wxPoint lastCenter;
-		double angularSpeed;
-		double angle;
-		bool drawCircles;
-		bool drawPoints;
-		
-		static constexpr int TIMERID = 5;
-		
-		wxDECLARE_EVENT_TABLE();
+	void on_paint(wxPaintEvent &_event);
+	void on_refresh_timer(wxTimerEvent &_event);
+	
+	void clear_image();
+	void set_circle_state(const bool _drawCircles);
+	void set_point_state(const bool _drawPoints);
+
+private:
+	const wxColour POINTSCOLOUR = wxColour(0, 0, 0);
+	const wxColour CIRCLECOLOUR = wxColour(0, 0, 255);
+	const wxColour TRACECOLOUR = wxColour(0, 255, 0);
+	
+	void render(wxDC &_temporary, wxDC &_permanent);
+	void generate_coefficients(const std::vector<std::complex<float>> &_points);
+	
+	std::vector<std::complex<float>> points;
+	std::vector<std::complex<float>> coefficients;
+	
+	wxTimer refreshTimer;
+	wxBitmap permanentBitmap;
+	wxPoint lastCenter;
+	double angularSpeed;
+	double angle;
+	bool drawCircles;
+	bool drawPoints;
+	
+	static constexpr int TIMERID = 5;
+	
+	wxDECLARE_EVENT_TABLE();
 	
 };
 
 class drawFrame : public wxFrame {
-	public:
-		drawFrame(
-			const std::vector<std::complex<float>> &_points,
-			wxWindow *_parent,
-			const wxSize _size,
-			const bool _maximize);
-		drawFrame(drawFrame&) = delete;
-		drawFrame& operator=(drawFrame&) = delete;
-		
-		void on_clear(wxCommandEvent &_event);
-		void on_hide_circles(wxCommandEvent &_event);
-		void on_show_points(wxCommandEvent &_event);
+public:
+	drawFrame(
+		const std::vector<std::complex<float>> &_points,
+		wxWindow *_parent,
+		const wxSize _size,
+		const bool _maximize);
+	drawFrame(drawFrame&) = delete;
+	drawFrame& operator=(drawFrame&) = delete;
 	
-	private:
-		drawPanel *panel;
-		
-		wxDECLARE_EVENT_TABLE();
+	void on_clear(wxCommandEvent &_event);
+	void on_hide_circles(wxCommandEvent &_event);
+	void on_show_points(wxCommandEvent &_event);
+
+private:
+	drawPanel *panel;
+	
+	wxDECLARE_EVENT_TABLE();
 	
 };
 

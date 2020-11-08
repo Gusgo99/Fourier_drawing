@@ -32,82 +32,82 @@ SOFTWARE.
 #include <vector>
 
 class editPanel : public wxPanel {
-	public:
-		editPanel(wxWindow *_parent, const wxSize &_size);
-		editPanel(editPanel&) = delete;
-		editPanel& operator=(editPanel&) = delete;
-		
-		void set_points(const std::vector<std::complex<float>> &_points);
-		void clear_points();
-		
-		// Mouse event handlers
-		void on_left_down(wxMouseEvent &_event);
-		void on_left_up(wxMouseEvent &_event);
-		void on_motion(wxMouseEvent &_event);
-		void on_right_up(wxMouseEvent &_event);
-		
-		// Render event handler
-		void on_paint(wxPaintEvent &_event);
-		
-		// Resize event handler
-		void on_resize(wxSizeEvent &_event);
-		
-		const std::vector<std::complex<float>>& get_points() const;
-		
-		void show_points(const bool _show);
-		
-		bool read_points(const std::string &_fileName);
-		bool save_points(const std::string &_fileName);
-		bool verify_wip();
-		
-	private:
-		void render(wxDC &_dc);
-		
-		std::vector<std::complex<float>> points;
-		std::vector<std::complex<float>> savedPoints;
-		std::vector<std::complex<float>>::iterator selectedPoint;
-		std::vector<std::complex<float>>::iterator lastSelectedPoint;
-		
-		int pointRadius;
-		
-		const wxColour POINTSCOLOUR = wxColour(0, 0, 255);
-		const wxColour TRACECOLOUR = wxColour(0, 255, 0);
-		const wxColour SELECTEDCOLOUR = wxColour(255, 0, 0);
-		static constexpr size_t HIDECIRCLELIMITS = 200;
-		
-		wxDECLARE_EVENT_TABLE();
+public:
+	editPanel(wxWindow *_parent, const wxSize &_size);
+	editPanel(editPanel&) = delete;
+	editPanel& operator=(editPanel&) = delete;
+	
+	void set_points(const std::vector<std::complex<float>> &_points);
+	void clear_points();
+	
+	// Mouse event handlers
+	void on_left_down(wxMouseEvent &_event);
+	void on_left_up(wxMouseEvent &_event);
+	void on_motion(wxMouseEvent &_event);
+	void on_right_up(wxMouseEvent &_event);
+	
+	// Render event handler
+	void on_paint(wxPaintEvent &_event);
+	
+	// Resize event handler
+	void on_resize(wxSizeEvent &_event);
+	
+	const std::vector<std::complex<float>>& get_points() const;
+	
+	void show_points(const bool _show);
+	
+	bool read_points(const std::string &_fileName);
+	bool save_points(const std::string &_fileName);
+	bool verify_wip();
+	
+private:
+	void render(wxDC &_dc);
+	
+	std::vector<std::complex<float>> points;
+	std::vector<std::complex<float>> savedPoints;
+	std::vector<std::complex<float>>::iterator selectedPoint;
+	std::vector<std::complex<float>>::iterator lastSelectedPoint;
+	
+	int pointRadius;
+	
+	const wxColour POINTSCOLOUR = wxColour(0, 0, 255);
+	const wxColour TRACECOLOUR = wxColour(0, 255, 0);
+	const wxColour SELECTEDCOLOUR = wxColour(255, 0, 0);
+	static constexpr size_t HIDECIRCLELIMITS = 200;
+	
+	wxDECLARE_EVENT_TABLE();
 	
 };
 
 class editFrame : public wxFrame {
-	public:
-		editFrame();
-		editFrame(editFrame&) = delete;
-		editFrame& operator=(editFrame&) = delete;
+public:
+	editFrame();
+	editFrame(editFrame&) = delete;
+	editFrame& operator=(editFrame&) = delete;
 
-		void set_points(const std::vector<std::complex<float>> &_points);
-		
-		// File menu
-		void on_open_file(wxCommandEvent &_event);
-		void on_open_image(wxCommandEvent &_event);
-		void on_save_file(wxCommandEvent &_event);
-		void on_save_as_file(wxCommandEvent &_event);
-		void on_exit(wxCommandEvent &_event);
-		
-		// Edit menu
-		void on_clear(wxCommandEvent &_event);
-		void on_draw(wxCommandEvent &_event);
-		
-		// Info menu
-		void on_about(wxCommandEvent &_event);
-		
-		editPanel* get_panel() { return panel; }
-		
-	private:
-		editPanel *panel;
-		std::string currentFile;
-		
-		wxDECLARE_EVENT_TABLE();
+	void set_points(const std::vector<std::complex<float>> &_points);
+	
+	// File menu
+	void on_open_file(wxCommandEvent &_event);
+	void on_open_image(wxCommandEvent &_event);
+	void on_save_file(wxCommandEvent &_event);
+	void on_save_as_file(wxCommandEvent &_event);
+	void on_exit(wxCommandEvent &_event);
+	
+	// Edit menu
+	void on_clear(wxCommandEvent &_event);
+	void on_draw(wxCommandEvent &_event);
+	
+	// Info menu
+	void on_about(wxCommandEvent &_event);
+	
+	editPanel* get_panel() { return panel; }
+	
+private:
+	editPanel *panel;
+	std::string currentFile;
+	
+	wxDECLARE_EVENT_TABLE();
 	
 };
 

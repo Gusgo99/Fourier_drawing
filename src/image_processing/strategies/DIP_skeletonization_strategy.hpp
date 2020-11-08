@@ -30,14 +30,14 @@ SOFTWARE.
 
 namespace DIP {
 	class skeletonizationStrategy: public strategy {
-		public:
-			skeletonizationStrategy() = default;
-			virtual ~skeletonizationStrategy() = default;
-			
-			void apply(wxBitmap &_bitmap) final;
-			bool uses_intensity() const final;
-			bool uses_source() const final;
-			bool generates_info() const final;
+	public:
+		skeletonizationStrategy() = default;
+		virtual ~skeletonizationStrategy() = default;
+		
+		void apply(wxBitmap &_bitmap) final;
+		bool uses_intensity() const final;
+		bool uses_source() const final;
+		bool generates_info() const final;
 
 	};
 }

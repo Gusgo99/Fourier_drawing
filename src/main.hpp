@@ -30,15 +30,14 @@ SOFTWARE.
 #include "windows/edit_window.hpp"
 
 class mainClass : public wxApp {
-	public:
-		mainClass(): wxApp() {}
-	private:
-		mainClass(mainClass&) = delete;
-		mainClass& operator=(mainClass&) = delete;
-		bool OnInit();
-		
-		editFrame *editWindow;
+public:
+	mainClass(): wxApp() {}
+private:
+	mainClass(mainClass&) = delete;
+	mainClass& operator=(mainClass&) = delete;
+	bool OnInit();
 	
+	editFrame *editWindow;
 };
 
 #endif

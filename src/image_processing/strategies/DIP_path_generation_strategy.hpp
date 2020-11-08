@@ -30,14 +30,14 @@ SOFTWARE.
 
 namespace DIP {
 	class pathGenerationStrategy: public strategy {
-		public:
-			pathGenerationStrategy() = default;
-			virtual ~pathGenerationStrategy() = default;
-			
-			void apply(wxBitmap &_bitmap)  final;
-			bool uses_intensity() const final;
-			bool uses_source() const final;
-			bool generates_info() const final;
+	public:
+		pathGenerationStrategy() = default;
+		virtual ~pathGenerationStrategy() = default;
+		
+		void apply(wxBitmap &_bitmap)  final;
+		bool uses_intensity() const final;
+		bool uses_source() const final;
+		bool generates_info() const final;
 
 	};
 }

@@ -36,58 +36,58 @@ SOFTWARE.
 
 namespace DIP {
 	class strategy {
-		public:
-			strategy();
-			virtual ~strategy() = default;
-			
-			virtual void apply(wxBitmap &_bitmap) = 0;
-			virtual bool uses_intensity() const = 0;
-			virtual bool uses_source() const = 0;
-			virtual bool generates_info() const = 0;
+	public:
+		strategy();
+		virtual ~strategy() = default;
+		
+		virtual void apply(wxBitmap &_bitmap) = 0;
+		virtual bool uses_intensity() const = 0;
+		virtual bool uses_source() const = 0;
+		virtual bool generates_info() const = 0;
 
-			const std::any& get_info() const;
+		const std::any& get_info() const;
 
-			strategy& set_source(const wxPoint &_source);
-			strategy& set_source(const wxCoord _x, const wxCoord _y);
-			const wxPoint& get_source();
+		strategy& set_source(const wxPoint &_source);
+		strategy& set_source(const wxCoord _x, const wxCoord _y);
+		const wxPoint& get_source();
 
-			strategy& set_intensity(const double _intensity);
-			double get_intensity();
+		strategy& set_intensity(const double _intensity);
+		double get_intensity();
 
-			const std::any& get_generated_info();
-			
-			using pixelData = wxNativePixelData::Iterator;
-			
-		protected:
-			using forEachCallback = std::function<wxColour(pixelData)>;
-			using expandCallback = std::function<wxColour(pixelData, std::pair<uint8_t, uint8_t>)>;
-			using selectedCallback = std::function<wxColour(pixelData)>;
-			
-			// Functions to iterate through images
-			void for_each_pixel(wxBitmap &_bitmap, forEachCallback _callback);
-			
-			// Binary images analysis
-			grid generate_grid(wxBitmap &_bitmap, const std::function<int(wxColour)> &_converter);
-			grid generate_grid(
-				wxBitmap &_bitmap,
-				const std::vector<std::pair<wxColour, grid::data>> &_colours = {}
-			);
-			void draw_grid_to_bitmap(
-				wxBitmap &_bitmap,
-				const grid &_grid,
-				const std::vector<std::pair<grid::data, wxColour>> &_colours = {}
-			);
-			
-			// General helper functions
-			static bool is_inside_screen(const wxPoint &_point, const wxSize &_size);
-			void find_foreground(wxBitmap &_bitmap);
-			
-			std::any info;
-			double intensity;
-			wxPoint source;
-			
-			static const wxColour BACKGROUNDCOLOUR;
-			static const wxColour FOREGROUNDCOLOUR;
+		const std::any& get_generated_info();
+		
+		using pixelData = wxNativePixelData::Iterator;
+		
+	protected:
+		using forEachCallback = std::function<wxColour(pixelData)>;
+		using expandCallback = std::function<wxColour(pixelData, std::pair<uint8_t, uint8_t>)>;
+		using selectedCallback = std::function<wxColour(pixelData)>;
+		
+		// Functions to iterate through images
+		void for_each_pixel(wxBitmap &_bitmap, forEachCallback _callback);
+		
+		// Binary images analysis
+		grid generate_grid(wxBitmap &_bitmap, const std::function<int(wxColour)> &_converter);
+		grid generate_grid(
+			wxBitmap &_bitmap,
+			const std::vector<std::pair<wxColour, grid::data>> &_colours = {}
+		);
+		void draw_grid_to_bitmap(
+			wxBitmap &_bitmap,
+			const grid &_grid,
+			const std::vector<std::pair<grid::data, wxColour>> &_colours = {}
+		);
+		
+		// General helper functions
+		static bool is_inside_screen(const wxPoint &_point, const wxSize &_size);
+		void find_foreground(wxBitmap &_bitmap);
+		
+		std::any info;
+		double intensity;
+		wxPoint source;
+		
+		static const wxColour BACKGROUNDCOLOUR;
+		static const wxColour FOREGROUNDCOLOUR;
 	};
 }
 
