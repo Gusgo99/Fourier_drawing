@@ -34,13 +34,8 @@ SOFTWARE.
 #include <wx/dcbuffer.h>
 #include <wx/aboutdlg.h>
 #include <wx/rawbmp.h>
-#include <wx/dcbuffer.h>
 #include <wx/tglbtn.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/dcbuffer.h>
-#include <wx/dcbuffer.h>
 #include <wx/listbox.h>
-#include <wx/xrc/xmlres.h>
 #include <wx/scrolwin.h>
 #pragma GCC diagnostic pop
 
