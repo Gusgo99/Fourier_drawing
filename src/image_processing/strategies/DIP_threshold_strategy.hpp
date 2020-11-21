@@ -29,15 +29,15 @@ SOFTWARE.
 #include  "image_processing/grid.hpp"
 
 namespace DIP {
-	class thresholdStrategy: public strategy {
+	class thresholdStrategy final: public strategy {
 	public:
 		thresholdStrategy() = default;
 		virtual ~thresholdStrategy() = default;
 		
-		void apply(wxBitmap &_bitmap)  final;
-		bool uses_intensity() const final;
-		bool uses_source() const final;
-		bool generates_info() const final;
+		void apply(wxBitmap &_bitmap);
+		bool uses_intensity() const;
+		bool uses_source() const;
+		bool generates_info() const;
 
 	};
 }

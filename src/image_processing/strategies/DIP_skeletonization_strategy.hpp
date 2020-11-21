@@ -29,15 +29,15 @@ SOFTWARE.
 #include  "image_processing/grid.hpp"
 
 namespace DIP {
-	class skeletonizationStrategy: public strategy {
+	class skeletonizationStrategy final: public strategy {
 	public:
 		skeletonizationStrategy() = default;
 		virtual ~skeletonizationStrategy() = default;
 		
-		void apply(wxBitmap &_bitmap) final;
-		bool uses_intensity() const final;
-		bool uses_source() const final;
-		bool generates_info() const final;
+		void apply(wxBitmap &_bitmap);
+		bool uses_intensity() const;
+		bool uses_source() const;
+		bool generates_info() const;
 
 	};
 }

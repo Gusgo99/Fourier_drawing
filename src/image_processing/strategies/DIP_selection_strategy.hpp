@@ -29,15 +29,15 @@ SOFTWARE.
 #include  "image_processing/grid.hpp"
 
 namespace DIP {
-	class selectionStrategy: public strategy {
+	class selectionStrategy final: public strategy {
 	public:
 		selectionStrategy() = default;
 		virtual ~selectionStrategy() = default;
 		
-		void apply(wxBitmap &_bitmap) final;
-		bool uses_intensity() const final;
-		bool uses_source() const final;
-		bool generates_info() const final;
+		void apply(wxBitmap &_bitmap);
+		bool uses_intensity() const;
+		bool uses_source() const;
+		bool generates_info() const;
 
 	};
 }
