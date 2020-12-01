@@ -33,7 +33,9 @@ namespace DIP {
                 {{BACKGROUNDCOLOUR, grid::NOTHING}, {FOREGROUNDCOLOUR, grid::EDGE}}
             );
 
-            _image.remove_unconnected_cells({source.x, source.y});
+            _image = _image.distance_heightmap({source.x, source.y});
+
+            for(auto &i: _image) i = (i == INT_MAX) ? grid::NOTHING : grid::EDGE;
 
             draw_grid_to_bitmap(
                 _bitmap,

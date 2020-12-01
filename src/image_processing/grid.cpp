@@ -298,15 +298,6 @@ std::vector<grid::position> grid::get_contour() const {
 	return _contour;
 }
 
-void grid::remove_unconnected_cells(const position _targetPosition) {
-	grid _aux = distance_heightmap(_targetPosition);
-
-	for(size_t i = 0; i < gridData.size(); i++) {
-		gridData[i] = (_aux.gridData[i] == INT_MAX) ? NOTHING : EDGE;
-
-	}
-}
-
 bool grid::remove_non_connecting_cells(const std::vector<position> &_positions) {
 	bool _modified = false;
 
