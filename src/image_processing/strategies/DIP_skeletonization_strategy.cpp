@@ -66,7 +66,7 @@ namespace DIP {
 		const std::vector<grid::position> &_positions
 	) const {
 		bool _modified = false;
-	
+
 		for(auto i: _positions) {
 			if(!_grid.get_cell_neighbourhood(i).does_cell_causes_connection()) {
 				_modified = true;
