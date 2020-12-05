@@ -26,7 +26,7 @@ SOFTWARE.
 #pragma once
 
 #include "DIP_strategy.hpp"
-#include  "image_processing/grid.hpp"
+#include "image_processing/grid.hpp"
 
 namespace DIP {
 	class skeletonizationStrategy final: public strategy {
@@ -38,7 +38,14 @@ namespace DIP {
 		bool uses_intensity() const;
 		bool uses_source() const;
 		bool generates_info() const;
-
+	
+	private:
+		bool remove_non_connecting_cells(
+			grid &_grid,
+			const std::vector<grid::position> &_positions
+		) const;
+		bool causes_connection(const grid &_grid, const grid::position &_position) const;
+		bool visit_connected_cells(const std::array<int, 8> &_cells, const size_t _initialIndex) const;
 	};
 }
 

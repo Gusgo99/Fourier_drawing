@@ -298,85 +298,6 @@ std::vector<grid::position> grid::get_contour() const {
 	return _contour;
 }
 
-bool grid::remove_non_connecting_cells(const std::vector<position> &_positions) {
-	bool _modified = false;
-
-	for(auto i: _positions) {
-		if(!causes_connections(i)) {
-			_modified = true;
-			operator()(i) = NOTHING;
-		}
-	}
-
-	return _modified;
-}
-
-void grid::skeletonize() {
-	bool _wasGridModified;
-	
-	do {
-		std::vector<position> _contour = get_contour();
-		_wasGridModified = remove_non_connecting_cells(_contour);
-
-	} while(_wasGridModified);
-
-}
-
-bool grid::causes_connections(const position _targetPosition) const {
-	std::array<int, 8> _neighbourhood = neighbours_data(_targetPosition);
-	std::array<bool, 8> _reacheable = {false, false, false, false, false, false, false, false};
-	std::queue<size_t> _frontier;
-
-	for(size_t i = 0; i < _neighbourhood.size(); i++) {
-		if(_neighbourhood[i] != NOTHING) {
-			_reacheable[i] = true;
-			_frontier.push(i);
-			break;
-
-		}
-	}
-
-	while(!_frontier.empty()) {
-		size_t _current = _frontier.front();
-		_frontier.pop();
-		for(auto i: {1, 7}) {
-			size_t _added = (_current + i) % _reacheable.size();
-			if(_neighbourhood[_added] != NOTHING && !_reacheable[_added]) {
-				_reacheable[_added] = true;
-				_frontier.push(_added);
-
-			}
-		}
-		if((_current % 2) == 1) {
-			for(auto i: {2, 6}) {
-				size_t _added = (_current + i) % _reacheable.size();
-				if(_neighbourhood[_added] != NOTHING && !_reacheable[_added]) {
-					_reacheable[_added] = true;
-					_frontier.push(_added);
-
-				}
-			}
-		}
-	}
-
-	bool _causesConnections = false;
-
-	for(size_t i = 0; i < _neighbourhood.size(); i++) {
-		if((_neighbourhood[i] != NOTHING) && !_reacheable[i]) {
-			_causesConnections = true;
-			break;
-
-		}
-	}
-
-	int _count = std::count(_neighbourhood.begin(), _neighbourhood.end(), NOTHING);
-
-	_causesConnections |= _count == 7;
-	_causesConnections &= _count != 8;
-
-	return _causesConnections;
-}
-
 std::vector<grid::position> grid::solve_chinese_postman() {
 	std::vector<position> _path;
 	std::vector<grid> _heightmaps;
@@ -425,4 +346,99 @@ std::vector<grid::position> grid::solve_chinese_postman() {
 	_path.insert(_path.end(), _newPoints.begin() + 1, _newPoints.end());
 	
 	return _path;
+}
+
+grid::cellNeighbourhood grid::get_cell_neighbourhood(const position _position) const {
+	return grid::cellNeighbourhood{*this, _position};
+}
+
+
+
+grid::cellNeighbourhood::cellNeighbourhood():
+	neighbourData{0} {}
+
+grid::cellNeighbourhood::cellNeighbourhood(const grid &_grid, const grid::position _position) {
+	auto _neighbourPositions = _position + NEIGHBOUROFFSET;
+	for(size_t i = 0; i < _neighbourPositions.size(); i++) {
+		if(_neighbourPositions[i] < _grid.get_size()) neighbourData[i] = _grid(_neighbourPositions[i]);
+		else neighbourData[i] = NOTHING;
+		
+	}
+}
+
+int& grid::cellNeighbourhood::operator[](const size_t _position) {
+	return neighbourData[_position];
+}
+
+int grid::cellNeighbourhood::operator[](const size_t _position) const {
+	return neighbourData[_position];
+}
+
+std::array<int, 4> grid::cellNeighbourhood::diagonal_cells() const {
+	std::array<int, 4> _diagonals;
+
+	for(size_t i = 0; i < _diagonals.size(); i++) {
+		_diagonals[i] = neighbourData[2 * i];
+	}
+
+	return _diagonals;
+}
+
+std::array<int, 4> grid::cellNeighbourhood::non_diagonal_cells() const {
+	std::array<int, 4> _diagonals;
+
+	for(size_t i = 0; i < _diagonals.size(); i++) {
+		_diagonals[i] = neighbourData[2 * i + 1];
+	}
+
+	return _diagonals;
+}
+
+std::array<int, 8>::iterator grid::cellNeighbourhood::begin() {
+	return neighbourData.begin();
+}
+
+std::array<int, 8>::iterator grid::cellNeighbourhood::end() {
+	return neighbourData.end();
+}
+
+bool grid::cellNeighbourhood::does_cell_causes_connection() const {
+	size_t _connectedCount = 0;
+	bool _causesConnection = true;
+
+	for(size_t i = 0; i < neighbourData.size(); i++) {
+		if(neighbourData[i] != grid::NOTHING) {
+			_connectedCount = count_connected_cells(i);
+			break;
+		}
+	}
+
+	size_t _count = std::count(neighbourData.begin(), neighbourData.end(), grid::NOTHING);
+
+	_causesConnection = _connectedCount != (neighbourData.size() - _count);
+
+	_causesConnection |= _count == 7;
+	_causesConnection &= _count != 8;
+
+	return _causesConnection;
+}
+
+size_t grid::cellNeighbourhood::count_connected_cells(const size_t _startIndex) const {
+	size_t _exploredCount = 0;
+	auto toVisit = neighbourData;
+
+	for(auto i: {size_t{1}, toVisit.size() - 1}) {
+		for(size_t j = 0; j < toVisit.size(); j++) {
+			size_t _actualIndex = (_startIndex + (j * i)) % toVisit.size();
+			if(toVisit[_actualIndex] != grid::NOTHING) {
+				toVisit[_actualIndex] = grid::NOTHING;
+				_exploredCount++;
+
+			}
+			else if((_actualIndex % 2) != 1) continue;
+			else break;
+		}
+	}
+
+	return _exploredCount;
 }

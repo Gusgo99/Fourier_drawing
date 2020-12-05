@@ -77,7 +77,29 @@ public:
 	void skeletonize();
 	std::vector<position> solve_chinese_postman();
 
-	bool causes_connections(const position _targetPosition) const;
+	class cellNeighbourhood {
+	public:
+		cellNeighbourhood();
+		cellNeighbourhood(const grid &_grid, const grid::position _position);
+
+		int& operator[](const size_t _position);
+		int operator[](const size_t _position) const;
+
+		std::array<int, 4> diagonal_cells() const;
+		std::array<int, 4> non_diagonal_cells() const;
+
+		std::array<int, 8>::iterator begin();
+		std::array<int, 8>::iterator end();
+
+		bool does_cell_causes_connection() const;
+
+	private:
+		size_t count_connected_cells(const size_t _startIndex) const;
+
+		std::array<int, 8> neighbourData;
+	};
+
+	cellNeighbourhood get_cell_neighbourhood(const position _position) const;
 	
 private:
 	position size;

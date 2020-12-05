@@ -25,17 +25,25 @@ SOFTWARE.
 
 #include "wxWidgets_headers.hpp"
 
+#include <queue>
+
 namespace DIP {
 	void skeletonizationStrategy::apply(wxBitmap &_bitmap) {
-        grid _image = generate_grid(
+		grid _image = generate_grid(
             _bitmap,
-            {{BACKGROUNDCOLOUR, grid::NOTHING}, {FOREGROUNDCOLOUR, grid::EDGE}}
-        );
+			{{BACKGROUNDCOLOUR, grid::NOTHING}, {FOREGROUNDCOLOUR, grid::EDGE}}
+		);
 
-        _image.skeletonize();
+		bool _wasGridModified;
 
-        draw_grid_to_bitmap(
-            _bitmap,
+		do {
+			std::vector<grid::position> _contour = _image.get_contour();
+			_wasGridModified = remove_non_connecting_cells(_image, _contour);
+
+		} while(_wasGridModified);
+
+		draw_grid_to_bitmap(
+			_bitmap,
             _image,
             {{grid::NOTHING, BACKGROUNDCOLOUR}, {grid::EDGE, FOREGROUNDCOLOUR}}
         );
@@ -49,7 +57,24 @@ namespace DIP {
         return false;
     }
 
-    bool skeletonizationStrategy::generates_info() const {
-        return false;
-    }
+	bool skeletonizationStrategy::generates_info() const {
+		return false;
+	}
+
+	bool skeletonizationStrategy::remove_non_connecting_cells(
+		grid &_grid,
+		const std::vector<grid::position> &_positions
+	) const {
+		bool _modified = false;
+	
+		for(auto i: _positions) {
+			if(!_grid.get_cell_neighbourhood(i).does_cell_causes_connection()) {
+				_modified = true;
+				_grid(i) = grid::NOTHING;
+
+			}
+		}
+	
+		return _modified;
+	}
 }
