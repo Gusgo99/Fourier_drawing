@@ -161,18 +161,18 @@ void drawPanel::render(wxDC &_temporary, wxDC &_permanent) {
 void drawPanel::generate_coefficients(const std::vector<std::complex<float>> &_points) {
 	kiss_fft_cfg _cfg = kiss_fft_alloc(_points.size(), 0, nullptr, nullptr);
 	std::vector<kiss_fft_cpx> _samples(_points.size()), _pOutput(_points.size()), _nOutput(_points.size());
-    for(size_t i = 0; i < _points.size(); i++) {
+	for(size_t i = 0; i < _points.size(); i++) {
 		_samples[i].r = _points[i].real();
 		_samples[i].i = _points[i].imag();
 		
 	}
-    
+
 	kiss_fft(_cfg, _samples.data(), _pOutput.data());
 	for(auto &i: _samples) i.i = -i.i;
 	kiss_fft(_cfg, _samples.data(), _nOutput.data());
-	
-    kiss_fft_free(_cfg);
-	
+
+	kiss_fft_free(_cfg);
+
 	coefficients.reserve(_points.size());
 	for(size_t i = 0; i < _points.size(); i++) {
 		if((i % 2) == 0) {

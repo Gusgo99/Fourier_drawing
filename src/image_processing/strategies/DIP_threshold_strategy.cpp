@@ -27,28 +27,28 @@ SOFTWARE.
 
 namespace DIP {
 	void thresholdStrategy::apply(wxBitmap &_bitmap) {
-        const int _intIntensity = int(intensity * 3 * 255);
-        
-        for_each_pixel(
-            _bitmap,
-            [=](pixelData _pixel) {
-                if((_pixel.Red() + _pixel.Green() + _pixel.Blue()) > _intIntensity) {
-                    return strategy::BACKGROUNDCOLOUR;
-                }
-                else return strategy::FOREGROUNDCOLOUR;
-            }
-        );
-    }
+		const int _intIntensity = int(intensity * 3 * 255);
+		
+		for_each_pixel(
+			_bitmap,
+			[=](pixelData _pixel) {
+				if((_pixel.Red() + _pixel.Green() + _pixel.Blue()) > _intIntensity) {
+					return strategy::BACKGROUNDCOLOUR;
+				}
+				else return strategy::FOREGROUNDCOLOUR;
+			}
+		);
+	}
 
-    bool thresholdStrategy::uses_intensity() const {
-        return true;
-    }
+	bool thresholdStrategy::uses_intensity() const {
+		return true;
+	}
 
-    bool thresholdStrategy::uses_source() const {
-        return false;
-    }
+	bool thresholdStrategy::uses_source() const {
+		return false;
+	}
 
-    bool thresholdStrategy::generates_info() const {
-        return false;
-    }
+	bool thresholdStrategy::generates_info() const {
+		return false;
+	}
 }

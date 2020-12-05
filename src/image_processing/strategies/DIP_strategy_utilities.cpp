@@ -29,32 +29,31 @@ SOFTWARE.
 #include "DIP_path_generation_strategy.hpp"
 
 namespace DIP {
-    std::unique_ptr<strategy> create_strategy(const strategies &_selected) {
-        std::unique_ptr<strategy> _newStrategy;
+	std::unique_ptr<strategy> create_strategy(const strategies &_selected) {
+		std::unique_ptr<strategy> _newStrategy;
 
-        switch(_selected) {
-            case strategies::THRESHOLD:
-                _newStrategy = std::make_unique<thresholdStrategy>();
-                break;
+		switch(_selected) {
+			case strategies::THRESHOLD:
+				_newStrategy = std::make_unique<thresholdStrategy>();
+				break;
 
-            case strategies::SELECTION:
-                _newStrategy = std::make_unique<selectionStrategy>();
-                break;
+			case strategies::SELECTION:
+				_newStrategy = std::make_unique<selectionStrategy>();
+				break;
 
-            case strategies::SKELETONIZATION:
-                _newStrategy = std::make_unique<skeletonizationStrategy>();
-                break;
+			case strategies::SKELETONIZATION:
+				_newStrategy = std::make_unique<skeletonizationStrategy>();
+				break;
 
-            case strategies::PATHGENERATION:
-                _newStrategy = std::make_unique<pathGenerationStrategy>();
-                break;
+			case strategies::PATHGENERATION:
+				_newStrategy = std::make_unique<pathGenerationStrategy>();
+				break;
 
-            default:
-                wxASSERT(false);
-                break;
-        }
+			default:
+				wxASSERT(false);
+				break;
+		}
 
-        return _newStrategy;
-    }
-
+		return _newStrategy;
+	}
 }

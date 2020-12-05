@@ -30,14 +30,14 @@ SOFTWARE.
 #include "DIP_strategy.hpp"
 
 namespace DIP {
-    enum class strategies {
-        THRESHOLD,
-        SELECTION,
-        SKELETONIZATION,
-        PATHGENERATION
-    };
+	enum class strategies {
+		THRESHOLD,
+		SELECTION,
+		SKELETONIZATION,
+		PATHGENERATION
+	};
 
-    std::unique_ptr<strategy> create_strategy(const strategies &_selected);
+	std::unique_ptr<strategy> create_strategy(const strategies &_selected);
 }
 
 #endif
