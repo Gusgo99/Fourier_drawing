@@ -27,33 +27,33 @@ SOFTWARE.
 
 namespace DIP {
 	void selectionStrategy::apply(wxBitmap &_bitmap) {
-        if(source != wxDefaultPosition) {
-            grid _image = generate_grid(
-                _bitmap, 
-                {{BACKGROUNDCOLOUR, grid::NOTHING}, {FOREGROUNDCOLOUR, grid::EDGE}}
-            );
+		if(source != wxDefaultPosition) {
+			grid _image = generate_grid(
+				_bitmap, 
+				{{BACKGROUNDCOLOUR, grid::NOTHING}, {FOREGROUNDCOLOUR, grid::EDGE}}
+			);
 
-            _image = _image.distance_heightmap({source.x, source.y});
+			_image = _image.distance_heightmap({source.x, source.y});
 
-            for(auto &i: _image) i = (i == INT_MAX) ? grid::NOTHING : grid::EDGE;
+			for(auto &i: _image) i = (i == INT_MAX) ? grid::NOTHING : grid::EDGE;
 
-            draw_grid_to_bitmap(
-                _bitmap,
-                _image,
-                {{grid::NOTHING, BACKGROUNDCOLOUR}, {grid::EDGE, FOREGROUNDCOLOUR}}
-            );
-        }
-    }
+			draw_grid_to_bitmap(
+				_bitmap,
+				_image,
+				{{grid::NOTHING, BACKGROUNDCOLOUR}, {grid::EDGE, FOREGROUNDCOLOUR}}
+			);
+		}
+	}
 
-    bool selectionStrategy::uses_intensity() const {
-        return false;
-    }
+	bool selectionStrategy::uses_intensity() const {
+		return false;
+	}
 
-    bool selectionStrategy::uses_source() const {
-        return true;
-    }
+	bool selectionStrategy::uses_source() const {
+		return true;
+	}
 
-    bool selectionStrategy::generates_info() const {
-        return false;
-    }
+	bool selectionStrategy::generates_info() const {
+		return false;
+	}
 }

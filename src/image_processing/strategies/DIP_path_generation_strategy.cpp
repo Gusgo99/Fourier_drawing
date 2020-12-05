@@ -32,44 +32,44 @@ SOFTWARE.
 
 namespace DIP {
 	void pathGenerationStrategy::apply(wxBitmap &_bitmap) {
-        grid _image = generate_grid(
-            _bitmap,
-            {
-                {BACKGROUNDCOLOUR, grid::NOTHING},
-                {FOREGROUNDCOLOUR, grid::EDGE}
-            });
+		grid _image = generate_grid(
+			_bitmap,
+			{
+				{BACKGROUNDCOLOUR, grid::NOTHING},
+				{FOREGROUNDCOLOUR, grid::EDGE}
+			});
 
-        std::vector<grid::position> _path = _image.solve_chinese_postman();
+		std::vector<grid::position> _path = _image.solve_chinese_postman();
 
-        draw_grid_to_bitmap(
-            _bitmap,
-            _image,
-            {
-                {grid::NOTHING, BACKGROUNDCOLOUR},
-                {grid::EDGE, FOREGROUNDCOLOUR}
-            }
-        );
+		draw_grid_to_bitmap(
+			_bitmap,
+			_image,
+			{
+				{grid::NOTHING, BACKGROUNDCOLOUR},
+				{grid::EDGE, FOREGROUNDCOLOUR}
+			}
+		);
 
-        std::vector<std::complex<float>> _floatPath;
-        _floatPath.reserve(_path.size());
+		std::vector<std::complex<float>> _floatPath;
+		_floatPath.reserve(_path.size());
 
-        for(auto i: _path) {
-            _floatPath.push_back(to_complex_number(wxPoint(i.first, i.second), _bitmap.GetSize()));
+		for(auto i: _path) {
+			_floatPath.push_back(to_complex_number(wxPoint(i.first, i.second), _bitmap.GetSize()));
 
-        }
+		}
 
-        info = _floatPath;
-    }
+		info = _floatPath;
+	}
 
-    bool pathGenerationStrategy::uses_intensity() const {
-        return false;
-    }
+	bool pathGenerationStrategy::uses_intensity() const {
+		return false;
+	}
 
-    bool pathGenerationStrategy::uses_source() const {
-        return false;
-    }
+	bool pathGenerationStrategy::uses_source() const {
+		return false;
+	}
 
-    bool pathGenerationStrategy::generates_info() const {
-        return true;
-    }
+	bool pathGenerationStrategy::generates_info() const {
+		return true;
+	}
 }

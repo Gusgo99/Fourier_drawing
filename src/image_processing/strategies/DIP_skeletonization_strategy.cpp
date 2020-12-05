@@ -30,7 +30,7 @@ SOFTWARE.
 namespace DIP {
 	void skeletonizationStrategy::apply(wxBitmap &_bitmap) {
 		grid _image = generate_grid(
-            _bitmap,
+			_bitmap,
 			{{BACKGROUNDCOLOUR, grid::NOTHING}, {FOREGROUNDCOLOUR, grid::EDGE}}
 		);
 
@@ -44,18 +44,18 @@ namespace DIP {
 
 		draw_grid_to_bitmap(
 			_bitmap,
-            _image,
-            {{grid::NOTHING, BACKGROUNDCOLOUR}, {grid::EDGE, FOREGROUNDCOLOUR}}
-        );
-    }
+			_image,
+			{{grid::NOTHING, BACKGROUNDCOLOUR}, {grid::EDGE, FOREGROUNDCOLOUR}}
+		);
+	}
 
-    bool skeletonizationStrategy::uses_intensity() const {
-        return false;
-    }
+	bool skeletonizationStrategy::uses_intensity() const {
+		return false;
+	}
 
-    bool skeletonizationStrategy::uses_source() const {
-        return false;
-    }
+	bool skeletonizationStrategy::uses_source() const {
+		return false;
+	}
 
 	bool skeletonizationStrategy::generates_info() const {
 		return false;
