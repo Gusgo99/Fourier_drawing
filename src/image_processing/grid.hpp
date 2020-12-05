@@ -36,6 +36,7 @@ public:
 	using position = std::pair<size_t, size_t>;
 	using offset = std::pair<int, int>;
 	using iterator = std::vector<int>::iterator;
+	using const_iterator = std::vector<int>::const_iterator;
 	enum data {NOTHING, EDGE};
 	
 	grid(
@@ -53,6 +54,8 @@ public:
 
 	iterator begin();
 	iterator end();
+	const_iterator begin() const;
+	const_iterator end() const;
 	
 	int& operator()(const size_t _line, const size_t _column);
 	int& operator()(const position _position);
@@ -88,8 +91,15 @@ public:
 		std::array<int, 4> diagonal_cells() const;
 		std::array<int, 4> non_diagonal_cells() const;
 
-		std::array<int, 8>::iterator begin();
-		std::array<int, 8>::iterator end();
+		using iterator = std::array<int, 8>::iterator;
+		using const_iterator = std::array<int, 8>::const_iterator;
+
+		iterator begin();
+		iterator end();
+		const_iterator begin() const;
+		const_iterator end() const;
+
+		size_t size() const;
 
 		bool does_cell_causes_connection() const;
 

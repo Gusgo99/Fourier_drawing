@@ -75,11 +75,19 @@ grid::position grid::get_size() const {
 	return size;
 }
 
-std::vector<int>::iterator grid::begin() {
+grid::iterator grid::begin() {
 	return gridData.begin();
 }
 
-std::vector<int>::iterator grid::end() {
+grid::iterator grid::end() {
+	return gridData.end();
+}
+
+grid::const_iterator grid::begin() const {
+	return gridData.begin();
+}
+
+grid::const_iterator grid::end() const {
 	return gridData.end();
 }
 
@@ -394,12 +402,24 @@ std::array<int, 4> grid::cellNeighbourhood::non_diagonal_cells() const {
 	return _diagonals;
 }
 
-std::array<int, 8>::iterator grid::cellNeighbourhood::begin() {
+grid::cellNeighbourhood::iterator grid::cellNeighbourhood::begin() {
 	return neighbourData.begin();
 }
 
-std::array<int, 8>::iterator grid::cellNeighbourhood::end() {
+grid::cellNeighbourhood::iterator grid::cellNeighbourhood::end() {
 	return neighbourData.end();
+}
+
+grid::cellNeighbourhood::const_iterator grid::cellNeighbourhood::begin() const {
+	return neighbourData.begin();
+}
+
+grid::cellNeighbourhood::const_iterator grid::cellNeighbourhood::end() const {
+	return neighbourData.end();
+}
+
+size_t grid::cellNeighbourhood::size() const {
+	return neighbourData.size();
 }
 
 bool grid::cellNeighbourhood::does_cell_causes_connection() const {
