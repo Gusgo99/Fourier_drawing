@@ -102,11 +102,21 @@ public:
 		size_t size() const;
 
 		bool does_cell_causes_connection() const;
+		bool has_even_connection_count() const;
+		bool has_odd_connection_count() const;
+		
+		static constexpr std::array<grid::offset, 8> NEIGHBOUROFFSET{
+			grid::offset(-1, -1), grid::offset(0, -1), grid::offset(1, -1),
+			grid::offset(1, 0),
+			grid::offset(1, 1), grid::offset(0, 1), grid::offset(-1, 1),
+			grid::offset(-1, 0)
+		};
 
 	private:
 		size_t count_connected_cells(const size_t _startIndex) const;
 
 		std::array<int, 8> neighbourData;
+		std::array<position, 8> neighbourPositions;
 	};
 
 	cellNeighbourhood get_cell_neighbourhood(const position _position) const;
