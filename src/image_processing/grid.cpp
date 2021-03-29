@@ -39,11 +39,11 @@ std::array<grid::position, 8> operator+(
 	return _newPositions;
 }
 
-grid::position operator+(const grid::position _position, grid::offset _offset) {
+grid::position operator+(const grid::position _position, const grid::offset _offset) {
 	return grid::position(_position.first + _offset.first, _position.second + _offset.second);
 }
 
-bool operator<(grid::position _p1, grid::position _p2) {
+bool operator<(const grid::position _p1, const grid::position _p2) {
 	return (_p1.first < _p2.first) && (_p1.second < _p2.second);
 }
 
@@ -363,13 +363,19 @@ grid::cellNeighbourhood grid::get_cell_neighbourhood(const position _position) c
 
 
 grid::cellNeighbourhood::cellNeighbourhood():
-	neighbourData{0} {}
+	neighbourData{},
+	neighbourPositions{} {}
 
 grid::cellNeighbourhood::cellNeighbourhood(const grid &_grid, const grid::position _position) {
-	auto _neighbourPositions = _position + NEIGHBOUROFFSET;
-	for(size_t i = 0; i < _neighbourPositions.size(); i++) {
-		if(_neighbourPositions[i] < _grid.get_size()) neighbourData[i] = _grid(_neighbourPositions[i]);
+	neighbourPositions = _position + NEIGHBOUROFFSET;
+	for(size_t i = 0; i < neighbourPositions.size(); i++) {
+		neighbourPositions[i] = {
+			_position.first + NEIGHBOUROFFSET[i].first,
+			_position.second + NEIGHBOUROFFSET[i].second
+		};
+		if(neighbourPositions[i] < _grid.get_size()) neighbourData[i] = _grid(neighbourPositions[i]);
 		else neighbourData[i] = NOTHING;
+
 		
 	}
 }
@@ -441,6 +447,14 @@ bool grid::cellNeighbourhood::does_cell_causes_connection() const {
 	_causesConnection &= _count != 8;
 
 	return _causesConnection;
+}
+
+bool grid::cellNeighbourhood::has_even_connection_count() const {
+	return (std::count(neighbourData.begin(), neighbourData.end(), grid::NOTHING) % 2) == 0;
+}
+
+bool grid::cellNeighbourhood::has_odd_connection_count() const {
+	return !has_even_connection_count();
 }
 
 size_t grid::cellNeighbourhood::count_connected_cells(const size_t _startIndex) const {
