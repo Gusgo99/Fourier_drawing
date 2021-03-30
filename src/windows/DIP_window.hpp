@@ -61,7 +61,7 @@ public:
 private:
 	void paint_frame(wxDC &_dc);
 	void apply_valid_tools_to_bitmap(wxBitmap &_bitmap);
-	void handle_information_from_tools();
+	void handle_output_from_image_processing();
 
 	std::vector<std::unique_ptr<DIP::strategy>> tools;
 	size_t selectedTool;

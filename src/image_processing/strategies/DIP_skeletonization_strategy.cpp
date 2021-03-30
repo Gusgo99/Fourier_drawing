@@ -28,6 +28,8 @@ SOFTWARE.
 #include <queue>
 
 namespace DIP {
+	skeletonizationStrategy::skeletonizationStrategy(): strategy{false, true, false} {}
+
 	void skeletonizationStrategy::apply(wxBitmap &_bitmap) {
 		grid _image = generate_grid(
 			_bitmap,
@@ -47,18 +49,6 @@ namespace DIP {
 			_image,
 			{{grid::NOTHING, BACKGROUNDCOLOUR}, {grid::EDGE, FOREGROUNDCOLOUR}}
 		);
-	}
-
-	bool skeletonizationStrategy::uses_intensity() const {
-		return false;
-	}
-
-	bool skeletonizationStrategy::uses_source() const {
-		return false;
-	}
-
-	bool skeletonizationStrategy::generates_info() const {
-		return false;
 	}
 
 	bool skeletonizationStrategy::remove_non_connecting_cells(

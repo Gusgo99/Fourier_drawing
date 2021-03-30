@@ -26,6 +26,8 @@ SOFTWARE.
 #include "wxWidgets_headers.hpp"
 
 namespace DIP {
+	thresholdStrategy::thresholdStrategy(): strategy{true, false, false} {}
+
 	void thresholdStrategy::apply(wxBitmap &_bitmap) {
 		const int _intIntensity = int(intensity * 3 * 255);
 		
@@ -38,17 +40,5 @@ namespace DIP {
 				else return strategy::FOREGROUNDCOLOUR;
 			}
 		);
-	}
-
-	bool thresholdStrategy::uses_intensity() const {
-		return true;
-	}
-
-	bool thresholdStrategy::uses_source() const {
-		return false;
-	}
-
-	bool thresholdStrategy::generates_info() const {
-		return false;
 	}
 }

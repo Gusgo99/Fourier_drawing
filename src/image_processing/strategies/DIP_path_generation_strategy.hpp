@@ -25,6 +25,8 @@ SOFTWARE.
 #define DIP_PATH_GENERATION_STRATEGY_HPP
 #pragma once
 
+#include <vector>
+
 #include "DIP_strategy.hpp"
 #include  "image_processing/grid.hpp"
 
@@ -33,14 +35,12 @@ SOFTWARE.
 namespace DIP {
 	class pathGenerationStrategy final: public strategy {
 	public:
-		pathGenerationStrategy() = default;
+		pathGenerationStrategy();
 		virtual ~pathGenerationStrategy() = default;
 		
-		void apply(wxBitmap &_bitmap) ;
-		bool uses_intensity() const;
-		bool uses_source() const;
-		bool generates_info() const;
-		
+	public:
+		void apply(wxBitmap &_bitmap) override;
+
 	public:
 		using path = std::vector<grid::position>;
 
