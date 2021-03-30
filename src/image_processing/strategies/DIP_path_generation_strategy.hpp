@@ -28,6 +28,8 @@ SOFTWARE.
 #include "DIP_strategy.hpp"
 #include  "image_processing/grid.hpp"
 
+#include <vector>
+
 namespace DIP {
 	class pathGenerationStrategy final: public strategy {
 	public:
@@ -38,6 +40,35 @@ namespace DIP {
 		bool uses_intensity() const;
 		bool uses_source() const;
 		bool generates_info() const;
+		
+	public:
+		using path = std::vector<grid::position>;
+
+	private:
+		struct pathFinderContext {
+			const grid originalGrid;
+			grid &currentGrid;
+			std::vector<grid::position> path;
+			std::vector<grid::position> oddNodes;
+		};
+
+	private:
+		path find_odd_cells(grid &_grid) const;
+		bool has_visited_all_cells(pathFinderContext &_context) const;
+		void visit_next_cell(pathFinderContext &_context) const;
+		void visit_path_to_odd_cell(pathFinderContext &_context) const;
+
+		pathGenerationStrategy::path get_path_to_closest(
+			const grid &_heightmap,
+			std::vector<grid::position> &_targetLocations
+		) const;
+
+		std::vector<grid::position> solve_chinese_postman(grid &_grid) const;
+		std::vector<grid> get_odd_cells_heightmaps(const grid &_grid) const;
+		size_t find_closest_position(
+			const std::vector<grid> &_heightmaps,
+			const grid::position _destination
+		) const;
 
 	};
 }
