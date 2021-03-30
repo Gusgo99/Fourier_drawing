@@ -39,4 +39,8 @@
 build/
 debug/
 release/
+
 .vscode/
+
+# Submodule directory
+extlibs/*/
