@@ -30,15 +30,18 @@ SOFTWARE.
 #include "windows/convertions.hpp"
 
 namespace DIP {
+	pathGenerationStrategy::pathGenerationStrategy(): strategy{true, false, true} {}
+
 	void pathGenerationStrategy::apply(wxBitmap &_bitmap) {
 		grid _image = generate_grid(
 			_bitmap,
 			{
 				{BACKGROUNDCOLOUR, grid::NOTHING},
 				{FOREGROUNDCOLOUR, grid::EDGE}
-			});
+			}
+		);
 
-		std::vector<grid::position> _path = _image.solve_chinese_postman();
+		std::vector<grid::position> _path = solve_chinese_postman(_image);
 
 		draw_grid_to_bitmap(
 			_bitmap,
@@ -58,18 +61,6 @@ namespace DIP {
 		}
 
 		info = _floatPath;
-	}
-
-	bool pathGenerationStrategy::uses_intensity() const {
-		return false;
-	}
-
-	bool pathGenerationStrategy::uses_source() const {
-		return false;
-	}
-
-	bool pathGenerationStrategy::generates_info() const {
-		return true;
 	}
 
 	std::vector<grid::position> pathGenerationStrategy::solve_chinese_postman(grid &_grid) const {

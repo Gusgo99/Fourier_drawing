@@ -26,6 +26,8 @@ SOFTWARE.
 #include "wxWidgets_headers.hpp"
 
 namespace DIP {
+	selectionStrategy::selectionStrategy(): strategy{false, true, false} {}
+	
 	void selectionStrategy::apply(wxBitmap &_bitmap) {
 		if(source != wxDefaultPosition) {
 			grid _image = generate_grid(
@@ -43,17 +45,5 @@ namespace DIP {
 				{{grid::NOTHING, BACKGROUNDCOLOUR}, {grid::EDGE, FOREGROUNDCOLOUR}}
 			);
 		}
-	}
-
-	bool selectionStrategy::uses_intensity() const {
-		return false;
-	}
-
-	bool selectionStrategy::uses_source() const {
-		return true;
-	}
-
-	bool selectionStrategy::generates_info() const {
-		return false;
 	}
 }

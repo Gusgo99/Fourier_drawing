@@ -33,7 +33,13 @@ namespace DIP {
 	const wxColour strategy::BACKGROUNDCOLOUR(255, 255, 255);
 	const wxColour strategy::FOREGROUNDCOLOUR(0, 0, 0);
 
-	strategy::strategy(): intensity{0.5}, source{wxDefaultPosition} {}
+	strategy::strategy(const bool _usesIntensity, const bool _usesSource, const bool _hasOutput):
+		usesIntensity{_usesIntensity},
+		usesSource{_usesSource},
+		hasOutput{_hasOutput},
+		info{},
+		intensity{0.5},
+		source{wxDefaultPosition} {}
 
 	const std::any& strategy::get_info() const {
 		return info;
@@ -63,7 +69,7 @@ namespace DIP {
 		return intensity;
 	}
 
-	const std::any& strategy::get_generated_info() {
+	const std::any& strategy::get_output() {
 		return info;
 	}
 

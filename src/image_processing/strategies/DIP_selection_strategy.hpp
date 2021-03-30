@@ -31,13 +31,11 @@ SOFTWARE.
 namespace DIP {
 	class selectionStrategy final: public strategy {
 	public:
-		selectionStrategy() = default;
+		selectionStrategy();
 		virtual ~selectionStrategy() = default;
 		
-		void apply(wxBitmap &_bitmap);
-		bool uses_intensity() const;
-		bool uses_source() const;
-		bool generates_info() const;
+	public:
+		void apply(wxBitmap &_bitmap) override;
 
 	};
 }

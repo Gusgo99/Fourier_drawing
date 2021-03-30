@@ -37,13 +37,10 @@ SOFTWARE.
 namespace DIP {
 	class strategy {
 	public:
-		strategy();
+		strategy(const bool _usesIntensity, const bool _usesSource, const bool _hasOutput);
 		virtual ~strategy() = default;
 		
 		virtual void apply(wxBitmap &_bitmap) = 0;
-		virtual bool uses_intensity() const = 0;
-		virtual bool uses_source() const = 0;
-		virtual bool generates_info() const = 0;
 
 		const std::any& get_info() const;
 
@@ -54,8 +51,14 @@ namespace DIP {
 		strategy& set_intensity(const double _intensity);
 		double get_intensity();
 
-		const std::any& get_generated_info();
+		const std::any& get_output();
+
+	public:
+		const bool usesIntensity;
+		const bool usesSource;
+		const bool hasOutput;
 		
+	public:
 		using pixelData = wxNativePixelData::Iterator;
 		
 	protected:
@@ -82,6 +85,7 @@ namespace DIP {
 		static bool is_inside_screen(const wxPoint &_point, const wxSize &_size);
 		void find_foreground(wxBitmap &_bitmap);
 		
+	protected:
 		std::any info;
 		double intensity;
 		wxPoint source;

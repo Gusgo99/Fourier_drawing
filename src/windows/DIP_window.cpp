@@ -61,12 +61,12 @@ void DIPPanel::on_paint(wxPaintEvent&) {
 
 	paint_frame(_dc);
 
-	handle_information_from_tools();
+	handle_output_from_image_processing();
 }
 
 void DIPPanel::on_left_down(wxMouseEvent &_event) {
 	if(selectedTool < tools.size()) {
-		if(tools[selectedTool] -> uses_source()) {
+		if(tools[selectedTool] -> usesSource) {
 			tools[selectedTool] -> set_source(_event.GetX(), _event.GetY());
 			Refresh();
 			
@@ -76,7 +76,7 @@ void DIPPanel::on_left_down(wxMouseEvent &_event) {
 
 void DIPPanel::on_right_down(wxMouseEvent&) {
 	if(selectedTool < tools.size()) {
-		if(tools[selectedTool] -> uses_source()) {
+		if(tools[selectedTool] -> usesSource) {
 			tools[selectedTool] -> set_source(wxDefaultPosition);
 			Refresh();
 			
@@ -152,7 +152,7 @@ void DIPPanel::set_points_state(const bool _showPoints) {
 bool DIPPanel::should_show_slider() {
 	bool _show = false;
 	
-	if(selectedTool < tools.size()) _show = tools[selectedTool] -> uses_intensity();
+	if(selectedTool < tools.size()) _show = tools[selectedTool] -> usesIntensity;
 	
 	return _show;
 }
@@ -169,7 +169,7 @@ void DIPPanel::paint_frame(wxDC &_dc) {
 	if(_dc.CanDrawBitmap()) _dc.DrawBitmap(_processedBitmap, 0, 0);
 	
 	if(selectedTool < tools.size()) {
-		if(tools[selectedTool] -> uses_source()) render(_dc);
+		if(tools[selectedTool] -> usesSource) render(_dc);
 		
 	}
 	
@@ -183,13 +183,14 @@ void DIPPanel::apply_valid_tools_to_bitmap(wxBitmap &_bitmap) {
 	wxEndBusyCursor();
 }
 
-void DIPPanel::handle_information_from_tools() {
+void DIPPanel::handle_output_from_image_processing() {
 	if(!tools.empty()) {
-		if(tools.back() -> generates_info()) {
+		if(tools.back() -> hasOutput) {
 			if(pointsDestination != nullptr) {
-				std::any _information = tools.back() -> get_info();
-				auto _points = std::any_cast<std::vector<std::complex<float>>>(_information);
+				std::any _path = tools.back() -> get_output();
+				auto _points = std::any_cast<std::vector<std::complex<float>>>(_path);
 				pointsDestination -> set_points(_points);
+				
 			}
 		}
 	}
