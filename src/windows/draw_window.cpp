@@ -23,8 +23,9 @@ SOFTWARE.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "draw_window.hpp"
 
+#include <kiss_fft.h>
+
 #include "convertions.hpp"
-#include "math/kiss_fft.h"
 
 wxBEGIN_EVENT_TABLE(drawPanel, wxPanel)
 	

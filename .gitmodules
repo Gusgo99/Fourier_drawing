@@ -1,0 +1,3 @@
+[submodule "extlib/kissfft"]
+	path = extlibs/kissfft
+	url = https://github.com/mborgerding/kissfft.git
