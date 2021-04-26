@@ -23,11 +23,7 @@ SOFTWARE.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "main.hpp"
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wold-style-cast"
-#pragma GCC diagnostic ignored "-Wdeprecated-copy"
 IMPLEMENT_APP(mainClass)
-#pragma GCC diagnostic pop
 
 bool mainClass::OnInit() {
 	wxXmlResource::Get() -> InitAllHandlers();
